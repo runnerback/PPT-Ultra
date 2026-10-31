@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "ppt-ultra",
+  "owner": {
+    "name": "boodorg"
+  },
+  "metadata": {
+    "description": "PPT Ultra — 一站式 PPT 生成 Skill：网页演讲 PPT、主题化汇报 PPT、原生可编辑 PPTX",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "ppt-ultra",
+      "description": "一站式 PPT / 演示文稿生成：杂志风 / 瑞士风网页 PPT（演讲者模式）、12 主题 HTML 汇报（3+1 方案、PDF 导出）、原生可编辑 PPTX（模板、美化、编辑、旁白视频）。使用 PPTX 路线前需在插件目录 skills/ppt-ultra 下执行 pip install -r requirements.txt。",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/ppt-ultra"
+      ],
+      "license": "AGPL-3.0",
+      "category": "productivity",
+      "keywords": ["ppt", "pptx", "presentation", "slides", "html-deck", "powerpoint", "skill"]
+    }
+  ]
+}

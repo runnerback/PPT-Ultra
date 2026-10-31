@@ -1,0 +1,16 @@
+# 上游原始下载（含 dashi 专有组件，不可再分发）——只留本地参考，不进仓库
+/dashi-ppt-skill-main/
+/guizang-ppt-skill-main/
+/ppt-master-main/
+
+# 打包产物：发布到 GitHub Releases，不进 git
+*.tgz
+
+node_modules/
+.npmrc
+__pycache__/
+*.pyc
+.DS_Store
+.env
+*.log
+output/
