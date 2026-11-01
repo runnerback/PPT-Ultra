@@ -7,7 +7,7 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 | PPTX Native 引擎 | ppt-master 6.8.0 — https://github.com/hugohe3/ppt-master | Hugo He | MIT（全文见 [`LICENSE`](LICENSE)） | 根目录 `scripts/` `templates/` `references/` `workflows/`（`intake.md` `html-*.md` 和 `references/shared-services.md` 除外） |
 | HTML Editorial 引擎 | guizang-ppt-skill — https://github.com/op7418/guizang-ppt-skill | 歸藏 (op7418) | AGPL-3.0（全文见 [`engines/html-editorial/LICENSE`](engines/html-editorial/LICENSE)） | `engines/html-editorial/`、`workflows/html-editorial.md` |
 | HTML Themed 引擎 | dashi-ppt 0.4.14 | chuspeeism | AGPL-3.0（全文见 [`engines/html-themed/LICENSE`](engines/html-themed/LICENSE)；原版附带的专有导出组件 `html-deck-to-pptx` 及其浏览器版 `editable-pptx-browser.js` **已移除**，见下文） | `engines/html-themed/`、`workflows/html-themed.md` |
-| 融合层 | 本包新增 | boodorg（整合与架构设计） | AGPL-3.0（与所含 AGPL 组件一致） | `SKILL.md` 正文、`workflows/intake.md`、`workflows/routing.md` §8、`references/shared-services.md`、本文件 |
+| 融合层 | 本包新增 | Runnerback <286980573@163.com>（整合与架构设计） | AGPL-3.0（与所含 AGPL 组件一致） | `SKILL.md` 正文、`workflows/intake.md`、`workflows/routing.md` §8、`references/shared-services.md`、本文件 |
 
 ## 分发注意
 

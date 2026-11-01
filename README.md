@@ -4,7 +4,7 @@
 
 PPT Ultra 是一个 Claude Code Skill。它把三套成熟的开源 PPT 生成能力整合成**一个入口、一套流程**。用户不用关心底层用哪个引擎，只要说清楚"要什么、怎么用"，Skill 会自动选路线、选风格，生成后再做验收。
 
-> 整合与架构设计：boodorg · 版本 1.0.0
+> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.0.0
 
 ---
 
@@ -67,15 +67,15 @@ PPT Ultra 是一个 Claude Code Skill。它把三套成熟的开源 PPT 生成�
 **方式 A：作为 Claude Code 插件安装（推荐）**
 
 ```text
-/plugin marketplace add <GitHub用户名>/ppt-skill-ultra
+/plugin marketplace add runnerback/PPT-Ultra
 /plugin install ppt-ultra@ppt-ultra
 ```
 
 **方式 B：手动安装**
 
 ```bash
-git clone https://github.com/<GitHub用户名>/ppt-skill-ultra.git
-cp -R ppt-skill-ultra/skills/ppt-ultra ~/.claude/skills/ppt-ultra
+git clone https://github.com/runnerback/PPT-Ultra.git
+cp -R PPT-Ultra/skills/ppt-ultra ~/.claude/skills/ppt-ultra
 ```
 
 ### 2. 依赖（按需安装）
@@ -102,7 +102,7 @@ cp -R ppt-skill-ultra/skills/ppt-ultra ~/.claude/skills/ppt-ultra
 ## 目录结构
 
 ```
-ppt-skill-ultra/                     # 仓库根目录
+PPT-Ultra/                     # 仓库根目录
 ├── README.md                        # 本文件
 ├── LICENSE                          # AGPL-3.0（项目整体许可证）
 ├── .claude-plugin/marketplace.json  # Claude Code 插件清单

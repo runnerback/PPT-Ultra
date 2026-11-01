@@ -2,7 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ppt-ultra",
   "owner": {
-    "name": "boodorg"
+    "name": "Runnerback",
+    "email": "286980573@163.com"
   },
   "metadata": {
     "description": "PPT Ultra — 一站式 PPT 生成 Skill：网页演讲 PPT、主题化汇报 PPT、原生可编辑 PPTX",
