@@ -43,6 +43,22 @@ It reads PDF, Word, Excel, existing decks and web pages as source material. When
 
 PPT Ultra must run inside an AI tool that can **read and write files and run commands**, because the AI generates the deck on your computer. Chat-only AI cannot use it.
 
+> [!TIP]
+> **Too many steps? Let your AI install it for you.**
+>
+> Open any supported tool from the table below, then paste one of these prompts into the chat:
+>
+> - **Haven't downloaded anything** (the AI fetches it from GitHub):
+>   ```text
+>   Please install the AI skill from https://github.com/runnerback/PPT-Ultra for me: put the skills/ppt-ultra folder into your skills directory, install the Python and Node.js runtimes and dependencies it needs, then confirm the skill is loaded and tell me how to use it.
+>   ```
+> - **Already downloaded the ZIP**: drag the ZIP or the unzipped folder into the chat, then send:
+>   ```text
+>   This is the PPT Ultra skill package. Please install it for me: unzip it if needed, put the skills/ppt-ultra folder into your skills directory, install the Python and Node.js runtimes and dependencies it needs, then confirm the skill is loaded and tell me how to use it.
+>   ```
+>
+> The AI finds the right directory, copies the files and installs dependencies on its own. When it asks for permission to run a command, approve it. Some tools need a restart before a new skill shows up; the AI will tell you. If it gets stuck, fall back to the manual steps below.
+
 Find your tool and jump to its steps:
 
 | AI tool | Support | Steps |
