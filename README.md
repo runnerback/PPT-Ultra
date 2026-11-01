@@ -102,7 +102,7 @@ cp -R PPT-Ultra/skills/ppt-ultra ~/.claude/skills/ppt-ultra
 ## 目录结构
 
 ```
-PPT-Ultra/                     # 仓库根目录
+PPT-Ultra/                           # 仓库根目录
 ├── README.md                        # 本文件
 ├── LICENSE                          # AGPL-3.0（项目整体许可证）
 ├── .claude-plugin/marketplace.json  # Claude Code 插件清单
@@ -135,6 +135,6 @@ PPT Ultra 的底层引擎来自以下开源项目，在此致谢：
 |---|---|---|
 | PPTX Native | [ppt-master](https://github.com/hugohe3/ppt-master)（Hugo He） | MIT |
 | HTML Editorial | [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)（歸藏） | AGPL-3.0 |
-| HTML Themed | dashi-ppt（chuspeeism），已移除其专有导出组件 | AGPL-3.0 |
+| HTML Themed | [dashi-ppt-skill](https://github.com/chuspeeism/dashi-ppt-skill)（chuspeeism），已移除其专有导出组件 | AGPL-3.0 |
 
 项目整体按 [AGPL-3.0](LICENSE) 发布；各组成部分的许可证详见 [`NOTICE.md`](skills/ppt-ultra/NOTICE.md)。
