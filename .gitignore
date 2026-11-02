@@ -14,3 +14,6 @@ __pycache__/
 .env
 *.log
 output/
+
+# Release 附件（tools/package-release.sh 产物，传 GitHub Releases，不进 git）
+/dist/
