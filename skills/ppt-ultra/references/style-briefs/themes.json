@@ -1,0 +1,1052 @@
+{
+  "_generated_by": "tools/build-style-briefs.mjs（不要手改；改主题请改各引擎的来源文件后重新生成）",
+  "_fields": {
+    "html": "该主题在它自己的 HTML 引擎里怎么选：Editorial 改 <html data-theme>，Themed 填 goal 的 themePack",
+    "native_style_brief": "Native PPTX 路线（Default Stage 1 / Quick 自定）把它当 style brief：visual_style 是 references/visual-styles/ 里的 id，brief 表示没有对应预设、按字段描述",
+    "spec_style": "Spec profile 直接填进 spec.style（palette 键与 pptx_style.C 一致，series_colors 为图表系列色）；null = 暗底主题，Spec 引擎不支持"
+  },
+  "spec_default": {
+    "name": "科研答辩风（Spec Native 默认）",
+    "palette": {
+      "primary": "003F8F",
+      "secondary": "0B5CAD",
+      "pale": "EAF2FF",
+      "red": "C00000",
+      "ink": "111111",
+      "gray": "333333",
+      "mid": "6B7280",
+      "border": "D8DEE8",
+      "fill": "F3F6FA",
+      "white": "FFFFFF",
+      "bg": "F5F7FA",
+      "gold": "F3DFA2"
+    },
+    "fonts": {
+      "cjk": "微软雅黑",
+      "latin": "Arial"
+    },
+    "editorial_recipe": {
+      "family": "swiss",
+      "brand": "#003F8F",
+      "command": "node engines/html-editorial/scripts/gz-theme.mjs brand \"#003F8F\" --family swiss"
+    },
+    "native_style_brief": {
+      "visual_style": "brief",
+      "primary": "003F8F",
+      "secondary": "0B5CAD",
+      "ink": "111111",
+      "background": "F5F7FA",
+      "accent_red": "C00000",
+      "note": "白底、深学术蓝结构色、少量正红强调、浅蓝面板、细灰边框、深蓝结论条"
+    }
+  },
+  "editorial": {
+    "magazine": {
+      "ink-classic": {
+        "name": "墨水经典",
+        "fit": "通用分享、商业发布、科技产品、任何场景都安全的默认选择。",
+        "tone": "纯墨黑 + 暖米白，杂志感最强，Monocle / Apricot / A Book Apart 风。",
+        "default": true,
+        "tokens": {
+          "paper": "F1EFEA",
+          "ink": "0A0A0B",
+          "accent": "111111",
+          "accent_ink": "111111",
+          "accent_on": "F1EFEA"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "magazine",
+          "data_theme": "ink-classic",
+          "template": "template.html"
+        },
+        "native_style_brief": {
+          "visual_style": "editorial",
+          "primary": "111111",
+          "primary_text": "111111",
+          "ink": "0A0A0B",
+          "background": "F1EFEA",
+          "on_primary": "F1EFEA"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "111111",
+            "secondary": "4D4D4D",
+            "pale": "E2E2E2",
+            "fill": "F1F1F1",
+            "red": "C00000",
+            "ink": "0A0A0B",
+            "gray": "3B3B3C",
+            "mid": "919191",
+            "border": "D3D3D3",
+            "white": "FFFFFF",
+            "bg": "F1EFEA",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "indigo-porcelain": {
+        "name": "靛蓝瓷",
+        "fit": "科技/研究/数据分享、工程师文化、深度内容、技术发布会。",
+        "tone": "深靛蓝 + 瓷白，冷静、理性、有深度，像学术期刊或蓝印花瓷器。",
+        "default": false,
+        "tokens": {
+          "paper": "F1F3F5",
+          "ink": "0A1F3D",
+          "accent": "315D93",
+          "accent_ink": "315D93",
+          "accent_on": "F1F3F5"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "magazine",
+          "data_theme": "indigo-porcelain",
+          "template": "template.html"
+        },
+        "native_style_brief": {
+          "visual_style": "editorial",
+          "primary": "315D93",
+          "primary_text": "315D93",
+          "ink": "0A1F3D",
+          "background": "F1F3F5",
+          "on_primary": "F1F3F5"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "315D93",
+            "secondary": "6586AE",
+            "pale": "E6ECF2",
+            "fill": "F3F5F9",
+            "red": "C00000",
+            "ink": "0A1F3D",
+            "gray": "3B4C64",
+            "mid": "919AA8",
+            "border": "D3D7DC",
+            "white": "FFFFFF",
+            "bg": "F1F3F5",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "forest-ink": {
+        "name": "森林墨",
+        "fit": "自然/可持续/文化/非虚构内容、户外品牌、环保主题。",
+        "tone": "深森林绿 + 象牙，沉稳、有呼吸感，像旧版《国家地理》。",
+        "default": false,
+        "tokens": {
+          "paper": "F5F1E8",
+          "ink": "1A2E1F",
+          "accent": "2E6B4F",
+          "accent_ink": "2E6B4F",
+          "accent_on": "F5F1E8"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "magazine",
+          "data_theme": "forest-ink",
+          "template": "template.html"
+        },
+        "native_style_brief": {
+          "visual_style": "editorial",
+          "primary": "2E6B4F",
+          "primary_text": "2E6B4F",
+          "ink": "1A2E1F",
+          "background": "F5F1E8",
+          "on_primary": "F5F1E8"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "2E6B4F",
+            "secondary": "62907B",
+            "pale": "E6EDEA",
+            "fill": "F2F6F4",
+            "red": "C00000",
+            "ink": "1A2E1F",
+            "gray": "48584C",
+            "mid": "98A19A",
+            "border": "D6D9D7",
+            "white": "FFFFFF",
+            "bg": "F5F1E8",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "kraft-paper": {
+        "name": "牛皮纸",
+        "fit": "怀旧/人文/阅读/历史/文学分享、独立杂志、手作品牌。",
+        "tone": "深棕 + 暖米，像牛皮信封或老笔记本，温暖、有年代感。",
+        "default": false,
+        "tokens": {
+          "paper": "EEDFC7",
+          "ink": "2A1E13",
+          "accent": "9B5A2E",
+          "accent_ink": "804212",
+          "accent_on": "EEDFC7"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "magazine",
+          "data_theme": "kraft-paper",
+          "template": "template.html"
+        },
+        "native_style_brief": {
+          "visual_style": "editorial",
+          "primary": "9B5A2E",
+          "primary_text": "804212",
+          "ink": "2A1E13",
+          "background": "EEDFC7",
+          "on_primary": "EEDFC7"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "9B5A2E",
+            "secondary": "B48362",
+            "pale": "F3EBE6",
+            "fill": "F9F5F2",
+            "red": "C00000",
+            "ink": "2A1E13",
+            "gray": "554B42",
+            "mid": "9F9A95",
+            "border": "D9D7D5",
+            "white": "FFFFFF",
+            "bg": "EEDFC7",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "dune": {
+        "name": "沙丘",
+        "fit": "艺术/设计/创意/时尚分享、画廊手册、审美优先的私享会。",
+        "tone": "炭灰 + 沙色，克制、高级、中性，像沙漠黄昏或建筑设计图册。",
+        "default": false,
+        "tokens": {
+          "paper": "F0E6D2",
+          "ink": "1F1A14",
+          "accent": "8F7650",
+          "accent_ink": "705833",
+          "accent_on": "F0E6D2"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "magazine",
+          "data_theme": "dune",
+          "template": "template.html"
+        },
+        "native_style_brief": {
+          "visual_style": "editorial",
+          "primary": "8F7650",
+          "primary_text": "705833",
+          "ink": "1F1A14",
+          "background": "F0E6D2",
+          "on_primary": "F0E6D2"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "8F7650",
+            "secondary": "AB987C",
+            "pale": "F2EFEA",
+            "fill": "F8F7F5",
+            "red": "C00000",
+            "ink": "1F1A14",
+            "gray": "4C4843",
+            "mid": "9A9895",
+            "border": "D7D6D5",
+            "white": "FFFFFF",
+            "bg": "F0E6D2",
+            "gold": "F3DFA2"
+          }
+        }
+      }
+    },
+    "swiss": {
+      "ikb": {
+        "name": "克莱因蓝",
+        "fit": "通用场合、商业发布、AI/科技产品、设计领域分享。最经典的瑞士风配色，绝不出错。",
+        "tone": "纯白底 + IKB 克莱因蓝，极致冷静、理性、有学术感，像 Helvetica Forever 或 Massimo Vignelli 的作品集。",
+        "default": true,
+        "tokens": {
+          "paper": "FAFAF8",
+          "ink": "0A0A0A",
+          "accent": "002FA7",
+          "accent_ink": "002FA7",
+          "accent_on": "FFFFFF"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "swiss",
+          "data_theme": "ikb",
+          "template": "template-swiss.html"
+        },
+        "native_style_brief": {
+          "visual_style": "swiss-minimal",
+          "primary": "002FA7",
+          "primary_text": "002FA7",
+          "ink": "0A0A0A",
+          "background": "FAFAF8",
+          "on_primary": "FFFFFF"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "002FA7",
+            "secondary": "4063BD",
+            "pale": "E0E6F4",
+            "fill": "F0F3FA",
+            "red": "C00000",
+            "ink": "0A0A0A",
+            "gray": "3B3B3B",
+            "mid": "919191",
+            "border": "D3D3D3",
+            "white": "FFFFFF",
+            "bg": "FAFAF8",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "lemon": {
+        "name": "柠檬黄",
+        "fit": "年轻、运动、零售、消费品、活力主题、Y2K 复古设计。",
+        "tone": "浅米白底 + 柠檬黄，鲜亮、有活力、警示感强，像 IKEA 或 Beck Design 的视觉语言。",
+        "default": false,
+        "tokens": {
+          "paper": "FAFAF8",
+          "ink": "0A0A0A",
+          "accent": "FFD500",
+          "accent_ink": "7A5F00",
+          "accent_on": "0A0A0A"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "swiss",
+          "data_theme": "lemon",
+          "template": "template-swiss.html"
+        },
+        "native_style_brief": {
+          "visual_style": "swiss-minimal",
+          "primary": "FFD500",
+          "primary_text": "7A5F00",
+          "ink": "0A0A0A",
+          "background": "FAFAF8",
+          "on_primary": "0A0A0A"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "7A5F00",
+            "secondary": "9B8740",
+            "pale": "EFECE0",
+            "fill": "F7F5F0",
+            "red": "C00000",
+            "ink": "0A0A0A",
+            "gray": "3B3B3B",
+            "mid": "919191",
+            "border": "D3D3D3",
+            "white": "FFFFFF",
+            "bg": "FAFAF8",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "lemon-green": {
+        "name": "柠檬绿",
+        "fit": "生态、可持续、健康、新兴科技、Z 世代品牌、AI 创业项目。",
+        "tone": "浅米白底 + 荧光柠檬绿，有未来感、年轻、当代，像 Acne Studios 或 Off-White 的视觉。",
+        "default": false,
+        "tokens": {
+          "paper": "FAFAF8",
+          "ink": "0A0A0A",
+          "accent": "C5E803",
+          "accent_ink": "4A6400",
+          "accent_on": "0A0A0A"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "swiss",
+          "data_theme": "lemon-green",
+          "template": "template-swiss.html"
+        },
+        "native_style_brief": {
+          "visual_style": "swiss-minimal",
+          "primary": "C5E803",
+          "primary_text": "4A6400",
+          "ink": "0A0A0A",
+          "background": "FAFAF8",
+          "on_primary": "0A0A0A"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "4A6400",
+            "secondary": "778B40",
+            "pale": "E9ECE0",
+            "fill": "F4F6F0",
+            "red": "C00000",
+            "ink": "0A0A0A",
+            "gray": "3B3B3B",
+            "mid": "919191",
+            "border": "D3D3D3",
+            "white": "FFFFFF",
+            "bg": "FAFAF8",
+            "gold": "F3DFA2"
+          }
+        }
+      },
+      "safety-orange": {
+        "name": "安全橙",
+        "fit": "工业、警示、运动、施工、汽车工业、技术发布会的「警告/重点」页。",
+        "tone": "浅米白底 + 安全橙，工业感、紧迫感、视觉锚点感，像 Saul Bass 海报或 Highway Gothic 标识系统。",
+        "default": false,
+        "tokens": {
+          "paper": "FAFAF8",
+          "ink": "0A0A0A",
+          "accent": "FF6B35",
+          "accent_ink": "C2410C",
+          "accent_on": "FFFFFF"
+        },
+        "html": {
+          "engine": "html-editorial",
+          "family": "swiss",
+          "data_theme": "safety-orange",
+          "template": "template-swiss.html"
+        },
+        "native_style_brief": {
+          "visual_style": "swiss-minimal",
+          "primary": "FF6B35",
+          "primary_text": "C2410C",
+          "ink": "0A0A0A",
+          "background": "FAFAF8",
+          "on_primary": "FFFFFF"
+        },
+        "spec_style": {
+          "palette": {
+            "primary": "FF6B35",
+            "secondary": "FF9068",
+            "pale": "FFEDE7",
+            "fill": "FFF6F3",
+            "red": "C00000",
+            "ink": "0A0A0A",
+            "gray": "3B3B3B",
+            "mid": "919191",
+            "border": "D3D3D3",
+            "white": "FFFFFF",
+            "bg": "FAFAF8",
+            "gold": "F3DFA2"
+          }
+        }
+      }
+    }
+  },
+  "themed": {
+    "theme01": {
+      "name": "轻拟态风",
+      "fit": "产品介绍、企业汇报、方案说明、轻量级发布",
+      "audience": "创业团队、产品经理、销售顾问、企业内部汇报者",
+      "dark": false,
+      "tokens": {
+        "bg": "EEF3FB",
+        "bg_css": "radial-gradient(circle at 82% 14%,rgba(91,141,239,.26),transparent 32%),linear-gradient(145deg,#eef3fb 0%,#e4ebf7 100%)",
+        "surface": "rgba(255,255,255,.68)",
+        "ink": "172033",
+        "muted": "#647086",
+        "accent": "5B8DEF",
+        "accent2": "46B083",
+        "line": "rgba(23,32,51,.13)",
+        "font_display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 30,
+        "chart_series": [
+          "5B8DEF",
+          "46B083",
+          "E0A23A",
+          "7A5AE0"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme01"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme01 轻拟态风",
+        "primary": "5B8DEF",
+        "secondary": "46B083",
+        "ink": "172033",
+        "background": "EEF3FB",
+        "dark": false,
+        "fonts": {
+          "display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 30
+      },
+      "spec_style": {
+        "palette": {
+          "primary": "5B8DEF",
+          "secondary": "46B083",
+          "pale": "EBF1FD",
+          "fill": "F5F8FE",
+          "red": "C00000",
+          "ink": "172033",
+          "gray": "454D5C",
+          "mid": "647086",
+          "border": "D5D7DA",
+          "white": "FFFFFF",
+          "bg": "EEF3FB",
+          "gold": "F3DFA2"
+        },
+        "series_colors": [
+          "5B8DEF",
+          "46B083",
+          "E0A23A",
+          "7A5AE0"
+        ]
+      }
+    },
+    "theme02": {
+      "name": "炫光紫绿风",
+      "fit": "科技发布会、AI/自动驾驶/机器人主题、增长故事、创新项目展示",
+      "audience": "科技公司创始人、技术负责人、品牌市场团队、投资路演团队",
+      "dark": true,
+      "tokens": {
+        "bg": "120C23",
+        "bg_css": "radial-gradient(circle at 78% 18%,rgba(162,77,255,.34),transparent 34%),radial-gradient(circle at 12% 86%,rgba(190,255,55,.16),transparent 30%),#120c23",
+        "surface": "rgba(94,61,134,.26)",
+        "ink": "F7F4FF",
+        "muted": "#b6aec6",
+        "accent": "C7FF3F",
+        "accent2": "A24DFF",
+        "line": "rgba(235,226,255,.18)",
+        "font_display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 24,
+        "chart_series": [
+          "C7FF3F",
+          "A24DFF",
+          "37D6C6",
+          "FF6EA8"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme02"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme02 炫光紫绿风",
+        "primary": "C7FF3F",
+        "secondary": "A24DFF",
+        "ink": "F7F4FF",
+        "background": "120C23",
+        "dark": true,
+        "fonts": {
+          "display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 24
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme03": {
+      "name": "深浅代码风",
+      "fit": "技术方案、开发者大会、系统架构、AI 工程实践",
+      "audience": "工程师、技术管理者、架构师、开发者社区",
+      "dark": true,
+      "tokens": {
+        "bg": "161513",
+        "bg_css": "#161513",
+        "surface": "#24231f",
+        "ink": "F3F2EE",
+        "muted": "#b8b6b0",
+        "accent": "2742EC",
+        "accent2": "C2F53D",
+        "line": "rgba(243,242,238,.22)",
+        "font_display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_body": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 0,
+        "chart_series": [
+          "2742EC",
+          "C2F53D",
+          "F3F2EE",
+          "77756F"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme03"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme03 深浅代码风",
+        "primary": "2742EC",
+        "secondary": "C2F53D",
+        "ink": "F3F2EE",
+        "background": "161513",
+        "dark": true,
+        "fonts": {
+          "display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+          "body": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif"
+        },
+        "radius": 0
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme04": {
+      "name": "玻璃糖果风",
+      "fit": "年轻化品牌、消费产品、创意提案、社媒感内容",
+      "audience": "品牌团队、设计师、内容创作者、消费品团队",
+      "dark": true,
+      "tokens": {
+        "bg": "050506",
+        "bg_css": "radial-gradient(circle at 76% 18%,rgba(255,42,139,.22),transparent 31%),radial-gradient(circle at 18% 78%,rgba(39,224,33,.18),transparent 30%),#050506",
+        "surface": "rgba(255,255,255,.09)",
+        "ink": "FFFFFF",
+        "muted": "#aaaeb8",
+        "accent": "27E021",
+        "accent2": "FFC700",
+        "line": "rgba(255,255,255,.18)",
+        "font_display": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 28,
+        "chart_series": [
+          "27E021",
+          "FFC700",
+          "FF2A8B",
+          "45B8FF"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme04"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme04 玻璃糖果风",
+        "primary": "27E021",
+        "secondary": "FFC700",
+        "ink": "FFFFFF",
+        "background": "050506",
+        "dark": true,
+        "fonts": {
+          "display": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 28
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme05": {
+      "name": "色谱图表风",
+      "fit": "数据报告、市场分析、KPI 复盘、行业研究",
+      "audience": "数据分析师、咨询顾问、研究员、业务负责人",
+      "dark": false,
+      "tokens": {
+        "bg": "E9E4D6",
+        "bg_css": "#e9e4d6",
+        "surface": "#e9e4d6",
+        "ink": "14130F",
+        "muted": "#8a8576",
+        "accent": "D8402E",
+        "accent2": "2C44A0",
+        "line": "#c4bfae",
+        "font_display": "\"Arimo\",\"Noto Sans SC\",\"PingFang SC\",sans-serif",
+        "font_body": "\"Arimo\",\"Noto Sans SC\",\"PingFang SC\",sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 0,
+        "chart_series": [
+          "D8402E",
+          "1A1814",
+          "3D3A32",
+          "8A8576"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme05"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme05 色谱图表风",
+        "primary": "D8402E",
+        "secondary": "2C44A0",
+        "ink": "14130F",
+        "background": "E9E4D6",
+        "dark": false,
+        "fonts": {
+          "display": "\"Arimo\",\"Noto Sans SC\",\"PingFang SC\",sans-serif",
+          "body": "\"Arimo\",\"Noto Sans SC\",\"PingFang SC\",sans-serif"
+        },
+        "radius": 0
+      },
+      "spec_style": {
+        "palette": {
+          "primary": "D8402E",
+          "secondary": "2C44A0",
+          "pale": "FAE8E6",
+          "fill": "FDF4F2",
+          "red": "C00000",
+          "ink": "14130F",
+          "gray": "43423F",
+          "mid": "8A8576",
+          "border": "D5D5D4",
+          "white": "FFFFFF",
+          "bg": "E9E4D6",
+          "gold": "F3DFA2"
+        },
+        "series_colors": [
+          "D8402E",
+          "1A1814",
+          "3D3A32",
+          "8A8576"
+        ]
+      }
+    },
+    "theme06": {
+      "name": "深色图谱风",
+      "fit": "高密度数据展示、战略分析、科技/金融/产业报告",
+      "audience": "战略团队、投资人、产业研究团队、高管汇报者",
+      "dark": true,
+      "tokens": {
+        "bg": "0C0C0C",
+        "bg_css": "radial-gradient(circle at 80% 12%,rgba(200,241,53,.12),transparent 30%),#0c0c0c",
+        "surface": "#171914",
+        "ink": "F4F5ED",
+        "muted": "#a6aa99",
+        "accent": "C8F135",
+        "accent2": "65D3D6",
+        "line": "rgba(200,241,53,.2)",
+        "font_display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_body": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 4,
+        "chart_series": [
+          "C8F135",
+          "65D3D6",
+          "F4F5ED",
+          "FF8D57"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme06"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme06 深色图谱风",
+        "primary": "C8F135",
+        "secondary": "65D3D6",
+        "ink": "F4F5ED",
+        "background": "0C0C0C",
+        "dark": true,
+        "fonts": {
+          "display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+          "body": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif"
+        },
+        "radius": 4
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme07": {
+      "name": "冷白调研风",
+      "fit": "调研报告、白皮书、竞品分析、学术/政策型表达",
+      "audience": "研究机构、咨询团队、政府/高校/智库、B2B 团队",
+      "dark": false,
+      "tokens": {
+        "bg": "F4F6F4",
+        "bg_css": "linear-gradient(145deg,#f4f6f4 0%,#e9eeeb 100%)",
+        "surface": "#ffffff",
+        "ink": "17221E",
+        "muted": "#68766f",
+        "accent": "235C4B",
+        "accent2": "B7DC36",
+        "line": "#cbd4cf",
+        "font_display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 12,
+        "chart_series": [
+          "235C4B",
+          "B7DC36",
+          "5E8F7F",
+          "D7A548"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme07"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme07 冷白调研风",
+        "primary": "235C4B",
+        "secondary": "B7DC36",
+        "ink": "17221E",
+        "background": "F4F6F4",
+        "dark": false,
+        "fonts": {
+          "display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 12
+      },
+      "spec_style": {
+        "palette": {
+          "primary": "235C4B",
+          "secondary": "5A8578",
+          "pale": "E5EBE9",
+          "fill": "F2F5F4",
+          "red": "C00000",
+          "ink": "17221E",
+          "gray": "454E4B",
+          "mid": "68766F",
+          "border": "D5D7D7",
+          "white": "FFFFFF",
+          "bg": "F4F6F4",
+          "gold": "F3DFA2"
+        },
+        "series_colors": [
+          "235C4B",
+          "B7DC36",
+          "5E8F7F",
+          "D7A548"
+        ]
+      }
+    },
+    "theme08": {
+      "name": "黑金实验风",
+      "fit": "高端发布、品牌提案、实验性概念、奢华科技叙事",
+      "audience": "高端品牌、创意总监、科技品牌、发布会策划团队",
+      "dark": true,
+      "tokens": {
+        "bg": "090909",
+        "bg_css": "radial-gradient(circle at 74% 16%,rgba(211,173,91,.18),transparent 34%),linear-gradient(150deg,#090909,#15120d)",
+        "surface": "rgba(211,173,91,.08)",
+        "ink": "F6F0E3",
+        "muted": "#b7ad98",
+        "accent": "D3AD5B",
+        "accent2": "F0D59A",
+        "line": "rgba(211,173,91,.28)",
+        "font_display": "\"Cormorant Garamond\",\"Noto Serif SC\",\"Songti SC\",serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 2,
+        "chart_series": [
+          "D3AD5B",
+          "F0D59A",
+          "8E7040",
+          "F6F0E3"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme08"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme08 黑金实验风",
+        "primary": "D3AD5B",
+        "secondary": "F0D59A",
+        "ink": "F6F0E3",
+        "background": "090909",
+        "dark": true,
+        "fonts": {
+          "display": "\"Cormorant Garamond\",\"Noto Serif SC\",\"Songti SC\",serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 2
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme09": {
+      "name": "深蓝杂志风",
+      "fit": "品牌故事、人物访谈、企业形象册、深度专题",
+      "audience": "公关团队、媒体编辑、创始人、企业品牌部",
+      "dark": true,
+      "tokens": {
+        "bg": "07162B",
+        "bg_css": "radial-gradient(circle at 82% 18%,rgba(75,116,175,.22),transparent 34%),#07162b",
+        "surface": "#10243d",
+        "ink": "F4F1E9",
+        "muted": "#9eabba",
+        "accent": "F06C45",
+        "accent2": "79A8D8",
+        "line": "rgba(217,229,241,.18)",
+        "font_display": "\"Noto Serif SC\",\"Songti SC\",serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 8,
+        "chart_series": [
+          "F06C45",
+          "79A8D8",
+          "D5B876",
+          "6F9C86"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme09"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme09 深蓝杂志风",
+        "primary": "F06C45",
+        "secondary": "79A8D8",
+        "ink": "F4F1E9",
+        "background": "07162B",
+        "dark": true,
+        "fonts": {
+          "display": "\"Noto Serif SC\",\"Songti SC\",serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 8
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme10": {
+      "name": "金色指数风",
+      "fit": "金融数据、投资报告、商业指数、年度榜单",
+      "audience": "投资机构、金融分析师、咨询公司、商业媒体",
+      "dark": true,
+      "tokens": {
+        "bg": "13161D",
+        "bg_css": "radial-gradient(120% 95% at 86% -8%,rgba(92,128,234,.26),transparent 52%),radial-gradient(115% 95% at -2% 108%,rgba(199,144,98,.24),transparent 54%),linear-gradient(157deg,#13161d 0%,#090a0d 100%)",
+        "surface": "rgba(255,255,255,.06)",
+        "ink": "F2F3F6",
+        "muted": "rgba(242,243,246,.72)",
+        "accent": "5479E8",
+        "accent2": "C79062",
+        "line": "rgba(242,243,246,.2)",
+        "font_display": "\"IBM Plex Sans\",\"Noto Sans SC\",system-ui,sans-serif",
+        "font_body": "\"IBM Plex Sans\",\"Noto Sans SC\",system-ui,sans-serif",
+        "font_mono": "\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 18,
+        "chart_series": [
+          "5B80EA",
+          "46A6D0",
+          "3FB39A",
+          "D7A85B",
+          "D27D58",
+          "9A82DC"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme10"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme10 金色指数风",
+        "primary": "5479E8",
+        "secondary": "C79062",
+        "ink": "F2F3F6",
+        "background": "13161D",
+        "dark": true,
+        "fonts": {
+          "display": "\"IBM Plex Sans\",\"Noto Sans SC\",system-ui,sans-serif",
+          "body": "\"IBM Plex Sans\",\"Noto Sans SC\",system-ui,sans-serif"
+        },
+        "radius": 18
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme11": {
+      "name": "高能增长风",
+      "fit": "增长复盘、商业计划、融资路演、市场扩张方案",
+      "audience": "创业者、增长团队、销售团队、VC/PE 路演团队",
+      "dark": true,
+      "tokens": {
+        "bg": "11100F",
+        "bg_css": "radial-gradient(circle at 78% 18%,rgba(255,91,50,.22),transparent 34%),radial-gradient(circle at 12% 84%,rgba(194,245,61,.12),transparent 30%),#11100f",
+        "surface": "#201d1a",
+        "ink": "FFF7ED",
+        "muted": "#b9aa9e",
+        "accent": "FF5B32",
+        "accent2": "C2F53D",
+        "line": "rgba(255,247,237,.17)",
+        "font_display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 18,
+        "chart_series": [
+          "FF5B32",
+          "C2F53D",
+          "FFB347",
+          "59C3C3"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme11"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme11 高能增长风",
+        "primary": "FF5B32",
+        "secondary": "C2F53D",
+        "ink": "FFF7ED",
+        "background": "11100F",
+        "dark": true,
+        "fonts": {
+          "display": "\"Archivo\",\"Noto Sans SC\",\"PingFang SC\",system-ui,sans-serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 18
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    },
+    "theme12": {
+      "name": "声波霓虹风",
+      "fit": "音乐娱乐、潮流活动、直播内容、年轻化发布",
+      "audience": "娱乐品牌、活动策划、内容团队、潮流消费品牌",
+      "dark": true,
+      "tokens": {
+        "bg": "171018",
+        "bg_css": "radial-gradient(circle at 80% 16%,rgba(39,214,221,.2),transparent 33%),radial-gradient(circle at 15% 82%,rgba(232,58,155,.18),transparent 30%),#171018",
+        "surface": "rgba(255,255,255,.08)",
+        "ink": "FFF7FB",
+        "muted": "#c0b3bd",
+        "accent": "27D6DD",
+        "accent2": "E83A9B",
+        "line": "rgba(255,247,251,.18)",
+        "font_display": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+        "font_mono": "\"Space Mono\",\"IBM Plex Mono\",ui-monospace,SFMono-Regular,monospace",
+        "radius": 26,
+        "chart_series": [
+          "27D6DD",
+          "E83A9B",
+          "F0A23B",
+          "8C6FF0"
+        ]
+      },
+      "html": {
+        "engine": "html-themed",
+        "themePack": "theme12"
+      },
+      "native_style_brief": {
+        "visual_style": "brief",
+        "theme": "theme12 声波霓虹风",
+        "primary": "27D6DD",
+        "secondary": "E83A9B",
+        "ink": "FFF7FB",
+        "background": "171018",
+        "dark": true,
+        "fonts": {
+          "display": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif",
+          "body": "\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",system-ui,sans-serif"
+        },
+        "radius": 26
+      },
+      "spec_style": null,
+      "spec_style_note": "Spec 引擎是白卡浅底设计系统，暗底主题不派生 spec_style；要这个观感的 .pptx 走 Native 路线"
+    }
+  }
+}

@@ -86,6 +86,7 @@ Not sure? Reply "you choose" and the AI recommends one based on your purpose.
 - **Process**: the AI lists the facts and a page plan (confirmed once when interactive), writes a `spec.json`, validates it and builds the deck with one command in seconds.
 - **Output**: `<project-dir>/spec.json` and `<project-dir>/<name>.pptx` in your workspace; text, tables, charts and diagrams are native objects you can keep editing.
 - **Changes**: edits go into `spec.json` and the deck is rebuilt, so "turn slide 3 into a table" or "rename the title" takes seconds; you can also edit the spec yourself and ask the AI to rebuild.
+- **Styles**: name a Magazine / Swiss palette or `theme01`–`theme12` and the AI applies that theme's palette to the spec (light themes only; dark themes are redirected to route C).
 - **What it enforces**: charts whose values are all identical are rejected as placeholder data; `[1]`-style citation marks become superscripts and a References page is appended. For company masters or designer-grade layouts use route C.
 
 ### 1.4 Asking for changes

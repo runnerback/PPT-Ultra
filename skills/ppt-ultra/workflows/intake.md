@@ -52,8 +52,9 @@ HTML 路由从统一风格目录里选，选定的风格同时决定用哪个引
 
 | 想要 | 实际走法 |
 |---|---|
-| `E-mag` / `E-swiss` 的观感，但要交付 .pptx | 走 Native PPTX Generate。在 Stage 1 把风格作为 **style brief**（不是模板）提出：`E-mag` 对应 `references/visual-styles/editorial.md`，`E-swiss` 对应 `references/visual-styles/swiss-minimal.md`；配色从 `engines/html-editorial/references/themes.md` / `themes-swiss.md` 里所选配色的 token 取值。用户仍需在 Stage 1 确认 |
-| `T01`–`T12` 的观感，要交付 .pptx | 走 Native PPTX Generate，把主题作为 style brief 提出：主题名、"适合/人群"描述，加上从 `engines/html-themed/assets/skill/theme-style-grid.png` 中该主题读到的主色和明暗基调；用户仍需在 Stage 1 确认。Themed 引擎本身不导出 PPTX |
+| `E-mag` / `E-swiss` 的观感，但要交付 .pptx | 走 Native PPTX Generate。在 Stage 1 把风格作为 **style brief**（不是模板）提出：字段直接取 [`references/style-briefs/themes.json`](../references/style-briefs/themes.json) `editorial.<family>.<配色 id>.native_style_brief`（`visual_style` 已对应到 `references/visual-styles/editorial.md` / `swiss-minimal.md`，色值来自引擎主题表）。用户仍需在 Stage 1 确认。要走 Spec profile 时改取同一条目的 `spec_style`，整份填进 `spec.style` |
+| `T01`–`T12` 的观感，要交付 .pptx | 走 Native PPTX Generate，style brief 取 `themes.json` `themed.theme<NN>.native_style_brief`（主色 / 次色 / 墨色 / 底色 / 明暗 / 字体 / 圆角都是从引擎主题 profile 读出的真值，不再看风格图猜色）；用户仍需在 Stage 1 确认。Themed 引擎本身不导出 PPTX。Spec profile 只接受浅底主题（theme01 / 05 / 07 有 `spec_style`），暗底主题 `spec_style` 为 null：如实告诉用户并改走 Native，不要用默认风格冒充 |
+| Spec Native 默认的「科研答辩风」观感，但要交付网页 PPT | 走 Editorial · 瑞士风，用 `themes.json` `spec_default.editorial_recipe` 里的命令生成品牌主题（`gz-theme.mjs brand "#003F8F" --family swiss`），贴进 deck 后 `data-theme="brand"` |
 | 已有 .pptx，想变成网页 PPT 去演讲 | 把 .pptx 当素材：走 HTML 路由，用共享服务里的 `source_to_md` 把 PPTX 转成 Markdown |
 | 一份内容同时要网页版和 .pptx | 分两次交付：HTML 路由（Editorial 或 Themed）一次，Native PPTX 一次；两次共用同一个 intake brief 和转换好的素材 Markdown，不重复调研 |
 

@@ -7,7 +7,7 @@
 **一句话需求，生成可以直接用的演示文稿：网页演讲 PPT、主题化汇报 PPT，或原生可编辑的 .pptx。**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.1.1-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -20,7 +20,7 @@
 
 PPT Ultra 是一个 Agent Skill（技能包），可以装进 Claude Code、Codex、WorkBuddy 等能操作电脑的 AI 工具。它把三套成熟的开源 PPT 生成能力，加上一套自研的规格驱动确定性 PPTX 引擎，整合成**一个入口、一套流程**。用户不用关心底层用哪个引擎，只要说清楚"要什么、怎么用"，Skill 会自动选路线、选风格，生成后再做验收。
 
-> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.1.0
+> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.1.1
 
 ---
 
@@ -246,6 +246,7 @@ PPT-Ultra/                           # 仓库根目录
 ├── docs/USER_GUIDE(.zh-CN).md       # 详细使用教程和常见问题（英 / 中）
 ├── tools/smoke.sh                   # 维护者冒烟：完整性检查 + Spec Native 示例构建 + 校验器
 ├── tools/upstream-check.sh          # 维护者：对照 tools/upstream-pins.json 查三上游是否有新版本
+├── tools/build-style-briefs.mjs     # 维护者：从三个引擎的主题真值生成 references/style-briefs/themes.json
 └── skills/ppt-ultra/                # Skill 本体
     ├── SKILL.md                     # 唯一入口：加载顺序、路由表、全局执行纪律
     ├── NOTICE.md                    # 组成部分、许可证、上游合并步骤

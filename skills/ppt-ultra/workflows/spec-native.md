@@ -44,7 +44,7 @@ description: Generate PPTX — Spec profile. Deterministic native .pptx from one
 按 [`spec-native-layouts.md`](../references/spec-native-layouts.md) 的字段与容量写 `<deck-output-dir>/spec.json`。逐条对照 [`spec-native-content-rules.md`](../references/spec-native-content-rules.md)：判断句标题、每页 takeaway、不写空话、数字带口径与基线、图表只用真实可比数值、取自资料的内容带 `[n]` 角标并在顶层 `references` 登记来源。
 
 - 第 1 页 `cover`、最后 1 页 `closing`；封底与引用出处页由引擎自动追加，不要写。
-- 用户给了风格要求（品牌色、杂志风 / 瑞士风 / T 主题的配色）：填顶层 `style.palette` / `fonts`，不要去改引擎文件。
+- 用户给了风格要求：点名杂志风 / 瑞士风某配色或 `theme01`–`theme12`，整份照抄 [`references/style-briefs/themes.json`](../references/style-briefs/themes.json) 对应条目的 `spec_style` 到顶层 `style`（暗底主题 `spec_style` 为 null，说明原因后用默认风格或建议走 Native 路线）；只给了品牌色就填 `style.palette.primary`（必要时 `secondary`），其余键不动。不要去改引擎文件。
 - 英文 deck 设 `"language": "en"`。
 - 画流程 / 泳道 / 时序前先检查 Graphviz：`dot -V`；没有就改用 `layers` / `timeline` / `table` 表达，并在说明里写明。
 

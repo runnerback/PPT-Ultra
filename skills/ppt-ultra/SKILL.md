@@ -13,7 +13,7 @@ description: >
   horizontal swipe deck, 演讲者模式, theme01–theme12, ppt-master, guizang, dashi,
   spec-native, 规格 JSON, or a deterministic / data-dense .pptx report.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   fused_from: "ppt-master 6.8.0 (MIT); guizang-ppt-skill (AGPL-3.0); dashi-ppt 0.4.14 (AGPL-3.0); spec-native 1.0.0 (MIT, Runnerback)"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "MIT"

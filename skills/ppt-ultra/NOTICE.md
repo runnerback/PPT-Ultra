@@ -21,6 +21,11 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 
 按 AGPL-3.0 第 5(a) 条，以下列出本包相对各上游版本的修改。
 
+**2026-11-02 — PPT Ultra 1.1.1（Runnerback，未发布）**
+
+- 新增跨引擎风格 brief 表 `references/style-briefs/themes.json`（由仓库级 `tools/build-style-briefs.mjs` 从 Editorial 主题表、Themed `theme-profiles.mjs` + `options.md`、Spec Native `pptx_style.py` 生成，不手抄）：每个主题给 `html`（本引擎选法）/ `native_style_brief`（Native 路线风格 brief）/ `spec_style`（Spec profile 的 `style`，暗底主题为 null）三种消费方式，另给 Spec 默认风格转 Editorial 瑞士风的 `gz-theme.mjs brand` 配方。`workflows/intake.md` §2.1 跨格式映射改为取表、不再看风格图猜色；`workflows/spec-native.md` §4 与 `references/spec-native-layouts.md` 的 `style` 行指向它。
+- 修复 `tools/upstream-check.sh` 在 bash 3.2 下的两处问题；新增 `tools/upstream-pins.json`；NOTICE 合并步骤前后加核对与回写；中英 USER_GUIDE FAQ「哪些路线能出 .pptx」补 D 路线；Spec Native 的来源说明去掉作者所在企业的产品名。
+
 **2026-11-02 — PPT Ultra 1.1.0（Runnerback）**
 
 - 新增 **Spec Native 引擎** `engines/spec-native/`（MIT）：规格 JSON → 原生 PPTX 的确定性生成器（`spec_to_pptx.py` CLI、`pptx_style.py` 设计系统与风格覆盖、`ppt_build.py` 31 种版式、`ppt_extra.py` 扩展版式、`graph_layout.py` Graphviz 流程 / 泳道布局、5 份可构建示例）。源自作者在企业内部运行的 Agent 制作 PPT 管线，已去掉企业依赖与企业数据；不读 ppt-master 的任何脚本，不触发其完整性检查。
@@ -30,7 +35,7 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 - `workflows/intake.md`：§1 信号表、§3 非交互默认、§4 brief 的 profile 枚举、§5 交接表各加 Spec。
 - `workflows/index.md` 登记 `spec-native`。
 - `requirements.txt` 末尾加 Spec Native 依赖说明（python-pptx / Pillow 已含；Graphviz 为系统包可选）。
-- 仓库级：`tools/smoke.sh` 冒烟脚本、`tools/upstream-check.sh` + `tools/upstream-pins.json` 上游版本核对；README（中英）、`docs/USER_GUIDE(.zh-CN).md`、`.claude-plugin/marketplace.json` 加 Spec Native 说明，版本 1.1.0。
+- 仓库级：`tools/smoke.sh` 冒烟脚本；README（中英）、`docs/USER_GUIDE(.zh-CN).md`、`.claude-plugin/marketplace.json` 加 Spec Native 说明，版本 1.1.0。
 
 **2026-11-01 — PPT Ultra 1.0.0（Runnerback）**
 
