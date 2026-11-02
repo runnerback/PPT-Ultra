@@ -17,12 +17,15 @@ GitHub 的 Release 不会从 tag 自动生成，要单独建。一次发布 = **
 `.github/workflows/release.yml` 监听 `x.y.z` 形式的 tag：
 
 ```bash
-git tag 1.3.0 && git push origin main 1.3.0
+git push origin main          # 先推分支（版本串、NOTICE、docs/releases/<版本>.md 都在这次提交里）
+git tag 1.3.0 && git push origin 1.3.0   # 再单独推 tag
 ```
+
+分支和 tag 不要混在一次 `git push origin main 1.3.0` 里：2026-11-02 实测这样推 1.4.0 时 GitHub 没有触发 tag 事件（Actions 页 0 次运行）。
 
 Actions 页会出现 `release` 运行（约 3~5 分钟）：装依赖 → `tools/smoke.sh` → `tools/package-release.sh 1.3.0`（核对三处版本串与 `docs/releases/1.3.0.md` 存在）→ 取发布说明首行当标题、其余当正文 → `gh release create` 建 Release、传 zip 与 SHA256SUMS、标 Latest。
 
-- smoke 不过或版本串不一致：不会建 Release。修好提交后把 tag 挪到新提交再推（`git tag -f 1.3.0 && git push -f origin 1.3.0`），或在 Actions 页 **Run workflow** 填 tag 重跑。
+- smoke 不过或版本串不一致：不会建 Release。修好提交后把 tag 挪到新提交再推（`git tag -f 1.3.0 && git push -f origin 1.3.0`），或在 Actions 页 **Run workflow** 填 tag 重跑（手动触发按你选的分支的树打包，tag 只要求已存在；用它给已有 tag 补发或重传附件）。
 - Release 已存在再跑：只更新标题 / 正文 / 覆盖附件，不会建第二个。
 - 发布说明文件必须在打 tag 的那个提交里，否则 checkout 到 tag 时找不到它。
 
