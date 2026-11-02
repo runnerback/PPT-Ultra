@@ -110,3 +110,12 @@ google-genai>=1.0.0
 # Localhost web editor for annotating SVG elements with edit instructions.
 # 本地 Web 编辑器，用于在 SVG 元素上添加编辑标注指令
 flask>=3.0.0
+
+# ─────────────────────────────────────────────────────────────
+# Spec Native engine / 规格驱动的确定性 PPTX 引擎 (engines/spec-native/spec_to_pptx.py)
+# ─────────────────────────────────────────────────────────────
+# Uses python-pptx and Pillow listed above (lxml comes with python-pptx).
+# flow / swimlane / hierarchy layouts additionally need the Graphviz `dot` system package:
+#   macOS: brew install graphviz   Ubuntu: sudo apt install graphviz   Windows: https://graphviz.org/download/
+# 复用上面的 python-pptx 与 Pillow（lxml 随 python-pptx 安装）。
+# flow / swimlane / hierarchy 三种版式还需要系统包 Graphviz（dot）；不装也能用其余版式。

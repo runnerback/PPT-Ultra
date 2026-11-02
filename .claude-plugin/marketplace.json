@@ -6,13 +6,13 @@
     "email": "286980573@163.com"
   },
   "metadata": {
-    "description": "PPT Ultra — 一站式 PPT 生成 Skill：网页演讲 PPT、主题化汇报 PPT、原生可编辑 PPTX",
-    "version": "1.0.0"
+    "description": "PPT Ultra — 一站式 PPT 生成 Skill：网页演讲 PPT、主题化汇报 PPT、原生可编辑 PPTX、规格 JSON 确定性 PPTX",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "ppt-ultra",
-      "description": "一站式 PPT / 演示文稿生成：杂志风 / 瑞士风网页 PPT（演讲者模式）、12 主题 HTML 汇报（3+1 方案、PDF 导出）、原生可编辑 PPTX（模板、美化、编辑、旁白视频）。使用 PPTX 路线前需在插件目录 skills/ppt-ultra 下执行 pip install -r requirements.txt。",
+      "description": "一站式 PPT / 演示文稿生成：杂志风 / 瑞士风网页 PPT（演讲者模式）、12 主题 HTML 汇报（3+1 方案、PDF 导出）、原生可编辑 PPTX（模板、美化、编辑、旁白视频）、规格 JSON 确定性原生 PPTX（Spec Native：31 版式、9 种原生图表、流程图自动布局、出处角标）。使用 PPTX 路线前需在插件目录 skills/ppt-ultra 下执行 pip install -r requirements.txt。",
       "source": "./",
       "strict": false,
       "skills": [

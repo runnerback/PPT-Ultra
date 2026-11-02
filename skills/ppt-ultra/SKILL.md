@@ -3,15 +3,18 @@ name: ppt-ultra
 description: >
   一站式 PPT / 演示文稿 / 幻灯片生成 Skill（融合 ppt-master、guizang-ppt、dashi-ppt）。
   可生成原生可编辑 PPTX（SVG→DrawingML、模板/母版、美化或编辑已有 .pptx、
-  旁白/动画/视频）；也可生成横向翻页网页 PPT：杂志风 / 瑞士国际主义风（演讲者模式、
+  旁白/动画/视频）；也可按一份规格 JSON 确定性生成原生 PPTX（Spec Native：31 版式、9 种原生图表、
+  流程 / 泳道 / 时序自动布局、出处角标，秒级出片，适合数据密集汇报与非交互环境）；
+  也可生成横向翻页网页 PPT：杂志风 / 瑞士国际主义风（演讲者模式、
   提词、计时、观众屏同步），或 12 套主题、每页 3+1 方案、可导出 PDF 的 HTML 演示。
   Use when the user asks to create, generate, reconstruct, beautify, redesign, template,
   fill, or edit a presentation, PPT, PPTX, slide deck, web/HTML deck, keynote-style talk,
   courseware, or narrated deck video; or mentions 杂志风 PPT, 瑞士风 PPT, Swiss Style,
-  horizontal swipe deck, 演讲者模式, theme01–theme12, ppt-master, guizang, or dashi.
+  horizontal swipe deck, 演讲者模式, theme01–theme12, ppt-master, guizang, dashi,
+  spec-native, 规格 JSON, or a deterministic / data-dense .pptx report.
 metadata:
-  version: "1.0.0"
-  fused_from: "ppt-master 6.8.0 (MIT); guizang-ppt-skill (AGPL-3.0); dashi-ppt 0.4.14 (AGPL-3.0)"
+  version: "1.1.0"
+  fused_from: "ppt-master 6.8.0 (MIT); guizang-ppt-skill (AGPL-3.0); dashi-ppt 0.4.14 (AGPL-3.0); spec-native 1.0.0 (MIT, Runnerback)"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "MIT"
   official_repository: "https://github.com/hugohe3/ppt-master"
@@ -40,7 +43,8 @@ use CWD, or assume a repo checkout. If unavailable, ask; never search or guess.
    stops the Native routes immediately; do not inspect, repair, or bypass the
    integrity gate. On Windows, a `python3` that never starts (the WindowsApps
    stub exits 9009 with no output) is not a guard result: rerun with `python`
-   first. HTML routes skip this step.
+   first. HTML routes and the Spec profile skip this step (neither uses the Native
+   engine's scripts).
 4. Read only the selected runtime authority below and its explicitly triggered supporting documents.
 
 | Selected route / profile | Runtime authority |
@@ -51,13 +55,16 @@ use CWD, or assume a repo checkout. If unavailable, ask; never search or guess.
 | Generate PPTX — Beautify | [`workflows/profiles/beautify-pptx.md`](workflows/profiles/beautify-pptx.md); explicit Quick intent selects Quick, otherwise Default |
 | Generate PPTX — ordinary Default | [`workflows/generate-pptx.md`](workflows/generate-pptx.md) |
 | Generate PPTX — ordinary explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
+| Generate PPTX — Spec (deterministic spec JSON → native PPTX, no SVG authoring) | [`workflows/spec-native.md`](workflows/spec-native.md) |
 | Create Template | [`workflows/create-template.md`](workflows/create-template.md) |
 | Edit Native PPTX | [`workflows/edit-native-pptx.md`](workflows/edit-native-pptx.md) |
 
 **Hard rule — selected authority only**: Do not load another top-level route's
 procedure after routing. Image to PPTX and Beautify are mutually exclusive;
 Image to PPTX activates Quick, while Beautify selects from explicit Quick
-intent. Never load both runtimes. Editorial and Themed are mutually exclusive
+intent. Never load both runtimes. Spec is a third Generate PPTX profile: it never
+loads `generate-pptx.md`, `quick-generate.md`, or any Native engine script, and a
+deck never mixes Spec with SVG authoring. Editorial and Themed are mutually exclusive
 HTML profiles. Supporting documents refine one route; they never compete with it.
 
 ## Engines and Shared Services
@@ -66,10 +73,11 @@ HTML profiles. Supporting documents refine one route; they never compete with it
 |---|---|---|
 | PPTX Native engine | `scripts/` `templates/` `references/` `workflows/`（根目录） | SVG 编写 → 原生 PPTX、模板工作区、编辑已有 PPTX、旁白 / 动画 / 视频 |
 | HTML Editorial engine | `engines/html-editorial/` | 单文件 HTML：杂志风 / 瑞士风模板、版式库、演讲者模式运行时、校验器 |
-| HTML Themed engine | `engines/html-themed/` | Node 生成器：12 主题、版式查询、3+1 方案、本地预览编辑器、浏览器内 PDF 导出（不导出 PPTX；.pptx 一律由 PPTX Native 引擎产出） |
+| HTML Themed engine | `engines/html-themed/` | Node 生成器：12 主题、版式查询、3+1 方案、本地预览编辑器、浏览器内 PDF 导出（不导出 PPTX；.pptx 由 PPTX Native 或 Spec Native 引擎产出） |
+| Spec Native engine | `engines/spec-native/` | 规格 JSON → 原生 PPTX（python-pptx）：31 版式、9 种原生图表、Graphviz 流程 / 泳道 / 层次布局、出处角标与引用页；确定性、无交互、不依赖 Native 引擎脚本（[`engines/spec-native/README.md`](engines/spec-native/README.md)） |
 | Shared services | [`references/shared-services.md`](references/shared-services.md) | 素材转 Markdown、主题调研、生图 / 搜图、截图美化、叙事模式、演讲备注模型、HTML 统一验收 |
 
-**Hard rule — engines stay intact**: never edit files under `engines/*/assets`, `engines/html-themed/project/src`, or the Native engine's guarded scripts to complete a deck. Decks are written to the caller's working directory, never inside `${SKILL_DIR}`.
+**Hard rule — engines stay intact**: never edit files under `engines/*/assets`, `engines/html-themed/project/src`, `engines/spec-native/*.py`, or the Native engine's guarded scripts to complete a deck. Decks are written to the caller's working directory, never inside `${SKILL_DIR}`.
 
 **Hard rule — no engine self-update**: none of the engines checks for or pulls upstream updates at runtime.
 

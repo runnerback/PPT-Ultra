@@ -1,0 +1,34 @@
+{
+  "title": "图片与厂商版式示例",
+  "subtitle": "image / image_split / image_grid / image_callout / image_bg / vendors / logo_table；图片为示例占位图",
+  "author": "Spec Native engine",
+  "date": "2026-11-02",
+  "slides": [
+    { "layout": "cover", "title": "图片与厂商版式示例", "subtitle": "相对路径相对 spec 文件所在目录" },
+    { "layout": "image", "title": "整图页：原图等比缩放居中", "image": "images/sample-a.png", "caption": "示例占位图 A（1280×720）", "bullets": ["图占左侧 62%，要点在右", "没有 bullets 时图占满内容区"], "takeaway": "图片页用于截图、架构图原图" },
+    { "layout": "image_split", "title": "图文页：右图左文", "image": "images/sample-b.png", "side": "right", "ratio": 0.5, "caption": "示例占位图 B（900×900）", "bullets": ["ratio 只能是 0.4 / 0.5 / 0.6", "side 决定图在左还是右", "图顶与要点顶对齐"], "takeaway": "图文页必须有要点" },
+    { "layout": "image_grid", "title": "图片网格：三张一行", "images": [
+      { "image": "images/sample-a.png", "caption": "占位图 A" },
+      { "image": "images/sample-b.png", "caption": "占位图 B" },
+      { "image": "images/sample-c.png", "caption": "占位图 C" }
+    ], "takeaway": "2 张 2×1、3 张 3×1、4 张 2×2" },
+    { "layout": "image_callout", "title": "图上编号标注", "image": "images/sample-a.png", "caption": "标注点坐标为图内相对位置（0~1）", "markers": [
+      { "x": 0.2, "y": 0.3, "text": "左上角：标题区" },
+      { "x": 0.5, "y": 0.5, "text": "中心：主体内容" },
+      { "x": 0.85, "y": 0.8, "text": "右下角：页码与版权" }
+    ], "takeaway": "右侧说明与图上编号一一对应" },
+    { "layout": "vendors", "title": "厂商卡片：无 logo 文件时画名称标牌", "vendors": [
+      { "name": "Alpha Robotics", "lines": ["仓储机器人出货量第一", "2026 年新增海外 3 个仓"] },
+      { "name": "Beta Motion", "lines": ["聚焦传送带与分拣", "与 Alpha 有接口兼容协议"] },
+      { "name": "Gamma Vision", "lines": ["视觉识别准确率 99.2%", "按识别量计费"] }
+    ], "takeaway": "给 logo 字段传文件路径即可换成真实 logo" },
+    { "layout": "logo_table", "title": "对标表：首列厂商改画标牌", "table": { "rows": [
+      ["厂商", "交付周期", "起步价", "服务范围"],
+      ["Alpha Robotics", "8 周", "120 万", "华东 / 华南"],
+      ["Beta Motion", "6 周", "80 万", "全国"],
+      ["Gamma Vision", "4 周", "按量计费", "全国"]
+    ] }, "takeaway": "logos 字段为 {厂商名: 文件路径}，未给的画标牌" },
+    { "layout": "image_bg", "image": "images/sample-c.png", "title": "大图铺底的章节页", "subtitle": "下半部半透明主色块 + 大字，不画标准标题" },
+    { "layout": "closing", "title": "小结", "bullets": ["图片类版式 6 种，全部等比缩放不变形", "厂商类版式 2 种，logo 可选"], "takeaway": "图片路径相对 spec 文件所在目录" }
+  ]
+}

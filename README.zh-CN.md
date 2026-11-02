@@ -7,7 +7,7 @@
 **一句话需求，生成可以直接用的演示文稿：网页演讲 PPT、主题化汇报 PPT，或原生可编辑的 .pptx。**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -18,9 +18,9 @@
 
 </div>
 
-PPT Ultra 是一个 Agent Skill（技能包），可以装进 Claude Code、Codex、WorkBuddy 等能操作电脑的 AI 工具。它把三套成熟的开源 PPT 生成能力整合成**一个入口、一套流程**。用户不用关心底层用哪个引擎，只要说清楚"要什么、怎么用"，Skill 会自动选路线、选风格，生成后再做验收。
+PPT Ultra 是一个 Agent Skill（技能包），可以装进 Claude Code、Codex、WorkBuddy 等能操作电脑的 AI 工具。它把三套成熟的开源 PPT 生成能力，加上一套自研的规格驱动确定性 PPTX 引擎，整合成**一个入口、一套流程**。用户不用关心底层用哪个引擎，只要说清楚"要什么、怎么用"，Skill 会自动选路线、选风格，生成后再做验收。
 
-> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.0.0
+> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.1.0
 
 ---
 
@@ -31,6 +31,7 @@ PPT Ultra 是一个 Agent Skill（技能包），可以装进 Claude Code、Code
 | **现场演讲 / 发布会 / 分享会** | 单文件 HTML 网页 PPT | 杂志风或瑞士国际主义风；演讲者视图、提词备注、分段计时、排练记录、观众屏同步、激光笔；离线可用 |
 | **汇报 / 报告 / 方案** | HTML 演示，可导出 PDF | 12 套主题；每页自动给出 3 个模板方案和 1 个定制方案，在浏览器里挑选和编辑，自动保存 |
 | **交付可编辑的 PowerPoint** | 原生 .pptx | 文字、形状、图表都是 PowerPoint 原生对象，不是截图；支持套用品牌模板和母版 |
+| **数据密集的常规汇报 / 批量或非交互生成** | 原生 .pptx | Spec Native 引擎：一份规格 JSON 一次成片，31 种版式、9 种原生图表、流程 / 泳道 / 时序自动布局、出处角标与引用页；确定性、秒级，改 JSON 重出 |
 | **改造已有 PPT** | .pptx | 美化旧 PPT（文字和页序不变）、往已有模板里填新内容、只改部分页面 |
 | **做模板** | 模板工作区 | 从 PPT、图片、PDF 或品牌素材里提炼出可复用的品牌、风格、版式模板 |
 | **自动讲解视频** | .pptx 加 MP4 | 生成讲稿、配音、动画，导出可以自动播放的视频 |
@@ -230,6 +231,7 @@ PPT Ultra 需要装进**能读写文件、运行命令**的 AI 工具里，由 A
 4. **能力共享。** 原来只有一个引擎能读 PDF/Word、做调研、生图，现在三条路线都能用。
 5. **统一验收标准。** 每次生成都对照需求清单逐项核对，状态只有"通过 / 待修正 / 阻塞"，最多返工 2 轮，没达标不会说成完成。
 6. **合规处理。** 移除了一个授权不允许整合进其他软件的专有导出组件，.pptx 统一由开源的原生引擎产出；各引擎保留原有许可证和署名（见 [`NOTICE.md`](skills/ppt-ultra/NOTICE.md)）。
+7. **多了一条确定性路线（1.1.0）。** 原来三套工具做 .pptx 都要模型逐页创作版面，token 多、耗时长、需要多轮确认。新增的 Spec Native 引擎让模型只写每页的语义（版式 + 内容字段），坐标全由程序算，一条命令秒级出片，数值没有区分度的图表会被直接拒绝；适合表格和图表多的常规汇报、批量生成和不能追问的运行环境。详见 [`engines/spec-native/README.md`](skills/ppt-ultra/engines/spec-native/README.md)。
 
 ---
 
@@ -242,6 +244,7 @@ PPT-Ultra/                           # 仓库根目录
 ├── LICENSE                          # AGPL-3.0（项目整体许可证）
 ├── .claude-plugin/marketplace.json  # Claude Code 插件清单
 ├── docs/USER_GUIDE(.zh-CN).md       # 详细使用教程和常见问题（英 / 中）
+├── tools/smoke.sh                   # 维护者冒烟：完整性检查 + Spec Native 示例构建 + 校验器
 └── skills/ppt-ultra/                # Skill 本体
     ├── SKILL.md                     # 唯一入口：加载顺序、路由表、全局执行纪律
     ├── NOTICE.md                    # 组成部分、许可证、上游合并步骤
@@ -256,7 +259,8 @@ PPT-Ultra/                           # 仓库根目录
     ├── references/                  # 共享服务目录、设计规范、视觉风格、叙事模式等
     ├── engines/
     │   ├── html-editorial/          # 网页 PPT 模板、版式库、演讲者运行时、校验器
-    │   └── html-themed/             # 主题生成器、版式清单、预览编辑器
+    │   ├── html-themed/             # 主题生成器、版式清单、预览编辑器
+    │   └── spec-native/             # 规格 JSON → 原生 PPTX 确定性引擎（MIT，本仓库新增）
     ├── scripts/                     # .pptx 引擎和共享服务的工具链（Python）
     └── templates/                   # .pptx 模板库（品牌 / 风格 / 版式 / 整套）
 ```
@@ -272,5 +276,6 @@ PPT Ultra 的底层引擎来自以下开源项目，在此致谢：
 | PPTX Native | [ppt-master](https://github.com/hugohe3/ppt-master)（Hugo He） | MIT |
 | HTML Editorial | [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)（歸藏） | AGPL-3.0 |
 | HTML Themed | [dashi-ppt-skill](https://github.com/chuspeeism/dashi-ppt-skill)（chuspeeism），已移除其专有导出组件 | AGPL-3.0 |
+| Spec Native | 本仓库新增（Runnerback），源自作者在企业内运行的智驾 Agent 制作 PPT 管线 | MIT |
 
 项目整体按 [AGPL-3.0](LICENSE) 发布；各组成部分的许可证详见 [`NOTICE.md`](skills/ppt-ultra/NOTICE.md)。

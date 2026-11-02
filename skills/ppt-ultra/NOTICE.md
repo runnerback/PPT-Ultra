@@ -7,6 +7,7 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 | PPTX Native 引擎 | ppt-master 6.8.0 — https://github.com/hugohe3/ppt-master | Hugo He | MIT（全文见 [`LICENSE`](LICENSE)） | 根目录 `scripts/` `templates/` `references/` `workflows/`（`intake.md` `html-*.md` 和 `references/shared-services.md` 除外） |
 | HTML Editorial 引擎 | guizang-ppt-skill — https://github.com/op7418/guizang-ppt-skill | 歸藏 (op7418) | AGPL-3.0（全文见 [`engines/html-editorial/LICENSE`](engines/html-editorial/LICENSE)） | `engines/html-editorial/`、`workflows/html-editorial.md` |
 | HTML Themed 引擎 | dashi-ppt 0.4.14 — https://github.com/chuspeeism/dashi-ppt-skill | chuspeeism | AGPL-3.0（全文见 [`engines/html-themed/LICENSE`](engines/html-themed/LICENSE)；原版附带的专有导出组件 `html-deck-to-pptx` 及其浏览器版 `editable-pptx-browser.js` **已移除**，见下文） | `engines/html-themed/`、`workflows/html-themed.md` |
+| Spec Native 引擎 | 本包新增（1.1.0） | Runnerback | MIT（全文见 [`engines/spec-native/LICENSE`](engines/spec-native/LICENSE)） | `engines/spec-native/`、`workflows/spec-native.md`、`references/spec-native-layouts.md`、`references/spec-native-content-rules.md` |
 | 融合层 | 本包新增 | Runnerback <286980573@163.com>（整合与架构设计） | AGPL-3.0（与所含 AGPL 组件一致） | `SKILL.md` 正文、`workflows/intake.md`、`workflows/routing.md` §8、`references/shared-services.md`、本文件 |
 
 ## 分发注意
@@ -19,6 +20,17 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 ## 修改记录
 
 按 AGPL-3.0 第 5(a) 条，以下列出本包相对各上游版本的修改。
+
+**2026-11-02 — PPT Ultra 1.1.0（Runnerback）**
+
+- 新增 **Spec Native 引擎** `engines/spec-native/`（MIT）：规格 JSON → 原生 PPTX 的确定性生成器（`spec_to_pptx.py` CLI、`pptx_style.py` 设计系统与风格覆盖、`ppt_build.py` 31 种版式、`ppt_extra.py` 扩展版式、`graph_layout.py` Graphviz 流程 / 泳道布局、5 份可构建示例）。源自作者在企业内部运行的「智驾 Agent 制作 PPT」管线，已去掉企业依赖；不读 ppt-master 的任何脚本，不触发其完整性检查。
+- 新增 `workflows/spec-native.md`（Generate PPTX 的 Spec profile 运行时）、`references/spec-native-layouts.md`、`references/spec-native-content-rules.md`。
+- `SKILL.md`：description 与 `fused_from` 加 Spec Native；路由表、引擎表各加一行；完整性检查说明「HTML 路由与 Spec profile 跳过」；「engines stay intact」加 `engines/spec-native/*.py`。受完整性检查的四个 frontmatter 字段未动。
+- `workflows/routing.md`：§2 Generate PPTX 行加 Spec authority；§3 加 Spec 触发条件行与「Spec is a profile, not a fifth route」硬规则；§8 加两行格式判定。
+- `workflows/intake.md`：§1 信号表、§3 非交互默认、§4 brief 的 profile 枚举、§5 交接表各加 Spec。
+- `workflows/index.md` 登记 `spec-native`。
+- `requirements.txt` 末尾加 Spec Native 依赖说明（python-pptx / Pillow 已含；Graphviz 为系统包可选）。
+- 仓库级：`tools/smoke.sh` 冒烟脚本；README（中英）、`docs/USER_GUIDE(.zh-CN).md`、`.claude-plugin/marketplace.json` 加 Spec Native 说明，版本 1.1.0。
 
 **2026-11-01 — PPT Ultra 1.0.0（Runnerback）**
 
@@ -44,4 +56,4 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 1. **ppt-master**：用上游 `skills/ppt-master/` 覆盖根目录下除 `SKILL.md`、`NOTICE.md`、`engines/`、`workflows/intake.md`、`workflows/html-*.md`、`references/shared-services.md` 以外的文件；再把上游 `SKILL.md` 的改动和 `workflows/routing.md` 的改动手工合进来（保留本包新增的 §8 和 HTML 路由那一行）。
 2. **guizang**：用上游的 `assets/` `references/` `scripts/` 覆盖 `engines/html-editorial/`；再把上游 `SKILL.md` 的正文改动同步到 `workflows/html-editorial.md`（路径加 `engines/html-editorial/` 前缀，不要恢复 Step 0 的更新检查）。
 3. **dashi**：用上游的 `skills/dashi-ppt/{project,references,assets,scripts}` 覆盖 `engines/html-themed/`（删掉 `scripts/check_latest_version.mjs`；按上文重新移除专有导出组件，并重新应用 `project/scripts/preview/export-routes.mjs`、`project/assets/template-swiss.html`、`project/src/runtime-assets.mjs` 里的禁用改动）；再把上游 `SKILL.md` 的改动同步到 `workflows/html-themed.md`。
-4. 合并后跑一遍验证：`python3 scripts/attribution_guard.py`、`node engines/html-editorial/scripts/check-presenter-runtime-sync.mjs`，并做一次 themed 渲染冒烟测试。
+4. 合并后跑一遍验证：仓库根目录 `bash tools/smoke.sh`（含 `attribution_guard.py`、Spec Native 全部示例构建、`check-presenter-runtime-sync.mjs`、可选 LibreOffice 转 PDF），再做一次 themed 渲染冒烟测试。Spec Native 引擎没有上游，只随本仓库维护。

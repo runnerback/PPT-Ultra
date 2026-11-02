@@ -1,0 +1,26 @@
+{
+  "_comment": "PPT Ultra 当前融合的三上游版本。合并上游后手动更新这里，并在 skills/ppt-ultra/NOTICE.md 修改记录里登记；tools/upstream-check.sh 读本文件与 GitHub 对比。",
+  "updated": "2026-11-02",
+  "upstreams": {
+    "ppt-master": {
+      "repo": "hugohe3/ppt-master",
+      "kind": "release",
+      "pinned": "6.8.0",
+      "engine": "PPTX Native（根目录 scripts/ templates/ references/ workflows/）"
+    },
+    "dashi-ppt": {
+      "repo": "chuspeeism/dashi-ppt-skill",
+      "kind": "file-version",
+      "file": "skills/dashi-ppt/project/package.json",
+      "pinned": "0.4.14",
+      "engine": "HTML Themed（engines/html-themed/）"
+    },
+    "guizang-ppt-skill": {
+      "repo": "op7418/guizang-ppt-skill",
+      "kind": "commit",
+      "pinned": "93d21bf4a73a851907a6eb00acbf30618236667a",
+      "pinned_date": "2026-10-30",
+      "engine": "HTML Editorial（engines/html-editorial/）"
+    }
+  }
+}

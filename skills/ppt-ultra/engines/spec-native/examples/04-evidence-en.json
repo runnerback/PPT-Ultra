@@ -1,0 +1,38 @@
+{
+  "title": "Remote Work Productivity Review",
+  "subtitle": "Evidence-first example: every number carries a [n] citation; a References page is appended automatically",
+  "author": "People Analytics",
+  "date": "2026-11-02",
+  "language": "en",
+  "style": {
+    "palette": { "primary": "0F6E56", "secondary": "1F8A70", "pale": "E6F4EF", "red": "B3261E", "bg": "F4F8F6" },
+    "fonts": { "cjk": "Microsoft YaHei", "latin": "Calibri" },
+    "series_colors": ["0F6E56", "B3261E", "D4A017", "6B7280", "1F8A70"]
+  },
+  "references": [
+    { "num": 1, "title": "Engineering Delivery Dashboard, H1 2026", "path": "Internal BI", "changed": "2026-07-03", "author": "Data Platform", "url": "https://example.com/bi/delivery-h1" },
+    { "num": 2, "title": "Employee Pulse Survey, June 2026 (n = 1,240)", "path": "People Ops", "changed": "2026-06-28", "author": "People Analytics" },
+    { "num": 3, "title": "Facilities Cost Report FY2026 Q2", "path": "Finance / Facilities", "changed": "2026-07-10" }
+  ],
+  "slides": [
+    { "layout": "cover", "title": "Remote Work Productivity Review", "subtitle": "What changed after 18 months of hybrid work" },
+    { "layout": "numbers", "title": "Delivery held steady while office cost fell by a quarter", "numbers": [
+      { "number": "+4%", "caption": "Story points shipped per engineer, H1 2026 vs H1 2025 [1]" },
+      { "number": "-26%", "caption": "Facilities cost per employee, FY26 Q2 vs FY25 Q2 [3]" },
+      { "number": "71%", "caption": "Employees who prefer 2 to 3 office days a week [2]" }
+    ], "bullets": ["Throughput did not drop as some managers expected [1]", "Savings came from consolidating two floors into one [3]"], "takeaway": "Hybrid work kept delivery flat and cut cost; the open question is collaboration quality" },
+    { "layout": "table", "title": "Collaboration metrics moved in both directions", "table": { "rows": [
+      ["Metric", "H1 2025", "H1 2026", "Source"],
+      ["Median PR review time", "14 h", "11 h", "[1]"],
+      ["Cross-team meetings per week", "6.1", "7.8", "[1]"],
+      ["Reported focus time (hours / day)", "3.2", "3.9", "[2]"],
+      ["Onboarding time to first PR", "9 days", "13 days", "[1]"]
+    ] }, "takeaway": "Faster reviews and more focus time, but new hires take 4 days longer to land their first change [1]" },
+    { "layout": "chart", "title": "Satisfaction rose for everyone except new joiners", "chart": { "type": "column", "title": "Pulse survey satisfaction (0 to 10) [2]", "categories": ["< 1 year", "1 to 3 years", "3 to 5 years", "> 5 years"], "series": [
+      { "name": "June 2025", "values": [7.1, 7.4, 7.6, 7.8] },
+      { "name": "June 2026", "values": [6.6, 7.9, 8.2, 8.3] }
+    ] }, "bullets": ["Tenured staff gained 0.5 points on average [2]", "New joiners lost 0.5 points, citing fewer informal touchpoints [2]"], "takeaway": "Onboarding is the one group where hybrid work made things worse" },
+    { "layout": "pros_cons", "title": "Keep hybrid, fix onboarding", "pros": ["Delivery flat, cost down a quarter [1][3]", "Focus time up 0.7 hours a day [2]", "71% of staff prefer the current model [2]"], "cons": ["First PR takes 4 days longer for new hires [1]", "Cross-team meetings up 28% [1]"], "takeaway": "The evidence supports keeping hybrid work with a dedicated onboarding fix" },
+    { "layout": "closing", "title": "Recommendations", "bullets": ["Keep the 2 to 3 office-day model; revisit in Q2 2027", "Pair every new hire with an on-site buddy for the first 4 weeks", "Cap recurring cross-team meetings and review the calendar quarterly"], "takeaway": "Decision requested: approve the onboarding buddy program for Q1 2027" }
+  ]
+}

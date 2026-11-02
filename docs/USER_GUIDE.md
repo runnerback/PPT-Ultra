@@ -80,6 +80,14 @@ Not sure? Reply "you choose" and the AI recommends one based on your purpose.
   - **Edit a few slides**: "Turn slides 3 and 5 into charts."
   - **Make a narrated video**: "Add a script and voice-over to this deck and export it as a video."
 
+#### D. Spec-driven .pptx (table- and chart-heavy reports; batch or non-interactive runs)
+
+- **How to trigger**: say "use spec mode / build from a spec JSON", ask for a deterministic or reproducible deck, or simply hand over content that is mostly tables, several charts and flow / swimlane diagrams without designer-grade demands. The AI then uses the Spec Native engine.
+- **Process**: the AI lists the facts and a page plan (confirmed once when interactive), writes a `spec.json`, validates it and builds the deck with one command in seconds.
+- **Output**: `<project-dir>/spec.json` and `<project-dir>/<name>.pptx` in your workspace; text, tables, charts and diagrams are native objects you can keep editing.
+- **Changes**: edits go into `spec.json` and the deck is rebuilt, so "turn slide 3 into a table" or "rename the title" takes seconds; you can also edit the spec yourself and ask the AI to rebuild.
+- **What it enforces**: charts whose values are all identical are rejected as placeholder data; `[1]`-style citation marks become superscripts and a References page is appended. For company masters or designer-grade layouts use route C.
+
 ### 1.4 Asking for changes
 
 Tell the AI what you don't like, as specifically as possible:
@@ -125,7 +133,7 @@ The first run downloads Node.js dependencies, which can take a few minutes on a 
 You opened the local file (address starts with `file://`). Ask the AI to "reopen the preview page" and export from the `http://` address it gives you.
 
 **Q: Which routes can export .pptx?**
-Only route C (editable .pptx). Routes A and B deliver HTML and PDF. If you want a web-deck style as .pptx, just say "a magazine-style PPTX" and the AI hands the style to the .pptx engine.
+Routes C (editable .pptx) and D (spec-driven .pptx). Routes A and B deliver HTML and PDF. If you want a web-deck style as .pptx, just say "a magazine-style PPTX" and the AI hands the style to the .pptx engine. Route D needs Graphviz (`dot`) only for flow / swimlane / hierarchy pages; everything else works with the Python dependencies alone.
 
 **Q: Is the generated content accurate?**
 The AI sticks to the materials you provide as much as possible. Double-check key facts such as figures, dates and names before sharing.

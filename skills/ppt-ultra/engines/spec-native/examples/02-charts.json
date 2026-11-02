@@ -1,0 +1,22 @@
+{
+  "title": "原生图表版式示例",
+  "subtitle": "9 种图表类型、多系列、并排双图、数字卡 + 图表；数据为示例值",
+  "author": "Spec Native engine",
+  "date": "2026-11-02",
+  "thanks_line": "以上图表均为 PowerPoint 原生图表，可直接编辑数据",
+  "slides": [
+    { "layout": "cover", "title": "原生图表版式示例", "subtitle": "bar · bar_stacked · column · column_stacked · line · area · pie · doughnut · radar" },
+    { "layout": "chart", "title": "横向条形图：单系列 + 标红最低项", "subtitle": "type=bar，highlight 指定要标红的类别下标", "chart": { "type": "bar", "title": "各站点准点率（%）", "categories": ["中心站", "东站", "西站", "南站", "北站", "机场站"], "series": [{ "name": "准点率（%）", "values": [96, 88, 81, 92, 74, 99] }], "highlight": [4], "max": 100 }, "takeaway": "北站准点率最低，是下阶段整改重点" },
+    { "layout": "chart", "title": "纵向柱状图：双系列对比", "subtitle": "type=column", "chart": { "type": "column", "title": "日均客流（万人次）", "categories": ["周一", "周二", "周三", "周四", "周五"], "series": [{ "name": "今年（万人次）", "values": [18, 17, 19, 21, 26] }, { "name": "去年（万人次）", "values": [15, 15, 16, 18, 22] }] }, "takeaway": "周五客流同比增长最多" },
+    { "layout": "chart", "title": "堆积柱状图：构成变化", "subtitle": "type=column_stacked，数据标签居中", "chart": { "type": "column_stacked", "title": "票种构成（万张）", "categories": ["Q1", "Q2", "Q3", "Q4"], "series": [{ "name": "单程票", "values": [120, 110, 98, 90] }, { "name": "月卡", "values": [60, 72, 85, 96] }, { "name": "联程票", "values": [20, 24, 31, 38] }] }, "bullets": ["单程票逐季下降", "月卡与联程票合计占比已过半"], "takeaway": "票种结构向月卡迁移" },
+    { "layout": "chart", "title": "横向堆积条形图", "subtitle": "type=bar_stacked", "chart": { "type": "bar_stacked", "title": "各线路故障类型（次）", "categories": ["1 号线", "2 号线", "3 号线"], "series": [{ "name": "信号", "values": [12, 8, 15] }, { "name": "车辆", "values": [7, 11, 6] }, { "name": "供电", "values": [3, 5, 2] }] }, "takeaway": "3 号线信号故障最多" },
+    { "layout": "chart", "title": "折线图：趋势", "subtitle": "type=line，多系列各一条线", "chart": { "type": "line", "title": "月度投诉量（件）", "categories": ["1 月", "2 月", "3 月", "4 月", "5 月", "6 月"], "series": [{ "name": "服务态度", "values": [42, 38, 35, 31, 29, 24] }, { "name": "候车时间", "values": [55, 60, 58, 49, 44, 40] }] }, "takeaway": "两类投诉半年内都下降超过 25%" },
+    { "layout": "chart", "title": "面积图：累计构成", "subtitle": "type=area（堆积面积）", "chart": { "type": "area", "title": "能耗构成（万度）", "categories": ["2022", "2023", "2024", "2025"], "series": [{ "name": "牵引", "values": [320, 335, 350, 362] }, { "name": "车站", "values": [180, 172, 165, 158] }, { "name": "其它", "values": [60, 58, 55, 52] }] }, "takeaway": "牵引能耗随运量上升，车站能耗持续下降" },
+    { "layout": "chart", "title": "饼图与环图并排", "subtitle": "charts 数组一页两张；饼图 / 环图只允许 1 个系列", "charts": [
+      { "type": "pie", "title": "支付方式占比", "categories": ["二维码", "交通卡", "现金", "其它"], "series": [{ "name": "占比", "values": [58, 31, 7, 4] }] },
+      { "type": "doughnut", "title": "乘客年龄构成", "categories": ["18 岁以下", "18–35", "36–55", "55 岁以上"], "series": [{ "name": "占比", "values": [9, 46, 33, 12] }] }
+    ], "takeaway": "二维码支付已近六成" },
+    { "layout": "chart", "title": "雷达图：多维能力对比", "subtitle": "type=radar，不放数据标签，数值看网格刻度", "chart": { "type": "radar", "title": "服务评分（满分 10）", "categories": ["准点", "拥挤度", "清洁", "导向标识", "无障碍", "换乘便利"], "series": [{ "name": "本市", "values": [8.6, 6.2, 8.9, 7.4, 6.8, 7.9] }, { "name": "对标城市", "values": [8.1, 7.5, 8.2, 8.3, 7.9, 8.4] }] }, "bullets": ["拥挤度与无障碍是两项明显短板", "准点与清洁领先对标城市"], "takeaway": "补短板优先于保优势" },
+    { "layout": "kpi", "title": "数字卡 + 图表", "numbers": [{ "number": "92.4%", "caption": "整体准点率" }, { "number": "21 万", "caption": "日均客流（人次）" }, { "number": "-28%", "caption": "投诉量同比" }], "chart": { "type": "column", "title": "各月准点率（%）", "categories": ["1 月", "2 月", "3 月", "4 月", "5 月", "6 月"], "series": [{ "name": "准点率（%）", "values": [90.1, 91.3, 92.0, 92.8, 93.5, 94.6] }], "max": 100 }, "takeaway": "准点率连续六个月上升" }
+  ]
+}

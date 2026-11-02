@@ -7,7 +7,7 @@
 **Turn a one-line request into a ready-to-use presentation: a web deck for live talks, a themed report deck, or a natively editable .pptx.**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -31,6 +31,7 @@ PPT Ultra is an Agent Skill that plugs into AI tools able to work on your comput
 | **Live talks / launches / meetups** | Single-file HTML web deck | Magazine or Swiss International style; presenter view, speaker notes, section timers, rehearsal log, audience-screen sync, laser pointer; works offline |
 | **Reports / proposals / reviews** | HTML deck, exportable to PDF | 12 themes; every page gets 3 template variants plus 1 custom variant to pick and edit in the browser, with autosave |
 | **Editable PowerPoint** | Native .pptx | Text, shapes and charts are native PowerPoint objects, not screenshots; supports brand templates and slide masters |
+| **Data-dense reports, batch or non-interactive runs** | Native .pptx | Spec Native engine: one spec JSON builds the whole deck in seconds; 31 layouts, 9 native chart types, auto-laid flow / swimlane / sequence diagrams, citation superscripts with a references page; deterministic, rebuild by editing the JSON |
 | **Rework an existing deck** | .pptx | Beautify an old deck (text and slide order unchanged), fill an existing template with new content, or edit selected slides only |
 | **Build templates** | Template workspace | Extract reusable brand, style and layout templates from decks, images, PDFs or brand assets |
 | **Narrated video** | .pptx + MP4 | Generate a script, voice-over and animations, then export a self-playing video |
@@ -230,6 +231,7 @@ HTML·Editorial  HTML·Themed   Generate PPTX  Edit Native PPTX  Create Template
 4. **Shared capabilities.** Reading PDF/Word, research and image generation used to exist in one engine only; now all three routes can use them.
 5. **One acceptance standard.** Every run is checked item by item against the request. The status is only "pass / needs fix / blocked", with at most 2 rework rounds; nothing is reported as done unless it meets the bar.
 6. **License compliance.** A proprietary export component whose license forbids use in other software was removed; .pptx output comes only from the open-source native engine. Each engine keeps its original license and attribution (see [`NOTICE.md`](skills/ppt-ultra/NOTICE.md)).
+7. **A deterministic route (1.1.0).** The three original tools all need the model to author every page's visual layout for .pptx, which costs tokens, time and confirmation rounds. The new Spec Native engine lets the model write only each page's semantics (layout name plus content fields) while the engine computes every coordinate; one command builds the deck in seconds, and charts without real variance are rejected. Built for table- and chart-heavy reports, batch generation and hosts that cannot ask follow-up questions. See [`engines/spec-native/README.md`](skills/ppt-ultra/engines/spec-native/README.md).
 
 ---
 
@@ -242,6 +244,7 @@ PPT-Ultra/                           # repository root
 ├── LICENSE                          # AGPL-3.0 (project license)
 ├── .claude-plugin/marketplace.json  # Claude Code plugin manifest
 ├── docs/USER_GUIDE(.zh-CN).md       # detailed tutorial and FAQ (EN / ZH)
+├── tools/smoke.sh                   # maintainer smoke test: integrity gate + Spec Native examples + validators
 └── skills/ppt-ultra/                # the skill itself
     ├── SKILL.md                     # single entry: load order, route table, global rules
     ├── NOTICE.md                    # components, licenses, upstream merge steps
@@ -256,7 +259,8 @@ PPT-Ultra/                           # repository root
     ├── references/                  # shared services, design specs, visual styles, narrative modes
     ├── engines/
     │   ├── html-editorial/          # web deck templates, layouts, presenter runtime, validators
-    │   └── html-themed/             # theme generator, layout manifest, preview editor
+    │   ├── html-themed/             # theme generator, layout manifest, preview editor
+    │   └── spec-native/             # spec JSON → native PPTX deterministic engine (MIT, new in this repo)
     ├── scripts/                     # .pptx engine and shared-service toolchain (Python)
     └── templates/                   # .pptx template library (brand / style / layout / full decks)
 ```
@@ -272,5 +276,6 @@ PPT Ultra is built on these open-source projects, with thanks:
 | PPTX Native | [ppt-master](https://github.com/hugohe3/ppt-master) (Hugo He) | MIT |
 | HTML Editorial | [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill) (歸藏 / op7418) | AGPL-3.0 |
 | HTML Themed | [dashi-ppt-skill](https://github.com/chuspeeism/dashi-ppt-skill) (chuspeeism), with its proprietary export component removed | AGPL-3.0 |
+| Spec Native | New in this repository (Runnerback), extracted from the author's in-house AI-agent deck pipeline | MIT |
 
 The project as a whole is released under [AGPL-3.0](LICENSE); see [`NOTICE.md`](skills/ppt-ultra/NOTICE.md) for each component's license.

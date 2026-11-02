@@ -26,6 +26,7 @@ description: Unified Stage 0 for every PPT Ultra request — resolve the route a
 | `PPTX` / `PowerPoint` / 可编辑 / 母版 / 套我们公司模板 / 给了 `.pptx` 要修改或美化 / 做模板 / 旁白 / 自动播放视频 | ③ Native PPTX 系路由（具体是哪条路由由 routing.md §2–§5 决定） |
 | 网页 / HTML / 浏览器打开 / 演讲者模式 / 提词 / 计时 / 观众屏 / 杂志风 / 瑞士风 / Swiss | ① Editorial |
 | `theme01`–`theme12`、点名某个 Themed 主题 / 想先看几个方案再挑 / 要 HTML 同时要 PDF | ② Themed |
+| 「规格 / spec / JSON 驱动」、要确定性可复现、或大段表格 + 多张图表 + 流程图的常规汇报且不要求设计师级版面，交付 .pptx | ③ Native PPTX · Spec profile（[`spec-native.md`](./spec-native.md)） |
 | 只说"做个 PPT"，看不出场景 | 问 Q1 |
 | 无法提问（脚本 / 批处理 / 用户已全权委托） | 按 §3 的非交互默认值 |
 
@@ -64,6 +65,7 @@ HTML 路由从统一风格目录里选，选定的风格同时决定用哪个引
 | 只说内容"随意 / 自拟" | 只自拟内容；格式、风格、页数这类用户没给的，照常按 Q1/Q2 提问 |
 | 非交互且格式未知 | ② Themed，按其非交互规则执行（交付 HTML） |
 | 非交互且明确要 PPTX | Native PPTX 的 Quick profile（Default 有阻塞闸门，非交互环境走不通） |
+| 非交互且明确要 PPTX，且内容以表格 / 数字 / 流程为主，或宿主声明不具备逐页 SVG 创作能力 | Native PPTX 的 Spec profile（[`spec-native.md`](./spec-native.md)）：一份规格 JSON 一次成片，无任何闸门 |
 
 ## 4. Intake Brief（交接契约）
 
@@ -72,7 +74,7 @@ HTML 路由从统一风格目录里选，选定的风格同时决定用哪个引
 ```markdown
 ## Intake Brief
 - route: generate-html-deck | generate-pptx | create-template | edit-native-pptx
-- profile: editorial | themed | default | quick | beautify | image-to-pptx | —
+- profile: editorial | themed | default | quick | spec | beautify | image-to-pptx | —
 - deliverable: html | html+pdf | pptx | pptx+mp4 | template-workspace（同时要 HTML 和 .pptx 时写两份 brief）
 - style: E-mag:<配色> | E-swiss:<配色> | T01..T12 | pptx-stage1 | brief:<描述>
 - scenario / audience: <现场演讲 · 内部汇报 · 发布会 …> / <受众>
@@ -94,6 +96,7 @@ HTML 路由从统一风格目录里选，选定的风格同时决定用哪个引
 |---|---|
 | generate-html-deck / editorial | [`html-editorial.md`](./html-editorial.md) |
 | generate-html-deck / themed | [`html-themed.md`](./html-themed.md) |
-| PPTX 系路由 | 先跑 SKILL.md 规定的 PPTX 引擎完整性检查，再读 SKILL.md 路由表里对应的 runtime authority |
+| generate-pptx / spec | [`spec-native.md`](./spec-native.md)（不跑 PPTX 引擎完整性检查，不读 generate-pptx / quick-generate） |
+| 其余 PPTX 系路由 | 先跑 SKILL.md 规定的 PPTX 引擎完整性检查，再读 SKILL.md 路由表里对应的 runtime authority |
 
 交接后只读所选 runtime 及它自己触发的文档；不要再加载其他路由的流程文件。

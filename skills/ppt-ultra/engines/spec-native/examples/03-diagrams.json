@@ -1,0 +1,84 @@
+{
+  "title": "订单履约系统改造方案",
+  "subtitle": "结构类版式示例：flow / swimlane / sequence / hierarchy / timeline / layers / cycle / funnel / compare / pros_cons / matrix / quote / icons",
+  "author": "平台架构组",
+  "date": "2026-11-02",
+  "slides": [
+    { "layout": "cover", "title": "订单履约系统改造方案", "subtitle": "把平均履约时长从 38 小时压到 24 小时" },
+    { "layout": "agenda", "title": "目录", "items": ["现状流程与瓶颈", "目标架构", "改造路线图", "收益与风险", "需要的决策"], "current": 2 },
+    { "layout": "flow", "title": "现状：订单要经过 7 个环节，其中 2 个人工环节占了一半时长", "graph": { "direction": "LR", "nodes": [
+      { "id": "n1", "text": "下单", "shape": "pill" },
+      { "id": "n2", "text": "风控审核" },
+      { "id": "n3", "text": "库存锁定" },
+      { "id": "n4", "text": "人工复核", "shape": "diamond", "emph": true },
+      { "id": "n5", "text": "拆单" },
+      { "id": "n6", "text": "人工排仓", "emph": true },
+      { "id": "n7", "text": "出库发运", "shape": "pill" }
+    ], "edges": [
+      { "from": "n1", "to": "n2" }, { "from": "n2", "to": "n3" }, { "from": "n3", "to": "n4" },
+      { "from": "n4", "to": "n5", "label": "通过" }, { "from": "n4", "to": "n2", "label": "退回", "style": "dashed" },
+      { "from": "n5", "to": "n6" }, { "from": "n6", "to": "n7" }
+    ] }, "caption": "现状履约流程（深色为人工环节）", "bullets": ["人工复核平均等待 9 小时", "人工排仓平均等待 10 小时", "两个人工环节合计占 38 小时中的 19 小时"], "takeaway": "自动化这两个环节就能拿到一半的收益" },
+    { "layout": "swimlane", "title": "目标流程：三方系统各管一段，人工只处理异常", "graph": { "lanes": ["订单中心", "风控系统", "仓储系统"], "nodes": [
+      { "id": "a1", "text": "接单", "lane": "订单中心" },
+      { "id": "a2", "text": "规则风控", "lane": "风控系统" },
+      { "id": "a3", "text": "异常人工复核", "lane": "风控系统", "shape": "diamond" },
+      { "id": "a4", "text": "自动拆单", "lane": "订单中心", "emph": true },
+      { "id": "a5", "text": "智能排仓", "lane": "仓储系统", "emph": true },
+      { "id": "a6", "text": "出库", "lane": "仓储系统" }
+    ], "edges": [
+      { "from": "a1", "to": "a2" }, { "from": "a2", "to": "a3", "label": "高风险" }, { "from": "a2", "to": "a4", "label": "通过" },
+      { "from": "a3", "to": "a4" }, { "from": "a4", "to": "a5" }, { "from": "a5", "to": "a6" }
+    ] }, "caption": "目标流程泳道图", "bullets": ["规则风控拦下 95% 的订单，只有高风险进人工", "拆单与排仓改为系统自动完成"], "takeaway": "人工环节从 2 个缩到 1 个异常通道" },
+    { "layout": "sequence", "title": "接口时序：拆单到排仓三次调用全部异步", "sequence": { "participants": ["订单中心", "库存服务", "仓储系统", "消息总线"], "messages": [
+      { "from": "订单中心", "to": "库存服务", "text": "锁定库存", "kind": "sync" },
+      { "from": "库存服务", "to": "订单中心", "text": "锁定结果", "kind": "return" },
+      { "from": "订单中心", "to": "消息总线", "text": "发布拆单事件", "kind": "async" },
+      { "from": "消息总线", "to": "仓储系统", "text": "推送拆单事件", "kind": "async" },
+      { "from": "仓储系统", "to": "消息总线", "text": "排仓完成事件", "kind": "async" },
+      { "from": "消息总线", "to": "订单中心", "text": "推送排仓结果", "kind": "async" }
+    ] }, "caption": "拆单 / 排仓时序", "bullets": ["只有锁库存是同步调用", "其余经消息总线解耦，峰值不互相拖累"], "takeaway": "异步化后峰值吞吐可提升 3 倍" },
+    { "layout": "hierarchy", "title": "改造涉及三个团队、八个模块", "tree": { "nodes": [
+      { "id": "r", "text": "履约改造项目", "parent": "", "emph": true },
+      { "id": "o", "text": "订单中心", "parent": "r" },
+      { "id": "o1", "text": "接单服务", "parent": "o" }, { "id": "o2", "text": "自动拆单", "parent": "o" }, { "id": "o3", "text": "状态机", "parent": "o" },
+      { "id": "f", "text": "风控系统", "parent": "r" },
+      { "id": "f1", "text": "规则引擎", "parent": "f" }, { "id": "f2", "text": "人工复核台", "parent": "f" },
+      { "id": "w", "text": "仓储系统", "parent": "r" },
+      { "id": "w1", "text": "智能排仓", "parent": "w" }, { "id": "w2", "text": "出库调度", "parent": "w" }, { "id": "w3", "text": "库存同步", "parent": "w" }
+    ] }, "caption": "改造范围分解", "bullets": ["订单中心 3 个模块", "风控系统 2 个模块", "仓储系统 3 个模块"], "takeaway": "智能排仓与自动拆单是关键路径" },
+    { "layout": "timeline", "title": "六个月分四步上线", "milestones": [
+      { "date": "11 月", "text": "规则风控上线，人工复核只处理高风险", "status": "done" },
+      { "date": "12 月", "text": "自动拆单灰度 10% 订单", "status": "doing" },
+      { "date": "1 月", "text": "智能排仓上线华东仓", "status": "todo" },
+      { "date": "2 月", "text": "全量切换，老流程下线", "status": "todo" },
+      { "date": "4 月", "text": "履约时长达 24 小时目标", "status": "todo" }
+    ], "takeaway": "12 月灰度结果决定 1 月是否按期推进" },
+    { "layout": "layers", "title": "目标架构分四层", "layers": [
+      { "name": "接入层", "items": ["App", "小程序", "开放平台"] },
+      { "name": "业务层", "items": ["订单中心", "风控系统", "仓储系统", "结算"] },
+      { "name": "平台层", "items": ["消息总线", "规则引擎", "调度引擎"] },
+      { "name": "数据层", "items": ["订单库", "库存库", "数据仓库"] }
+    ], "takeaway": "平台层三件复用组件是本次新增" },
+    { "layout": "cycle", "title": "排仓策略按周迭代", "steps": ["采集履约数据", "分析超时原因", "调整排仓规则", "灰度验证", "全量发布"], "center": "周迭代", "bullets": ["每周二评审上周数据", "规则改动先灰度 10%"], "takeaway": "规则不是一次定死，而是持续迭代" },
+    { "layout": "funnel", "title": "订单从下单到准时送达的转化", "stages": [
+      { "label": "下单", "value": "100%" }, { "label": "风控通过", "value": "97%" }, { "label": "24 小时内出库", "value": "71%" }, { "label": "48 小时内送达", "value": "62%" }
+    ], "bullets": ["最大流失在「24 小时内出库」这一步", "也是本次改造的主攻点"], "takeaway": "出库环节提升 20 个点，整体准时率可到 80%" },
+    { "layout": "compare", "title": "两种排仓方案的取舍", "left": { "title": "规则排仓", "lines": ["两周可上线", "规则透明易解释", "峰值需人工兜底"] }, "right": { "title": "模型排仓", "lines": ["需两个月训练数据", "峰值吞吐高", "结果难以向业务解释"] }, "takeaway": "先规则后模型，两步走" },
+    { "layout": "pros_cons", "title": "先上规则排仓的利弊", "pros": ["按期上线风险最低", "业务方能看懂规则", "沉淀数据给模型用"], "cons": ["峰值仍需人工介入", "规则维护成本随 SKU 增长"], "takeaway": "利大于弊，模型排仓列入下半年" },
+    { "layout": "matrix", "title": "改造项按收益与难度排序", "axes": { "x": "实施难度 →", "y": "收益 →" }, "quadrants": [
+      { "title": "高收益 · 低难度", "items": ["规则风控", "自动拆单"] },
+      { "title": "高收益 · 高难度", "items": ["智能排仓", "库存实时同步"] },
+      { "title": "低收益 · 低难度", "items": ["状态机重构"] },
+      { "title": "低收益 · 高难度", "items": ["结算系统替换"] }
+    ], "takeaway": "左上两项本季度做完，右上两项下季度" },
+    { "layout": "quote", "title": "来自仓库主管的原话", "quote": "每天下午四点以后排仓的单子，基本都要等到第二天早上才能出库，不是人不够，是没人敢决定先发哪一单。", "source": "华东仓主管，10 月现场访谈", "bullets": ["排仓的瓶颈是决策权而不是人力", "系统给出排序建议即可解决大半问题"], "takeaway": "智能排仓首先解决「先发哪一单」" },
+    { "layout": "icons", "title": "改造带来的四类收益", "items": [
+      { "icon": "bolt", "title": "更快", "lines": ["履约时长 38 → 24 小时"] },
+      { "icon": "gear", "title": "更省", "lines": ["人工复核与排仓各减 6 人"] },
+      { "icon": "target", "title": "更准", "lines": ["准时送达率 62% → 80%"] },
+      { "icon": "database", "title": "可沉淀", "lines": ["履约数据进数仓，供模型训练"] }
+    ], "takeaway": "四类收益都可量化，季度复盘按此跟踪" },
+    { "layout": "closing", "title": "需要的三个决策", "bullets": ["批准平台层三个组件的 2 名研发投入", "同意 12 月灰度 10% 订单", "同意模型排仓列入下半年规划"], "takeaway": "本周内回复，11 月规则风控按期上线" }
+  ]
+}
