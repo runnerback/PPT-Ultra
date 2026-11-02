@@ -21,6 +21,7 @@ brief.json ──build_prompt.py──▶ prompt ──▶ 读 SKILL.md → host
 - `deliverable: "pptx"`（默认）→ Native 路线，`host-quick.md`，产物 `.pptx`。
 - `deliverable: "html"` → Editorial 路线，`host-editorial.md`，产物单文件 `.html`（浏览器打开，带演讲者模式：`?` 看快捷键）。`html.family` 选 `swiss` / `magazine`，`html.theme` 用模板内置主题 id，或给 `brand_color` 让 `gz-theme.mjs` 生成受约束的品牌主题；`speaker_notes` 默认开；`target_minutes` 给了会校验时间计划。
 - HTML 风格与 .pptx 之间是同风格重新生成，不是转换（见 `workflows/intake.md` §2.1）。
+- html 模式的 manifest：`deck.slides / placeholders / notes / dark_card_fill`（深色页上的灰底卡数，应为 0，模板里 `.card-fill` 是浅色页组件）、`validators`（presenter / swiss 校验器退出码与尾行）、`forbidden_hits`、`html_copy`。
 
 ## 接入三步
 

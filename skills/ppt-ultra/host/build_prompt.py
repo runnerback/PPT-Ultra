@@ -248,6 +248,7 @@ WORK 下已有上一版 `deck/index.html`（host-editorial.md「改稿」一节�
 - {fam_cn}；{theme_md}
 - 演讲者备注：{"每页都写（SPEAKER_NOTES），口语化、与页面一一对应" if h["speaker_notes"] else "不写"}{"；目标时长 " + str(h["target_minutes"]) + " 分钟" if h.get("target_minutes") else ""}
 - 页面里只用模板已有的类与颜色变量，不写 hex、不混用两套风格的类。
+- 深色页（dark / accent）不放 `.card-fill` 灰底卡（文字色跟随页面变量，深色页上整卡不可读）；卡片网格放浅色页。
 
 ## 约束
 - 联网调研 {"允许" if cons["web_research"] else "不允许"}；AI 生图 {"允许" if cons["ai_images"] else "不允许"}。

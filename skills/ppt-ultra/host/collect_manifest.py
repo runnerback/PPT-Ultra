@@ -118,8 +118,11 @@ def find_html(work, skill_dir=None):
 def inspect_html(path):
     txt = open(path, encoding='utf-8', errors='replace').read()
     m = re.search(r'<title>(.*?)</title>', txt, flags=re.S)
-    notes = len(re.findall(r'^\s*["\']?[A-Za-z0-9_-]+["\']?\s*:\s*`', txt, flags=re.M))
-    return {'slides': len(re.findall(r'<section[^>]*class="[^"]*\bslide\b', txt)), 'placeholders': txt.count('[必填]'), 'notes': notes,
+    # SPEAKER_NOTES 两种写法：数组 [{ id:'p01', talk:[…] }, …]（瑞士 / 杂志模板）或对象 { p01: `…` }
+    notes_block = txt.split('SPEAKER_NOTES', 1)[1] if 'SPEAKER_NOTES' in txt else ''
+    notes = max(len(re.findall(r'\bid\s*:\s*["\']p\d+["\']', notes_block)), len(re.findall(r'^\s*["\']?p\d+["\']?\s*:\s*`', notes_block, flags=re.M)))
+    dark_card_fill = sum(sec.count('card-fill') for cls, sec in re.findall(r'<section[^>]*class="slide([^"]*)"[^>]*>(.*?)</section>', txt, flags=re.S) if re.search(r'\b(dark|accent)\b', cls))
+    return {'slides': len(re.findall(r'<section[^>]*class="[^"]*\bslide\b', txt)), 'placeholders': txt.count('[必填]'), 'notes': notes, 'dark_card_fill': dark_card_fill,
             'title': (m.group(1).strip() if m else ''), 'size': os.path.getsize(path),
             'theme': (re.search(r'<html[^>]*data-theme="([^"]*)"', txt) or [None, ''])[1], 'family': (re.search(r'<html[^>]*data-family="([^"]*)"', txt) or [None, ''])[1],
             'cdn_hosts': sorted(set(re.findall(r'https?://([a-zA-Z0-9.-]+)', txt)))[:8]}
