@@ -4,7 +4,7 @@ description: Generate PPTX — Spec profile. Deterministic native .pptx from one
 
 # Generate PPTX · Spec Profile（规格驱动的确定性 PPTX）
 
-> 来源：本引擎为 PPT Ultra 1.1.0 新增（Runnerback，MIT），从一条在企业内跑了两个月的「智驾 Agent 制作 PPT」管线抽出。它不是 ppt-master 的 SVG 路线，也不读 `${SKILL_DIR}/scripts/`；选中本 profile 后**不要**加载 `generate-pptx.md`、`quick-generate.md` 或任何 Native 路线文档，也不跑 PPTX 引擎完整性检查。
+> 来源：本引擎为 PPT Ultra 1.1.0 新增（Runnerback，MIT），从一条在企业内跑了两个月的 Agent 制作 PPT 管线抽出。它不是 ppt-master 的 SVG 路线，也不读 `${SKILL_DIR}/scripts/`；选中本 profile 后**不要**加载 `generate-pptx.md`、`quick-generate.md` 或任何 Native 路线文档，也不跑 PPTX 引擎完整性检查。
 
 **路径约定**：引擎根目录 = `${SKILL_DIR}/engines/spec-native`，CLI = `${SKILL_DIR}/engines/spec-native/spec_to_pptx.py`。产物写到调用方工作目录下的 `<deck-output-dir>/`（`spec.json`、`<名字>.pptx`、`images/`），绝不写进 `${SKILL_DIR}`。
 

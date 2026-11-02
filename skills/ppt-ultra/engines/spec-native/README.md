@@ -100,4 +100,4 @@ stdout 一行 JSON：成功 `{"ok": true, "slides": 12, "charts": 3, "out": "...
 
 ## 8. 来源
 
-本引擎从 Runnerback 在企业内部「智驾Agent 制作 PPT」管线里跑了两个月的生成器抽出并去掉了企业依赖（飞书 / 内部知识库 / 模型网关），作为 PPT-Ultra 的第四引擎开源，MIT 许可。
+本引擎从 Runnerback 在企业内部 Agent 制作 PPT 管线里跑了两个月的生成器抽出，去掉了企业依赖（IM 平台 / 内部知识库 / 模型网关）与企业数据，作为 PPT-Ultra 的第四引擎开源，MIT 许可。

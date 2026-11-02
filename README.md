@@ -245,6 +245,7 @@ PPT-Ultra/                           # repository root
 ├── .claude-plugin/marketplace.json  # Claude Code plugin manifest
 ├── docs/USER_GUIDE(.zh-CN).md       # detailed tutorial and FAQ (EN / ZH)
 ├── tools/smoke.sh                   # maintainer smoke test: integrity gate + Spec Native examples + validators
+├── tools/upstream-check.sh          # maintainer: compare the three upstreams against tools/upstream-pins.json
 └── skills/ppt-ultra/                # the skill itself
     ├── SKILL.md                     # single entry: load order, route table, global rules
     ├── NOTICE.md                    # components, licenses, upstream merge steps

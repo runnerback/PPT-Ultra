@@ -245,6 +245,7 @@ PPT-Ultra/                           # 仓库根目录
 ├── .claude-plugin/marketplace.json  # Claude Code 插件清单
 ├── docs/USER_GUIDE(.zh-CN).md       # 详细使用教程和常见问题（英 / 中）
 ├── tools/smoke.sh                   # 维护者冒烟：完整性检查 + Spec Native 示例构建 + 校验器
+├── tools/upstream-check.sh          # 维护者：对照 tools/upstream-pins.json 查三上游是否有新版本
 └── skills/ppt-ultra/                # Skill 本体
     ├── SKILL.md                     # 唯一入口：加载顺序、路由表、全局执行纪律
     ├── NOTICE.md                    # 组成部分、许可证、上游合并步骤
@@ -276,6 +277,6 @@ PPT Ultra 的底层引擎来自以下开源项目，在此致谢：
 | PPTX Native | [ppt-master](https://github.com/hugohe3/ppt-master)（Hugo He） | MIT |
 | HTML Editorial | [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)（歸藏） | AGPL-3.0 |
 | HTML Themed | [dashi-ppt-skill](https://github.com/chuspeeism/dashi-ppt-skill)（chuspeeism），已移除其专有导出组件 | AGPL-3.0 |
-| Spec Native | 本仓库新增（Runnerback），源自作者在企业内运行的智驾 Agent 制作 PPT 管线 | MIT |
+| Spec Native | 本仓库新增（Runnerback），源自作者在企业内运行的 Agent 制作 PPT 管线 | MIT |
 
 项目整体按 [AGPL-3.0](LICENSE) 发布；各组成部分的许可证详见 [`NOTICE.md`](skills/ppt-ultra/NOTICE.md)。

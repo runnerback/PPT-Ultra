@@ -17,12 +17,12 @@ python3 - "$PINS" <<'PY' > /tmp/ppt-ultra-upstream-pins.tsv
 import json, sys
 d = json.load(open(sys.argv[1], encoding="utf-8"))
 for name, u in d["upstreams"].items():
-    print("\t".join([name, u["repo"], u["kind"], u.get("file", ""), u["pinned"], u.get("pinned_date", "")]))
+    print("|".join([name, u["repo"], u["kind"], u.get("file", "-"), u["pinned"], u.get("pinned_date", "-")]))
 PY
 
 behind=0
 printf "%-20s %-12s %-44s %-44s %s\n" "上游" "方式" "钉住" "当前" "状态"
-while IFS=$'\t' read -r name repo kind file pinned pinned_date; do
+while IFS='|' read -r name repo kind file pinned pinned_date; do
   case "$kind" in
     release)
       cur="$(api "repos/$repo/releases/latest" | python3 -c 'import sys,json; d=json.load(sys.stdin); print((d.get("tag_name") or "").lstrip("v"), (d.get("published_at") or "")[:10])')" ;;
@@ -35,7 +35,7 @@ while IFS=$'\t' read -r name repo kind file pinned pinned_date; do
     *) echo "未知 kind: $kind（$name）" >&2; exit 2 ;;
   esac
   cur_id="${cur%% *}"; cur_date="${cur#* }"
-  pin_show="$pinned"; [[ -n "$pinned_date" ]] && pin_show="${pinned:0:12} ($pinned_date)"
+  pin_show="$pinned"; [[ "$pinned_date" != "-" ]] && pin_show="${pinned:0:12} ($pinned_date)"
   cur_show="$cur_id"; [[ "$kind" == commit ]] && cur_show="${cur_id:0:12}"
   if [[ "$cur_id" == "$pinned" ]]; then status="最新"; else status="落后 → 合并（NOTICE.md 第 $( [[ $name == ppt-master ]] && echo 1 || { [[ $name == guizang* ]] && echo 2 || echo 3; }) 步）"; behind=1; fi
   printf "%-20s %-12s %-44s %-44s %s\n" "$name" "$kind" "$pin_show" "$cur_show ($cur_date)" "$status"
