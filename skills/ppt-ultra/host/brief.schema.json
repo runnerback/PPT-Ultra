@@ -41,9 +41,11 @@
     "deliverable": {
       "type": "string",
       "enum": [
-        "pptx"
+        "pptx",
+        "html"
       ],
-      "default": "pptx"
+      "default": "pptx",
+      "description": "pptx = Native 路线（host-quick）；html = Editorial 单文件网页 deck（host-editorial，带演讲者模式）"
     },
     "language": {
       "type": "string",
@@ -324,6 +326,11 @@
         "log_name": {
           "type": "string",
           "default": "HOST-LOG.md"
+        },
+        "html_name": {
+          "type": "string",
+          "default": "deck.html",
+          "description": "deliverable=html 时复制到 work_dir 下的文件名"
         }
       }
     },
@@ -334,6 +341,42 @@
         "minLength": 1
       },
       "description": "不得出现在任何页面文字里的字面字串（程序校验：collect_manifest 扫 svg_output，命中则 manifest.ok=false）；must_avoid 是给 agent 看的说明，这里是机器可查的硬约束"
+    },
+    "html": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "deliverable=html 时的 Editorial 引擎参数",
+      "properties": {
+        "family": {
+          "type": "string",
+          "enum": [
+            "magazine",
+            "swiss"
+          ],
+          "default": "swiss",
+          "description": "风格 A 电子杂志 / 风格 B 瑞士国际主义"
+        },
+        "theme": {
+          "type": "string",
+          "description": "模板内置主题 id（magazine：ink-classic / indigo-porcelain / forest-ink / kraft-paper / dune；swiss：ikb / lemon / lemon-green / safety-orange）或 brand"
+        },
+        "brand_color": {
+          "type": "string",
+          "pattern": "^#?[0-9A-Fa-f]{6}$",
+          "description": "theme=brand 时用 gz-theme.mjs brand 生成受约束主题的主色"
+        },
+        "speaker_notes": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否写演讲者备注（SPEAKER_NOTES），网页 deck 的演讲者模式靠它"
+        },
+        "target_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180,
+          "description": "演讲时长，给 validate-presenter-mode 校验时间计划"
+        }
+      }
     }
   }
 }

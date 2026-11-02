@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-host/collect_manifest.py · 从一次 host-quick 运行的 work_dir 里程序化收集产物清单 manifest.json（不信任 agent 的自述）。
+host/collect_manifest.py · 从一次 host-quick / host-editorial 运行的 work_dir 里程序化收集产物清单 manifest.json（不信任 agent 的自述）。
+  deliverable=html（--deliverable 或 brief.deliverable）：找 WORK 下最新 index.html，数 slide / 残留「[必填]」/ 备注条数，有 node 就跑 Editorial 校验器，扫禁用字串。
 
 用法：python host/collect_manifest.py <work_dir> [-o manifest.json] [--preflight] [--pptx-name deck.pptx]
   - 找项目：work_dir 下任意层级（最多 3 层）含 svg_output/ 的目录；取 exports/ 里最新的 .pptx
@@ -106,6 +107,49 @@ def inspect_pptx(pptx):
     return out
 
 
+def find_html(work, skill_dir=None):
+    """deliverable=html：WORK 下最新的 index.html（不进 skill 目录 / node_modules / 引擎自带模板）"""
+    skill = os.path.abspath(skill_dir) + os.sep if skill_dir else None
+    files = [f for f in glob.glob(os.path.join(work, '**', 'index.html'), recursive=True)
+             if '/node_modules/' not in f and '/engines/html-' not in f and not (skill and os.path.abspath(f).startswith(skill))]
+    return max(files, key=os.path.getmtime) if files else None
+
+
+def inspect_html(path):
+    txt = open(path, encoding='utf-8', errors='replace').read()
+    m = re.search(r'<title>(.*?)</title>', txt, flags=re.S)
+    notes = len(re.findall(r'^\s*["\']?[A-Za-z0-9_-]+["\']?\s*:\s*`', txt, flags=re.M))
+    return {'slides': len(re.findall(r'<section[^>]*class="[^"]*\bslide\b', txt)), 'placeholders': txt.count('[必填]'), 'notes': notes,
+            'title': (m.group(1).strip() if m else ''), 'size': os.path.getsize(path),
+            'theme': (re.search(r'<html[^>]*data-theme="([^"]*)"', txt) or [None, ''])[1], 'family': (re.search(r'<html[^>]*data-family="([^"]*)"', txt) or [None, ''])[1],
+            'cdn_hosts': sorted(set(re.findall(r'https?://([a-zA-Z0-9.-]+)', txt)))[:8]}
+
+
+def run_validators(html, skill_dir, family, target_minutes=None):
+    node = shutil.which('node')
+    if not node or not skill_dir:
+        return {'status': 'skipped', 'reason': '没有 node 或 skill_dir'}
+    out = {}
+    scripts = [('presenter', os.path.join(skill_dir, 'engines/html-editorial/scripts/validate-presenter-mode.mjs'), (['--target-minutes', str(target_minutes)] if target_minutes else []))]
+    if family == 'swiss':
+        scripts.append(('swiss', os.path.join(skill_dir, 'engines/html-editorial/scripts/validate-swiss-deck.mjs'), []))
+    for name, script, extra in scripts:
+        if not os.path.isfile(script):
+            out[name] = {'status': 'missing'}; continue
+        try:
+            r = subprocess.run([node, script, html] + extra, capture_output=True, text=True, timeout=180)
+            tail = (r.stdout + r.stderr).strip().splitlines()[-3:]
+            out[name] = {'status': 'ok' if r.returncode == 0 else 'fail', 'exit': r.returncode, 'tail': tail}
+        except subprocess.TimeoutExpired:
+            out[name] = {'status': 'fail', 'reason': 'timeout'}
+    return out
+
+
+def forbidden_hits_text(path, words):
+    txt = re.sub(r'<[^>]+>', ' ', open(path, encoding='utf-8', errors='replace').read())
+    return [{'file': path, 'string': w, 'count': txt.count(w)} for w in words if w in txt]
+
+
 def forbidden_hits(project, brief_path):
     """brief.forbidden_strings 逐个在 svg_output/*.svg 的文字节点里找（去掉标签只看文本），返回命中列表"""
     try:
@@ -195,10 +239,41 @@ def main():
     ap.add_argument('--pptx-name', help='把最新 pptx 复制为 work_dir/<name>')
     ap.add_argument('--brief', help='brief.json：读 forbidden_strings，扫 svg_output 里的文字，命中则 ok=false')
     ap.add_argument('--preflight-font', help='预检渲染用的字体（校准字体）：在 pptx 副本里把导出器写死的 Microsoft YaHei 换成它再转 PDF；交付件不动')
+    ap.add_argument('--deliverable', choices=['pptx', 'html'], help='不给就读 brief.deliverable，默认 pptx')
+    ap.add_argument('--copy-as', help='把产物复制为 work_dir/<name>（pptx 或 html 都可；pptx 也可用 --pptx-name）')
     a = ap.parse_args()
     work = os.path.abspath(a.work_dir)
     out_path = a.output or os.path.join(work, 'manifest.json')
     m = {'manifest_version': 1, 'work_dir': work, 'generated_at': time.strftime('%Y-%m-%dT%H:%M:%S'), 'ok': False}
+    brief = (read_json(a.brief) or {}) if a.brief else {}
+    deliverable = a.deliverable or brief.get('deliverable') or 'pptx'
+    m['deliverable'] = deliverable
+    if deliverable == 'html':
+        html = find_html(work, brief.get('skill_dir'))
+        if not html:
+            m['error'] = 'work_dir 下没有 index.html'
+        else:
+            m['html'] = html
+            m['deck'] = inspect_html(html)
+            h = brief.get('html') or {}
+            m['validators'] = run_validators(html, brief.get('skill_dir'), h.get('family') or m['deck'].get('family'), h.get('target_minutes'))
+            words = [w for w in (brief.get('forbidden_strings') or []) if isinstance(w, str) and w.strip()]
+            m['forbidden_hits'] = forbidden_hits_text(html, words) if words else []
+            copy_as = a.copy_as or a.pptx_name
+            if copy_as:
+                dst = os.path.join(work, copy_as)
+                if os.path.abspath(dst) != os.path.abspath(html):
+                    shutil.copyfile(html, dst)
+                m['html_copy'] = dst
+            m['ok'] = m['deck']['slides'] > 0 and m['deck']['placeholders'] == 0 and not m['forbidden_hits']
+            if m['deck']['placeholders']:
+                m['error'] = f"index.html 还有 {m['deck']['placeholders']} 处「[必填]」占位"
+            elif m['forbidden_hits']:
+                m['error'] = '页面里出现禁用字串：' + '；'.join(f"「{h_['string']}」×{h_['count']}" for h_ in m['forbidden_hits'][:8])
+        with open(out_path, 'w', encoding='utf-8') as f:
+            json.dump(m, f, ensure_ascii=False, indent=2)
+        print(json.dumps({'ok': m['ok'], 'manifest': out_path, 'html': m.get('html'), 'slides': (m.get('deck') or {}).get('slides'), 'error': m.get('error')}, ensure_ascii=False))
+        sys.exit(0 if m['ok'] else 1)
     projects = find_projects(work)
     m['projects'] = projects
     if not projects:
@@ -220,8 +295,8 @@ def main():
             m['postflight'] = postflight_summary(project, pptx)
             m['deck'] = inspect_pptx(pptx)
             m['workflow'] = workflow_times(project)
-            if a.pptx_name:
-                dst = os.path.join(work, a.pptx_name)
+            if a.pptx_name or a.copy_as:
+                dst = os.path.join(work, a.copy_as or a.pptx_name)
                 if os.path.abspath(dst) != os.path.abspath(pptx):
                     shutil.copyfile(pptx, dst)
                 m['pptx_copy'] = dst

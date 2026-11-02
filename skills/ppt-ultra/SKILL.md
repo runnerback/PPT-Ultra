@@ -57,6 +57,7 @@ use CWD, or assume a repo checkout. If unavailable, ask; never search or guess.
 | Generate PPTX — ordinary explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
 | Generate PPTX — Spec (deterministic spec JSON → native PPTX, no SVG authoring) | [`workflows/spec-native.md`](workflows/spec-native.md) |
 | Generate PPTX — Host Quick (machine-written host brief from `host/build_prompt.py`; decisions pre-resolved, no questions, manifest at the end) | [`workflows/profiles/host-quick.md`](workflows/profiles/host-quick.md) |
+| Generate HTML Deck — Host Editorial (host brief with deliverable html: family / theme / pages fixed, single-file deck with presenter notes, manifest at the end) | [`workflows/profiles/host-editorial.md`](workflows/profiles/host-editorial.md) |
 | Create Template | [`workflows/create-template.md`](workflows/create-template.md) |
 | Edit Native PPTX | [`workflows/edit-native-pptx.md`](workflows/edit-native-pptx.md) |
 

@@ -14,6 +14,13 @@ brief.json ──build_prompt.py──▶ prompt ──▶ 读 SKILL.md → host
 | [`collect_manifest.py`](collect_manifest.py) | 运行结束后程序化收集 `manifest.json`：项目目录、最新 pptx、检查器 / postflight 报告、pptx 本体（页数、原生 chart / table 数、字体）、`--preflight` 用 LibreOffice 转 PDF 并核页数 |
 | [`examples/`](examples/) | 一份虚构材料 + brief 示例 |
 | [`../workflows/profiles/host-quick.md`](../workflows/profiles/host-quick.md) | agent 侧的运行时 authority（Quick 的宿主版：精简读文档、不问、不起服务、改稿规则） |
+| [`../workflows/profiles/host-editorial.md`](../workflows/profiles/host-editorial.md) | 交付 html 时的 authority（Editorial 引擎的宿主版：家族 / 主题由 brief 定，单文件 deck + 演讲者备注，校验器） |
+
+## 交付格式
+
+- `deliverable: "pptx"`（默认）→ Native 路线，`host-quick.md`，产物 `.pptx`。
+- `deliverable: "html"` → Editorial 路线，`host-editorial.md`，产物单文件 `.html`（浏览器打开，带演讲者模式：`?` 看快捷键）。`html.family` 选 `swiss` / `magazine`，`html.theme` 用模板内置主题 id，或给 `brand_color` 让 `gz-theme.mjs` 生成受约束的品牌主题；`speaker_notes` 默认开；`target_minutes` 给了会校验时间计划。
+- HTML 风格与 .pptx 之间是同风格重新生成，不是转换（见 `workflows/intake.md` §2.1）。
 
 ## 接入三步
 

@@ -17,7 +17,9 @@ import sys
 STYLE_DEFAULTS = {'visual_style': 'swiss-minimal', 'mode': 'pyramid', 'body_px': 18}
 CONSTRAINT_DEFAULTS = {'speaker_notes': False, 'custom_animations': False, 'narration': False, 'native_charts_tables': True,
                        'ai_images': False, 'web_research': False, 'zero_image': True}
-OUTPUT_DEFAULTS = {'pptx_name': 'deck.pptx', 'manifest_name': 'manifest.json', 'log_name': 'HOST-LOG.md'}
+OUTPUT_DEFAULTS = {'pptx_name': 'deck.pptx', 'html_name': 'deck.html', 'manifest_name': 'manifest.json', 'log_name': 'HOST-LOG.md'}
+HTML_DEFAULTS = {'family': 'swiss', 'speaker_notes': True}
+HTML_THEMES = {'magazine': ('ink-classic', 'indigo-porcelain', 'forest-ink', 'kraft-paper', 'dune'), 'swiss': ('ikb', 'lemon', 'lemon-green', 'safety-orange')}
 
 
 class BriefError(ValueError):
@@ -45,8 +47,23 @@ def load_brief(path):
         raise BriefError(f'work_dir 不存在：{b["work_dir"]}')
     if not os.path.isfile(os.path.join(b['skill_dir'], 'SKILL.md')):
         raise BriefError(f'skill_dir 下没有 SKILL.md：{b["skill_dir"]}')
-    if b.get('deliverable', 'pptx') != 'pptx':
-        raise BriefError('deliverable 目前只支持 pptx')
+    b['deliverable'] = b.get('deliverable') or 'pptx'
+    if b['deliverable'] not in ('pptx', 'html'):
+        raise BriefError(f'deliverable 只支持 pptx | html，收到 {b["deliverable"]!r}')
+    if b['deliverable'] == 'html':
+        h = {**HTML_DEFAULTS, **(b.get('html') or {})}
+        if h['family'] not in HTML_THEMES:
+            raise BriefError(f'html.family 只支持 magazine | swiss，收到 {h["family"]!r}')
+        theme = h.get('theme') or ('brand' if h.get('brand_color') else HTML_THEMES[h['family']][0])
+        if theme != 'brand' and theme not in HTML_THEMES[h['family']]:
+            raise BriefError(f'html.theme {theme!r} 不是 {h["family"]} 的内置主题 {HTML_THEMES[h["family"]]}，要用品牌色请给 brand_color')
+        if theme == 'brand':
+            c = str(h.get('brand_color') or '').lstrip('#')
+            if len(c) != 6 or any(ch not in '0123456789abcdefABCDEF' for ch in c):
+                raise BriefError('html.theme=brand 需要 6 位十六进制 brand_color')
+            h['brand_color'] = '#' + c.upper()
+        h['theme'] = theme
+        b['html'] = h
     _need(b['deck'], 'title', 'deck')
     total = _need(b['pages'], 'total', 'pages')
     if not isinstance(total, int) or not (1 <= total <= 60):
@@ -70,7 +87,7 @@ def load_brief(path):
             raise BriefError(f'图片文件不存在：{os.path.join(b["work_dir"], im["path"])}')
     style = {**STYLE_DEFAULTS, **(b.get('style') or {})}
     fonts = style.get('fonts') or {}
-    if not fonts.get('cjk') or not fonts.get('latin'):
+    if b['deliverable'] == 'pptx' and (not fonts.get('cjk') or not fonts.get('latin')):
         raise BriefError('style.fonts.cjk / latin 必须都给（必须是渲染端真实安装的字体）')
     for k, v in (style.get('palette') or {}).items():
         s = str(v).lstrip('#')
@@ -94,6 +111,8 @@ def _lines(items, prefix='- '):
 
 
 def render(b):
+    if b.get('deliverable') == 'html':
+        return render_html(b)
     deck, pages, style, cons, out = b['deck'], b['pages'], b['style'], b['constraints'], b['output']
     W, S, PY = b['work_dir'], b['skill_dir'], b['python']
     fonts = style['fonts']
@@ -175,6 +194,73 @@ WORK 下已有上一版项目（按 host-quick.md「改稿」一节找到它，�
 4. 最后一条回复只写一行 JSON：`{{"ok": true|false, "manifest": "{W}/{out["manifest_name"]}", "note": "一句话"}}`。导不出 pptx 也要走第 3、4 步并把原因写进 {out["log_name"]}。
 """
     return head + pages_md + style_md + cons_md + task_md + tail
+
+
+def render_html(b):
+    """deliverable=html：Editorial 单文件网页 deck（host-editorial profile）"""
+    deck, pages, cons, out, h = b['deck'], b['pages'], b['constraints'], b['output'], b['html']
+    W, S, PY = b['work_dir'], b['skill_dir'], b['python']
+    mats = _lines(f'`{W}/{m["path"]}`（{m["role"]}{"；" + m["note"] if m.get("note") else ""}）' for m in b['materials'])
+    imgs = _lines(f'`{W}/{im["path"]}`{"：" + im["caption"] if im.get("caption") else ""}{"（建议放第 " + str(im["page_hint"]) + " 页）" if im.get("page_hint") else ""}' for im in (b.get('images') or []))
+    roster = pages.get('roster') or []
+    roster_md = '\n'.join(f'| {r["no"]} | {r["title"]} | {r.get("job", "")} | {r.get("content_ref", "")} |' for r in roster)
+    deck_meta = _lines(f'{k}：{deck[key]}' for key, k in (('title', '标题'), ('subtitle', '副标题'), ('author', '落款'), ('date', '日期'), ('audience', '对象'), ('purpose', '用途'), ('tone', '语气')) if deck.get(key))
+    fam_cn = '风格 B · 瑞士国际主义（template-swiss.html）' if h['family'] == 'swiss' else '风格 A · 电子杂志（template.html）'
+    theme_md = (f'主题 = brand：运行 `node {S}/engines/html-editorial/scripts/gz-theme.mjs brand "{h["brand_color"]}" --family {h["family"]}`，把输出贴进 deck `<style>` 末尾并把 `data-theme` 改成 `brand`（脚本判不达标就改用该风格的默认预设并记日志）'
+                if h['theme'] == 'brand' else f'主题 = `{h["theme"]}`（模板内置，改 `<html data-theme>` 即可）')
+    images_md = ('## 图片（只用这些，不生图不搜图；放到 deck/images/ 下）\n' + imgs) if imgs else '## 图片\n- 零图片 deck：不生图、不搜图；用排版、色块、原生 CSS 图表承载信息。'
+    keep_md = ('- 必须保留（原样）：\n' + _lines(b['must_keep'], '  - ')) if b.get('must_keep') else ''
+    avoid_md = ('- 不许出现：\n' + _lines(b['must_avoid'], '  - ')) if b.get('must_avoid') else ''
+    forbid_md = ('- **禁用字串（程序硬校验，交付前 grep 确认 index.html 一处都没有）**：' + '、'.join('「' + x + '」' for x in b['forbidden_strings'])) if b.get('forbidden_strings') else ''
+    rev = b.get('revision')
+    pages_md = (f"""## 页面（总页数 {pages["total"]}，严格等于，顺序与标题意图照此）
+| 页 | 标题意图 | 这页要完成的事 | 材料定位 |
+|---|---|---|---|
+{roster_md}
+""" if roster else f"""## 页面
+- 总页数 {pages["total"]}，严格等于；分页由你定，每页一个核心信息，标题写判断句。
+""")
+    task_md = (f"""## 这是一次改稿
+WORK 下已有上一版 `deck/index.html`（host-editorial.md「改稿」一节），不要重建。改稿意见：
+
+> {rev["feedback"]}
+
+按意见改对应 `<section>`（增删页要同步 SPEAKER_NOTES 与页序），重跑校验器，重新复制到 `{W}/{out["html_name"]}`。
+""" if rev else """## 这是一次新做
+按 host-editorial.md 的步骤：拷模板 → 改标题与主题 → 规划主题节奏 → 按 roster 写每页 `<section>` → 演讲者备注 → 校验 → 复制产物。
+""")
+    return f"""你收到一份宿主交来的网页 PPT 任务（PPT Ultra 宿主契约 v1，交付 HTML）。先读 `{S}/SKILL.md`，再读 `{S}/workflows/profiles/host-editorial.md` 并严格按它执行；风格、主题、页数都已由宿主定好，不要再做 intake 提问，也不要自行改动这些决定。
+
+## 固定参数
+- SKILL_DIR = `{S}`；文档里的 `${{SKILL_DIR}}` 前缀一律换成它。
+- WORK = `{W}`；deck 写在 `{W}/deck/index.html`（images 在 `{W}/deck/images/`），日志与产物只写在 WORK 之下，命令写成 `cd "{W}" && …`。
+- Python = `{PY}`；node 在 PATH 里（校验器用）。
+- 任务 id：`{b["job_id"]}`；交付格式：html（单文件，浏览器打开，带演讲者模式）；语言：{b["language"]}。
+- 宿主没有人在线，不要提问、不要等待确认；不要启动任何常驻服务（预览服务器 / 浏览器）。
+
+## 材料（数字只能来自这里）
+{mats}
+{images_md}
+
+## 作品信息
+{deck_meta}
+{pages_md}## 风格（宿主已定，不要改）
+- {fam_cn}；{theme_md}
+- 演讲者备注：{"每页都写（SPEAKER_NOTES），口语化、与页面一一对应" if h["speaker_notes"] else "不写"}{"；目标时长 " + str(h["target_minutes"]) + " 分钟" if h.get("target_minutes") else ""}
+- 页面里只用模板已有的类与颜色变量，不写 hex、不混用两套风格的类。
+
+## 约束
+- 联网调研 {"允许" if cons["web_research"] else "不允许"}；AI 生图 {"允许" if cons["ai_images"] else "不允许"}。
+{keep_md}
+{avoid_md}
+{forbid_md}
+{task_md}## 收尾（必须做）
+1. `grep -c "[[]必填[]]" deck/index.html` 必须为 0；有 node 就跑 `validate-presenter-mode.mjs`{"（--target-minutes " + str(h["target_minutes"]) + "）" if h.get("target_minutes") else ""}{" 与 validate-swiss-deck.mjs" if h["family"] == "swiss" else ""}，报错就修。
+2. 把最终 `deck/index.html` 复制为 `{W}/{out["html_name"]}`（单文件；有 images/ 时把图片转成 data URI 内联进去或在日志里写明 images 目录）。
+3. 过程记录写到 `{W}/{out["log_name"]}`（时间线、读过的文档、校验器输出摘要、自行决定的事、每页一行自评）。
+4. 跑 `{PY} {S}/host/collect_manifest.py "{W}" --brief "{W}/brief.json" -o "{W}/{out["manifest_name"]}"`。
+5. 最后一条回复只写一行 JSON：`{{"ok": true|false, "manifest": "{W}/{out["manifest_name"]}", "note": "一句话"}}`。
+"""
 
 
 def main():

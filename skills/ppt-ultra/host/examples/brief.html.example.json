@@ -1,0 +1,104 @@
+{
+  "brief_version": 1,
+  "job_id": "example-q3-review-html",
+  "work_dir": "/tmp/ppt-ultra-host-example",
+  "skill_dir": "/ABS/PATH/TO/skills/ppt-ultra",
+  "python": "/usr/bin/python3",
+  "deliverable": "html",
+  "language": "zh-CN",
+  "canvas": "ppt169",
+  "deck": {
+    "title": "智能音箱 Q3 运营复盘",
+    "subtitle": "活跃用户、语音成功率与下季度重点",
+    "author": "产品运营组",
+    "date": "2026-10",
+    "audience": "业务负责人",
+    "purpose": "季度复盘，结论先行，三件事收尾",
+    "tone": "汇报体，每页标题是判断句"
+  },
+  "pages": {
+    "total": 8,
+    "roster": [
+      {
+        "no": 1,
+        "title": "智能音箱 Q3 运营复盘",
+        "job": "封面"
+      },
+      {
+        "no": 2,
+        "title": "一句话：活跃涨 18%，识别到 94.2%，留存与渗透未达标",
+        "job": "结论先行",
+        "content_ref": "一句话 / 关键数字"
+      },
+      {
+        "no": 3,
+        "title": "四个数字看 Q3",
+        "job": "关键指标与目标差",
+        "content_ref": "关键数字表"
+      },
+      {
+        "no": 4,
+        "title": "增长来自促销与家庭场景",
+        "job": "增长归因",
+        "content_ref": "增长来源"
+      },
+      {
+        "no": 5,
+        "title": "三个问题：留存、老设备、方言",
+        "job": "问题定位",
+        "content_ref": "问题"
+      },
+      {
+        "no": 6,
+        "title": "老设备拉低整体识别率",
+        "job": "用数字说明根因",
+        "content_ref": "问题 2"
+      },
+      {
+        "no": 7,
+        "title": "下季度三件事与目标值",
+        "job": "行动与目标",
+        "content_ref": "下季度三件事"
+      },
+      {
+        "no": 8,
+        "title": "请支持：模型升级排期与儿童会员联动",
+        "job": "收尾请求"
+      }
+    ]
+  },
+  "materials": [
+    {
+      "path": "in/material.md",
+      "role": "primary",
+      "note": "全部数字只能来自这里"
+    }
+  ],
+  "constraints": {
+    "speaker_notes": false,
+    "custom_animations": false,
+    "narration": false,
+    "native_charts_tables": true,
+    "ai_images": false,
+    "web_research": false,
+    "zero_image": true
+  },
+  "must_keep": [
+    "口径日期 2026-10-15"
+  ],
+  "must_avoid": [
+    "任何材料里没有的数字",
+    "厂商与型号名"
+  ],
+  "output": {
+    "html_name": "q3-review.html",
+    "manifest_name": "manifest.json",
+    "log_name": "HOST-LOG.md"
+  },
+  "html": {
+    "family": "swiss",
+    "theme": "ikb",
+    "speaker_notes": true,
+    "target_minutes": 15
+  }
+}

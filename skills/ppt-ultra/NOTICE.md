@@ -25,7 +25,8 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 
 - 新增**宿主调用契约** `host/`：`brief.schema.json`（宿主写的任务说明：WORK / SKILL_DIR / python、作品信息、页数与 roster、风格与字体、材料、约束、改稿意见、输出名）、`build_prompt.py`（校验并渲染确定性 prompt）、`collect_manifest.py`（程序化收集 manifest.json：项目、最新 pptx、检查器 / postflight 报告、pptx 页数 / 原生 chart / table / 字体、LibreOffice 预检）、`examples/`、`README.md`。
 - 新增 `workflows/profiles/host-quick.md`：Generate PPTX 的宿主 profile——Quick 的决定权收回宿主，跳过 intake / routing，精简核心包读文档，不问不起服务，改稿在同一项目上做，收尾跑 collect_manifest。`SKILL.md` 运行时表、`routing.md` §8、`intake.md` §3、`workflows/index.md` 各加一行。
-- 基准教训写进契约：校准字体必须是渲染端真实安装的字体（Linux 宿主用 Noto Sans CJK SC）；阿里云通道模型对长技术上下文可能触发网关内容审查。
+- 契约同时覆盖网页交付：brief `deliverable=html` + `html{family, theme | brand_color, speaker_notes, target_minutes}` → 新增 `workflows/profiles/host-editorial.md`（Editorial 引擎的宿主版，不问不起服务，单文件 index.html），`collect_manifest.py` 的 html 模式（slide 计数、残留「[必填]」、备注数、校验器、禁用字串）。
+- 基准教训写进契约：校准字体必须是渲染端真实安装的字体（Linux 宿主用 Noto Sans CJK SC）；导出器把 CJK 字体统一写成 Microsoft YaHei，预检用 `--preflight-font` 换回校准字体；阿里云通道模型对长技术上下文会随机触发网关内容审查（宿主同会话续跑）；文字约束拦不住模型，`forbidden_strings` 程序硬校验。
 
 **2026-11-02 — PPT Ultra 1.1.1（Runnerback，未发布）**
 

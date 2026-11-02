@@ -247,7 +247,7 @@ PPT-Ultra/                           # repository root
 ├── tools/smoke.sh                   # maintainer smoke test: integrity gate + Spec Native examples + validators
 ├── tools/upstream-check.sh          # maintainer: compare the three upstreams against tools/upstream-pins.json
 ├── tools/build-style-briefs.mjs     # maintainer: regenerate references/style-briefs/themes.json from the engines' own theme sources
-│   └── skills/ppt-ultra/host/       # host contract (1.2.0): brief.schema.json, build_prompt.py, collect_manifest.py for bots / pipelines
+│   └── skills/ppt-ultra/host/       # host contract (1.2.0): brief.schema.json, build_prompt.py, collect_manifest.py for bots / pipelines; deliverable pptx (host-quick) or html (host-editorial)
 └── skills/ppt-ultra/                # the skill itself
     ├── SKILL.md                     # single entry: load order, route table, global rules
     ├── NOTICE.md                    # components, licenses, upstream merge steps

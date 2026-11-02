@@ -247,7 +247,7 @@ PPT-Ultra/                           # 仓库根目录
 ├── tools/smoke.sh                   # 维护者冒烟：完整性检查 + Spec Native 示例构建 + 校验器
 ├── tools/upstream-check.sh          # 维护者：对照 tools/upstream-pins.json 查三上游是否有新版本
 ├── tools/build-style-briefs.mjs     # 维护者：从三个引擎的主题真值生成 references/style-briefs/themes.json
-│   └── skills/ppt-ultra/host/       # 宿主调用契约（1.2.0）：brief.schema.json、build_prompt.py、collect_manifest.py，给 bot / 流水线用
+│   └── skills/ppt-ultra/host/       # 宿主调用契约（1.2.0）：brief.schema.json、build_prompt.py、collect_manifest.py，给 bot / 流水线用；deliverable pptx（host-quick）或 html（host-editorial）
 └── skills/ppt-ultra/                # Skill 本体
     ├── SKILL.md                     # 唯一入口：加载顺序、路由表、全局执行纪律
     ├── NOTICE.md                    # 组成部分、许可证、上游合并步骤

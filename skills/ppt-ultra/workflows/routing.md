@@ -135,7 +135,7 @@ Discovery reads only [`brands_index.json`](../templates/brands/brands_index.json
 | Bare "make a PPT" with no format or usage signal | Ask the single Q1 question in [`intake.md`](./intake.md) §1 |
 | Non-interactive with unknown format | Generate HTML Deck · themed (non-interactive rules) |
 | Non-interactive, PPTX explicit, and the content is data-dense or the host declares it cannot author SVG | Native routes · Spec profile |
-| The user message is a host brief rendered by `host/build_prompt.py` (opens with 宿主契约 v1), or `host-brief.json` sits in the work dir | Native routes · Host Quick profile ([`profiles/host-quick.md`](./profiles/host-quick.md)): skip intake, decisions come from the brief, end with `collect_manifest.py` |
+| The user message is a host brief rendered by `host/build_prompt.py` (opens with 宿主契约 v1), or `host-brief.json` sits in the work dir | Native routes · Host Quick profile ([`profiles/host-quick.md`](./profiles/host-quick.md)) when the brief's deliverable is pptx; Generate HTML Deck · Host Editorial ([`profiles/host-editorial.md`](./profiles/host-editorial.md)) when it is html. Skip intake, decisions come from the brief, end with `collect_manifest.py` |
 
 | HTML profile decision | Editorial | Themed |
 |---|---|---|
