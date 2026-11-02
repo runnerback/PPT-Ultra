@@ -26,10 +26,10 @@ python skills/ppt-ultra/host/build_prompt.py WORK/brief.json -o WORK/prompt.md
 #    agent 读 SKILL.md → workflows/profiles/host-quick.md → 写 SVG → 门禁 → 导出 → 自己跑 collect_manifest.py
 
 # 3) 宿主再跑一次 collect_manifest（防 agent 漏跑），只信它的输出
-python skills/ppt-ultra/host/collect_manifest.py WORK --preflight --pptx-name deck.pptx -o WORK/manifest.json
+python skills/ppt-ultra/host/collect_manifest.py WORK --preflight --brief WORK/brief.json --pptx-name deck.pptx -o WORK/manifest.json
 ```
 
-`manifest.json` 关键字段：`ok`、`pptx`、`deck.slides / charts / tables / fonts`、`quality`（检查器 blocking / introduced 数）、`postflight`（导出器 status / quality_gate）、`preflight`（LibreOffice 转 PDF 的 status / pages / pdf）、`workflow`（首末命令时间）、`error`。
+`manifest.json` 关键字段：`ok`、`pptx`、`deck.slides / charts / tables / fonts / theme_fonts`、`quality`（检查器 blocking / introduced 数）、`postflight`（导出器 status / quality_gate）、`preflight`（LibreOffice 转 PDF 的 status / pages / pdf）、`forbidden_hits`（brief.forbidden_strings 在页面文字里的命中，有命中 ok=false）、`workflow`（首末命令时间）、`error`。brief 的 `must_avoid` 是给 agent 看的说明，`forbidden_strings` 才是程序硬校验的字面字串，两者配合用。
 
 ## 改稿
 
@@ -37,7 +37,9 @@ python skills/ppt-ultra/host/collect_manifest.py WORK --preflight --pptx-name de
 
 ## 字体规则（最常见的翻车点）
 
-`style.fonts` 必须是**运行 agent / 做预检的机器上真实安装**的字体，agent 用它校准字宽、写进每页 `font-family`。按一套字体校准、用另一套渲染，检查器通过的页面也会溢出（实测微软雅黑校准 + Noto 渲染，13 页溢出 5~8 处）。Linux 宿主推荐 `Noto Sans CJK SC`；Windows / mac 看 PowerPoint 的人若没装它会回退到系统中文字体，Noto 的字宽更宽，回退后只会更宽松、不会溢出。
+`style.fonts` 必须是**运行 agent / 做预检的机器上真实安装**的字体，agent 用它校准字宽、写进每页 `font-family`。按一套字体校准、用另一套渲染，检查器通过的页面也会溢出（实测微软雅黑校准 + Noto 渲染，13 页溢出 5~8 处）。Linux 宿主推荐 `Noto Sans CJK SC`。
+
+注意导出器的字体策略：ppt-master 的 `svg_to_pptx` 会把常见 CJK 字体族（Noto Sans CJK SC / PingFang / Source Han Sans 等）统一映射成 **Microsoft YaHei** 写进 pptx（`svg_to_pptx/drawingml/utils.py` 的映射表，为了在 Office 上可移植），所以交付件的字体永远是雅黑，SVG 里的字体只决定校准与预检。Noto 的字宽比雅黑宽，按 Noto 校准的版面在雅黑下只会更宽松。预检机器没有雅黑时 LibreOffice 会随机替代，`collect_manifest.py --preflight-font <校准字体>` 会在**副本**里把雅黑换回校准字体再转 PDF，预检看到的才是校准时的版面；交付件不动。
 
 ## 运行时建议
 

@@ -5,111 +5,335 @@
   "description": "宿主（bot / 流水线 / 脚本）交给 agent 的一次性任务说明。由 host/build_prompt.py 渲染成 prompt，agent 按 workflows/profiles/host-quick.md 执行，结束后 host/collect_manifest.py 产出 manifest.json。",
   "type": "object",
   "additionalProperties": false,
-  "required": ["brief_version", "job_id", "work_dir", "skill_dir", "python", "deck", "pages", "materials"],
+  "required": [
+    "brief_version",
+    "job_id",
+    "work_dir",
+    "skill_dir",
+    "python",
+    "deck",
+    "pages",
+    "materials"
+  ],
   "properties": {
-    "brief_version": { "const": 1 },
-    "job_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,64}$" },
-    "work_dir": { "type": "string", "minLength": 1, "description": "绝对路径；项目、产物、日志都在这里面" },
-    "skill_dir": { "type": "string", "minLength": 1, "description": "skills/ppt-ultra 的绝对路径" },
-    "python": { "type": "string", "minLength": 1, "description": "跑 skill 脚本用的 python 可执行文件绝对路径" },
-    "deliverable": { "type": "string", "enum": ["pptx"], "default": "pptx" },
-    "language": { "type": "string", "default": "zh-CN", "description": "BCP-47，写进每页根 <svg lang>" },
-    "canvas": { "type": "string", "enum": ["ppt169", "ppt43", "a4"], "default": "ppt169" },
+    "brief_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,64}$"
+    },
+    "work_dir": {
+      "type": "string",
+      "minLength": 1,
+      "description": "绝对路径；项目、产物、日志都在这里面"
+    },
+    "skill_dir": {
+      "type": "string",
+      "minLength": 1,
+      "description": "skills/ppt-ultra 的绝对路径"
+    },
+    "python": {
+      "type": "string",
+      "minLength": 1,
+      "description": "跑 skill 脚本用的 python 可执行文件绝对路径"
+    },
+    "deliverable": {
+      "type": "string",
+      "enum": [
+        "pptx"
+      ],
+      "default": "pptx"
+    },
+    "language": {
+      "type": "string",
+      "default": "zh-CN",
+      "description": "BCP-47，写进每页根 <svg lang>"
+    },
+    "canvas": {
+      "type": "string",
+      "enum": [
+        "ppt169",
+        "ppt43",
+        "a4"
+      ],
+      "default": "ppt169"
+    },
     "deck": {
-      "type": "object", "additionalProperties": false, "required": ["title"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title"
+      ],
       "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "subtitle": { "type": "string" },
-        "author": { "type": "string", "description": "封面落款（部门 / 人）" },
-        "date": { "type": "string" },
-        "audience": { "type": "string" },
-        "purpose": { "type": "string" },
-        "tone": { "type": "string", "description": "例：汇报体、结论先行、技术术语后跟一句白话" }
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string",
+          "description": "封面落款（部门 / 人）"
+        },
+        "date": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string",
+          "description": "例：汇报体、结论先行、技术术语后跟一句白话"
+        }
       }
     },
     "pages": {
-      "type": "object", "additionalProperties": false, "required": ["total"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total"
+      ],
       "properties": {
-        "total": { "type": "integer", "minimum": 1, "maximum": 60, "description": "含封面与收尾的总页数，必须严格等于" },
+        "total": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60,
+          "description": "含封面与收尾的总页数，必须严格等于"
+        },
         "roster": {
-          "type": "array", "description": "给了就逐页照做（顺序 / 标题意图 / 这页要完成的事）；不给由 agent 在 total 内自行分页",
+          "type": "array",
+          "description": "给了就逐页照做（顺序 / 标题意图 / 这页要完成的事）；不给由 agent 在 total 内自行分页",
           "items": {
-            "type": "object", "additionalProperties": false, "required": ["no", "title"],
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "no",
+              "title"
+            ],
             "properties": {
-              "no": { "type": "integer", "minimum": 1 },
-              "title": { "type": "string" },
-              "job": { "type": "string", "description": "这一页要让读者得到什么" },
-              "content_ref": { "type": "string", "description": "材料里的定位，例：outline.md §2 P05" }
+              "no": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "title": {
+                "type": "string"
+              },
+              "job": {
+                "type": "string",
+                "description": "这一页要让读者得到什么"
+              },
+              "content_ref": {
+                "type": "string",
+                "description": "材料里的定位，例：outline.md §2 P05"
+              }
             }
           }
         }
       }
     },
     "style": {
-      "type": "object", "additionalProperties": false,
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "visual_style": { "type": "string", "description": "references/visual-styles/<id>.md 的 id（如 swiss-minimal）或 brief", "default": "swiss-minimal" },
-        "mode": { "type": "string", "description": "references/modes/<id>.md 的 id（如 pyramid）", "default": "pyramid" },
+        "visual_style": {
+          "type": "string",
+          "description": "references/visual-styles/<id>.md 的 id（如 swiss-minimal）或 brief",
+          "default": "swiss-minimal"
+        },
+        "mode": {
+          "type": "string",
+          "description": "references/modes/<id>.md 的 id（如 pyramid）",
+          "default": "pyramid"
+        },
         "palette": {
-          "type": "object", "additionalProperties": { "type": "string", "pattern": "^#?[0-9A-Fa-f]{6}$" },
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^#?[0-9A-Fa-f]{6}$"
+          },
           "description": "primary / secondary / accent / ink / background / surface 等，6 位十六进制"
         },
         "fonts": {
-          "type": "object", "additionalProperties": false, "required": ["cjk", "latin"],
-          "properties": { "cjk": { "type": "string" }, "latin": { "type": "string" } },
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cjk",
+            "latin"
+          ],
+          "properties": {
+            "cjk": {
+              "type": "string"
+            },
+            "latin": {
+              "type": "string"
+            }
+          },
           "description": "必须是渲染端真实安装的字体；校准与根 font-family 都用它"
         },
-        "body_px": { "type": "integer", "minimum": 12, "maximum": 32, "default": 18 },
-        "theme_ref": { "type": "string", "description": "references/style-briefs/themes.json 的键路径，例：editorial.swiss.ikb / themed.theme07；给了就以它的 native_style_brief 为准" },
-        "notes": { "type": "string" }
+        "body_px": {
+          "type": "integer",
+          "minimum": 12,
+          "maximum": 32,
+          "default": 18
+        },
+        "theme_ref": {
+          "type": "string",
+          "description": "references/style-briefs/themes.json 的键路径，例：editorial.swiss.ikb / themed.theme07；给了就以它的 native_style_brief 为准"
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     },
     "materials": {
-      "type": "array", "minItems": 1,
+      "type": "array",
+      "minItems": 1,
       "items": {
-        "type": "object", "additionalProperties": false, "required": ["path", "role"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "role"
+        ],
         "properties": {
-          "path": { "type": "string", "description": "相对 work_dir 的路径" },
-          "role": { "type": "string", "enum": ["primary", "facts", "outline", "reference"] },
-          "note": { "type": "string" }
+          "path": {
+            "type": "string",
+            "description": "相对 work_dir 的路径"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "facts",
+              "outline",
+              "reference"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
         }
       }
     },
     "images": {
       "type": "array",
       "items": {
-        "type": "object", "additionalProperties": false, "required": ["path"],
-        "properties": { "path": { "type": "string" }, "caption": { "type": "string" }, "page_hint": { "type": "integer" } }
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "page_hint": {
+            "type": "integer"
+          }
+        }
       }
     },
     "constraints": {
-      "type": "object", "additionalProperties": false,
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "speaker_notes": { "type": "boolean", "default": false },
-        "custom_animations": { "type": "boolean", "default": false },
-        "narration": { "type": "boolean", "default": false },
-        "native_charts_tables": { "type": "boolean", "default": true },
-        "ai_images": { "type": "boolean", "default": false },
-        "web_research": { "type": "boolean", "default": false },
-        "zero_image": { "type": "boolean", "default": true, "description": "true = 不放任何图片（images 为空时的默认）" }
+        "speaker_notes": {
+          "type": "boolean",
+          "default": false
+        },
+        "custom_animations": {
+          "type": "boolean",
+          "default": false
+        },
+        "narration": {
+          "type": "boolean",
+          "default": false
+        },
+        "native_charts_tables": {
+          "type": "boolean",
+          "default": true
+        },
+        "ai_images": {
+          "type": "boolean",
+          "default": false
+        },
+        "web_research": {
+          "type": "boolean",
+          "default": false
+        },
+        "zero_image": {
+          "type": "boolean",
+          "default": true,
+          "description": "true = 不放任何图片（images 为空时的默认）"
+        }
       }
     },
-    "must_keep": { "type": "array", "items": { "type": "string" }, "description": "必须原样出现 / 照此写法的内容" },
-    "must_avoid": { "type": "array", "items": { "type": "string" }, "description": "不许出现的内容（人名、厂商名、未核实数字等）" },
+    "must_keep": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "必须原样出现 / 照此写法的内容"
+    },
+    "must_avoid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "不许出现的内容（人名、厂商名、未核实数字等）"
+    },
     "revision": {
-      "type": "object", "additionalProperties": false, "required": ["feedback"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feedback"
+      ],
       "properties": {
-        "feedback": { "type": "string", "minLength": 1, "description": "改稿意见；有它就是改稿任务：在 work_dir 已有项目上改，不重建" },
-        "previous_manifest": { "type": "string", "description": "上一版 manifest.json（相对 work_dir）" }
+        "feedback": {
+          "type": "string",
+          "minLength": 1,
+          "description": "改稿意见；有它就是改稿任务：在 work_dir 已有项目上改，不重建"
+        },
+        "previous_manifest": {
+          "type": "string",
+          "description": "上一版 manifest.json（相对 work_dir）"
+        }
       }
     },
     "output": {
-      "type": "object", "additionalProperties": false,
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "pptx_name": { "type": "string", "default": "deck.pptx", "description": "导出后复制到 work_dir 下的文件名" },
-        "manifest_name": { "type": "string", "default": "manifest.json" },
-        "log_name": { "type": "string", "default": "HOST-LOG.md" }
+        "pptx_name": {
+          "type": "string",
+          "default": "deck.pptx",
+          "description": "导出后复制到 work_dir 下的文件名"
+        },
+        "manifest_name": {
+          "type": "string",
+          "default": "manifest.json"
+        },
+        "log_name": {
+          "type": "string",
+          "default": "HOST-LOG.md"
+        }
       }
+    },
+    "forbidden_strings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "不得出现在任何页面文字里的字面字串（程序校验：collect_manifest 扫 svg_output，命中则 manifest.ok=false）；must_avoid 是给 agent 看的说明，这里是机器可查的硬约束"
     }
   }
 }

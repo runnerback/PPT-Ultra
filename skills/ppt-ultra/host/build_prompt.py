@@ -80,6 +80,10 @@ def load_brief(path):
     b['constraints'] = {**CONSTRAINT_DEFAULTS, **(b.get('constraints') or {})}
     b['output'] = {**OUTPUT_DEFAULTS, **(b.get('output') or {})}
     b.setdefault('language', 'zh-CN'); b.setdefault('canvas', 'ppt169')
+    fs_ = b.get('forbidden_strings') or []
+    if not isinstance(fs_, list) or any(not isinstance(x, str) or not x.strip() for x in fs_):
+        raise BriefError('forbidden_strings 须为非空字符串数组')
+    b['forbidden_strings'] = [x.strip() for x in fs_]
     if b.get('revision') is not None:
         _need(b['revision'], 'feedback', 'revision')
     return b
@@ -109,6 +113,7 @@ def render(b):
     notes_md = ('；' + style['notes']) if style.get('notes') else ''
     keep_md = ('- 必须保留（原样）：\n' + _lines(b['must_keep'], '  - ')) if b.get('must_keep') else ''
     avoid_md = ('- 不许出现：\n' + _lines(b['must_avoid'], '  - ')) if b.get('must_avoid') else ''
+    forbid_md = ('- **禁用字串（程序硬校验，导出前用 grep 逐个确认 svg_output 里一处都没有，命中就改写）**：' + '、'.join('「' + x + '」' for x in b['forbidden_strings'])) if b.get('forbidden_strings') else ''
     prev_md = ('上一版 manifest：`' + W + '/' + rev['previous_manifest'] + '`。') if rev and rev.get('previous_manifest') else ''
     head = f"""你收到一份宿主交来的 PPT 任务（PPT Ultra 宿主契约 v1）。先读 `{S}/SKILL.md`，再读 `{S}/workflows/profiles/host-quick.md` 并严格按它执行；路由、profile、风格、页数、字体都已由宿主定好，不要再做 intake 提问，也不要自行改动这些决定。
 
@@ -149,6 +154,7 @@ def render(b):
 - 图表 / 表格：{"有可比数值就用原生 chart、表格用原生 table（导出加 --native-charts-and-tables）" if cons["native_charts_tables"] else "全部用形状与文本，不用原生 chart / table"}。
 {keep_md}
 {avoid_md}
+{forbid_md}
 """
     if rev:
         task_md = f"""## 这是一次改稿
@@ -165,7 +171,7 @@ WORK 下已有上一版项目（按 host-quick.md「改稿」一节找到它，�
     tail = f"""## 收尾（必须做）
 1. 过程记录写到 `{W}/{out["log_name"]}`（时间线、读了哪些文档、每次检查器的 errors / warnings 与修复、自行决定的事、每页一行自评）。
 2. 导出成功后把最终 pptx 复制为 `{W}/{out["pptx_name"]}`。
-3. 跑 `{PY} {S}/host/collect_manifest.py "{W}" --preflight -o "{W}/{out["manifest_name"]}"`，它会写出 manifest.json（产物、门禁状态、页数、字体、预检结果）。
+3. 跑 `{PY} {S}/host/collect_manifest.py "{W}" --preflight --brief "{W}/brief.json" -o "{W}/{out["manifest_name"]}"`，它会写出 manifest.json（产物、门禁状态、页数、字体、预检结果、禁用字串命中）；有禁用字串命中它会判 ok=false，所以导出前自己先 grep。
 4. 最后一条回复只写一行 JSON：`{{"ok": true|false, "manifest": "{W}/{out["manifest_name"]}", "note": "一句话"}}`。导不出 pptx 也要走第 3、4 步并把原因写进 {out["log_name"]}。
 """
     return head + pages_md + style_md + cons_md + task_md + tail
