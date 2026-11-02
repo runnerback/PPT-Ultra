@@ -1,6 +1,6 @@
 # 发布一个 GitHub Release（维护者手册）
 
-> 版本：1.0 ｜ 更新：2026-11-02 ｜ 适用：PPT Ultra 1.2.0 及以后
+> 版本：1.1 ｜ 更新：2026-11-02 ｜ 适用：PPT Ultra 1.2.0 及以后（1.1 起推 tag 自动发布，手动步骤留作备用）
 
 GitHub 的 Release 不会从 tag 自动生成，要单独建。一次发布 = **tag + 正文 + 附件**，正文和附件都由仓库里的文件生成，不临场手写。
 
@@ -12,7 +12,23 @@ GitHub 的 Release 不会从 tag 自动生成，要单独建。一次发布 = **
 4. `PYTHON=<你的 python> bash tools/smoke.sh` 过。
 5. 提交以上改动，`git tag <版本> && git push origin main <版本>`。
 
-## 1. 打附件
+## 1. 推 tag 自动发布（推荐）
+
+`.github/workflows/release.yml` 监听 `x.y.z` 形式的 tag：
+
+```bash
+git tag 1.3.0 && git push origin main 1.3.0
+```
+
+Actions 页会出现 `release` 运行（约 3~5 分钟）：装依赖 → `tools/smoke.sh` → `tools/package-release.sh 1.3.0`（核对三处版本串与 `docs/releases/1.3.0.md` 存在）→ 取发布说明首行当标题、其余当正文 → `gh release create` 建 Release、传 zip 与 SHA256SUMS、标 Latest。
+
+- smoke 不过或版本串不一致：不会建 Release。修好提交后把 tag 挪到新提交再推（`git tag -f 1.3.0 && git push -f origin 1.3.0`），或在 Actions 页 **Run workflow** 填 tag 重跑。
+- Release 已存在再跑：只更新标题 / 正文 / 覆盖附件，不会建第二个。
+- 发布说明文件必须在打 tag 的那个提交里，否则 checkout 到 tag 时找不到它。
+
+下面第 1~3 节是手动流程，workflow 挂了或想补发历史版本时用。
+
+## 1a. 打附件（手动）
 
 ```bash
 bash tools/package-release.sh 1.2.0
@@ -20,7 +36,7 @@ bash tools/package-release.sh 1.2.0
 
 脚本会核对 tag 与三处版本串、生成 `dist/ppt-ultra-1.2.0.zip`（只含 `skills/ppt-ultra`，排除 node_modules / 缓存 / 输出）和 `dist/SHA256SUMS`。`dist/` 已在 `.gitignore`。
 
-## 2. 在 GitHub 网页上建 Release
+## 2. 在 GitHub 网页上建 Release（手动）
 
 1. 打开 https://github.com/runnerback/PPT-Ultra/releases → 右上 **Draft a new release**。
 2. **Choose a tag**：下拉里选已推送的 `1.2.0`（不要在这里新建 tag，tag 已经指在正确的提交上）。Target 保持 `main`。
@@ -32,7 +48,7 @@ bash tools/package-release.sh 1.2.0
 
 发布后检查：Releases 页顶部出现 1.2.0 带 Latest 标签；README 的 version 徽章链接能落到它；附件区有 zip + SHA256SUMS + 两个 Source code 包。
 
-## 3. 用命令行建（可选，等价）
+## 3. 用命令行建（手动，等价）
 
 需要 `gh auth login` 过一次：
 
