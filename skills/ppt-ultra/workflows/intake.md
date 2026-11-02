@@ -65,6 +65,7 @@ HTML 路由从统一风格目录里选，选定的风格同时决定用哪个引
 | 用户整体委托（"都你定""直接开干"） | 自行定路由和风格，在最终交付说明里列出全部假设 |
 | 只说内容"随意 / 自拟" | 只自拟内容；格式、风格、页数这类用户没给的，照常按 Q1/Q2 提问 |
 | 非交互且格式未知 | ② Themed，按其非交互规则执行（交付 HTML） |
+| 消息是 `host/build_prompt.py` 渲染的宿主 brief（开头「宿主契约 v1」） | **跳过本阶段**：路由 / 风格 / 页数 / 字体都在 brief 里，直接读 [`profiles/host-quick.md`](./profiles/host-quick.md) |
 | 非交互且明确要 PPTX | Native PPTX 的 Quick profile（Default 有阻塞闸门，非交互环境走不通） |
 | 非交互且明确要 PPTX，且内容以表格 / 数字 / 流程为主，或宿主声明不具备逐页 SVG 创作能力 | Native PPTX 的 Spec profile（[`spec-native.md`](./spec-native.md)）：一份规格 JSON 一次成片，无任何闸门 |
 

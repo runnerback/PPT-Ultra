@@ -23,6 +23,7 @@ Maintainer-only inventory for adding, moving, or removing workflow documents. Ru
 | `beautify-pptx` | Generation profile | [`profiles/beautify-pptx.md`](./profiles/beautify-pptx.md) | Generate PPTX |
 | `quick-generate` | Generation profile | [`profiles/quick-generate.md`](./profiles/quick-generate.md) | Generate PPTX direct SVG-to-PPTX short circuit |
 | `spec-native` | Generation profile | [`spec-native.md`](./spec-native.md) | Generate PPTX deterministic spec JSON → native PPTX; engine `engines/spec-native/`; never loads Native engine scripts |
+| [`profiles/host-quick.md`](profiles/host-quick.md) | Generate PPTX 的宿主 profile：brief 定决定、精简读文档、不问不起服务、`host/collect_manifest.py` 收尾（1.2.0） |
 | `apply-template-workspace` | Template-input stage | [`stages/apply-template-workspace.md`](./stages/apply-template-workspace.md) | Non-free Default Stage-1 selection after confirmation, or Quick direct exact-root input |
 | `create-brand` | Template child workflow | [`create-template/create-brand.md`](./create-template/create-brand.md) | Create Template |
 | `create-style` | Template child workflow | [`create-template/create-style.md`](./create-template/create-style.md) | Create Template |

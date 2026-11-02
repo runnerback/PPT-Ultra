@@ -7,7 +7,7 @@
 **Turn a one-line request into a ready-to-use presentation: a web deck for live talks, a themed report deck, or a natively editable .pptx.**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.1-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -247,6 +247,7 @@ PPT-Ultra/                           # repository root
 ├── tools/smoke.sh                   # maintainer smoke test: integrity gate + Spec Native examples + validators
 ├── tools/upstream-check.sh          # maintainer: compare the three upstreams against tools/upstream-pins.json
 ├── tools/build-style-briefs.mjs     # maintainer: regenerate references/style-briefs/themes.json from the engines' own theme sources
+│   └── skills/ppt-ultra/host/       # host contract (1.2.0): brief.schema.json, build_prompt.py, collect_manifest.py for bots / pipelines
 └── skills/ppt-ultra/                # the skill itself
     ├── SKILL.md                     # single entry: load order, route table, global rules
     ├── NOTICE.md                    # components, licenses, upstream merge steps

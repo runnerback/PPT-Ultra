@@ -1,0 +1,51 @@
+# PPT Ultra · 宿主调用契约（host contract）
+
+> **版本**: 1.2.0 | **更新时间**: 2026-11-02 | 适用：bot / 流水线 / 脚本等**没有人在线**的宿主，让任何能跑 bash + 读写文件的 agent 运行时（Claude Code、dsh、Codex…）按 PPT Ultra 的 Native 路线出 .pptx。
+
+```
+宿主                                  agent 运行时                                  宿主
+brief.json ──build_prompt.py──▶ prompt ──▶ 读 SKILL.md → host-quick.md → 写 SVG → 门禁 → 导出 ──▶ collect_manifest.py ──▶ manifest.json
+```
+
+| 文件 | 作用 |
+|---|---|
+| [`brief.schema.json`](brief.schema.json) | brief 的 JSON Schema：任务 id、WORK / SKILL_DIR / python、作品信息、页数与 roster、风格（visual_style / 配色 / **字体**）、材料、图片、约束、must_keep / must_avoid、改稿意见、输出文件名 |
+| [`build_prompt.py`](build_prompt.py) | 校验 brief（路径存在、页数与 roster 一致、字体给全、颜色合法）并渲染成确定性的中文 prompt；`--check` 只校验 |
+| [`collect_manifest.py`](collect_manifest.py) | 运行结束后程序化收集 `manifest.json`：项目目录、最新 pptx、检查器 / postflight 报告、pptx 本体（页数、原生 chart / table 数、字体）、`--preflight` 用 LibreOffice 转 PDF 并核页数 |
+| [`examples/`](examples/) | 一份虚构材料 + brief 示例 |
+| [`../workflows/profiles/host-quick.md`](../workflows/profiles/host-quick.md) | agent 侧的运行时 authority（Quick 的宿主版：精简读文档、不问、不起服务、改稿规则） |
+
+## 接入三步
+
+```bash
+# 1) 宿主准备 WORK，把材料放进去，写 brief.json（work_dir / skill_dir / python 都是绝对路径）
+python skills/ppt-ultra/host/build_prompt.py WORK/brief.json --check
+python skills/ppt-ultra/host/build_prompt.py WORK/brief.json -o WORK/prompt.md
+
+# 2) 把 prompt.md 作为用户消息交给 agent 运行时（工作目录 = WORK；需要持久 bash + 文件读写；不要开 live preview）
+#    agent 读 SKILL.md → workflows/profiles/host-quick.md → 写 SVG → 门禁 → 导出 → 自己跑 collect_manifest.py
+
+# 3) 宿主再跑一次 collect_manifest（防 agent 漏跑），只信它的输出
+python skills/ppt-ultra/host/collect_manifest.py WORK --preflight --pptx-name deck.pptx -o WORK/manifest.json
+```
+
+`manifest.json` 关键字段：`ok`、`pptx`、`deck.slides / charts / tables / fonts`、`quality`（检查器 blocking / introduced 数）、`postflight`（导出器 status / quality_gate）、`preflight`（LibreOffice 转 PDF 的 status / pages / pdf）、`workflow`（首末命令时间）、`error`。
+
+## 改稿
+
+同一 WORK、同一 job_id，brief 加 `revision.feedback`（可带 `previous_manifest`），再走一遍三步。agent 在已有项目上改页、重跑门禁、重新导出；新 pptx 带新时间戳，旧的保留。agent 运行时若支持会话续写（如 dsh 的 `session/resume`），复用同一会话能省掉重读文档。
+
+## 字体规则（最常见的翻车点）
+
+`style.fonts` 必须是**运行 agent / 做预检的机器上真实安装**的字体，agent 用它校准字宽、写进每页 `font-family`。按一套字体校准、用另一套渲染，检查器通过的页面也会溢出（实测微软雅黑校准 + Noto 渲染，13 页溢出 5~8 处）。Linux 宿主推荐 `Noto Sans CJK SC`；Windows / mac 看 PowerPoint 的人若没装它会回退到系统中文字体，Noto 的字宽更宽，回退后只会更宽松、不会溢出。
+
+## 运行时建议
+
+- 持久 bash + 文件读写；可以不给网络（零图片 + 不调研的 brief 不需要）。
+- 单任务 15~35 分钟（13 页：DeepSeek-V4-Pro 约 13 分钟，Claude 约 31 分钟），上限建议 30~40 分钟；超时直接杀，取消即作废。
+- 读文档约 2,200~3,400 行是固定开销，支持会话续写的运行时可在改稿时复用。
+- 模型侧已知坑：经阿里云 bailian 通道的模型（含 DeepSeek-V4-Pro、GLM）对长技术上下文会**随机**触发网关内容审查 400（`data_inspection_failed`）；2026-11-02 把失败那一刻的完整上下文精确重放两次都正常，说明是抽检误伤而非内容。宿主要做的是：遇到这个错在**同一会话**上续跑（上下文都在会话日志里，续跑提示「从上次停下的地方继续」），重试 2~3 次；不要重建任务。
+
+## 版本
+
+- 1.2.0（2026-11-02）：首版契约。brief v1、manifest v1、host-quick profile。

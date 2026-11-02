@@ -13,7 +13,7 @@ description: >
   horizontal swipe deck, 演讲者模式, theme01–theme12, ppt-master, guizang, dashi,
   spec-native, 规格 JSON, or a deterministic / data-dense .pptx report.
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
   fused_from: "ppt-master 6.8.0 (MIT); guizang-ppt-skill (AGPL-3.0); dashi-ppt 0.4.14 (AGPL-3.0); spec-native 1.0.0 (MIT, Runnerback)"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "MIT"
@@ -56,6 +56,7 @@ use CWD, or assume a repo checkout. If unavailable, ask; never search or guess.
 | Generate PPTX — ordinary Default | [`workflows/generate-pptx.md`](workflows/generate-pptx.md) |
 | Generate PPTX — ordinary explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
 | Generate PPTX — Spec (deterministic spec JSON → native PPTX, no SVG authoring) | [`workflows/spec-native.md`](workflows/spec-native.md) |
+| Generate PPTX — Host Quick (machine-written host brief from `host/build_prompt.py`; decisions pre-resolved, no questions, manifest at the end) | [`workflows/profiles/host-quick.md`](workflows/profiles/host-quick.md) |
 | Create Template | [`workflows/create-template.md`](workflows/create-template.md) |
 | Edit Native PPTX | [`workflows/edit-native-pptx.md`](workflows/edit-native-pptx.md) |
 
@@ -64,7 +65,9 @@ procedure after routing. Image to PPTX and Beautify are mutually exclusive;
 Image to PPTX activates Quick, while Beautify selects from explicit Quick
 intent. Never load both runtimes. Spec is a third Generate PPTX profile: it never
 loads `generate-pptx.md`, `quick-generate.md`, or any Native engine script, and a
-deck never mixes Spec with SVG authoring. Editorial and Themed are mutually exclusive
+deck never mixes Spec with SVG authoring. Host Quick is Quick driven by a host brief: it
+skips `intake.md` / `routing.md` (the brief fixed them), reads the trimmed core in
+`host-quick.md` §2, and ends with `host/collect_manifest.py`. Editorial and Themed are mutually exclusive
 HTML profiles. Supporting documents refine one route; they never compete with it.
 
 ## Engines and Shared Services

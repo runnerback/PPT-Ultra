@@ -21,6 +21,12 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 
 按 AGPL-3.0 第 5(a) 条，以下列出本包相对各上游版本的修改。
 
+**2026-11-02 — PPT Ultra 1.2.0（Runnerback，未发布）**
+
+- 新增**宿主调用契约** `host/`：`brief.schema.json`（宿主写的任务说明：WORK / SKILL_DIR / python、作品信息、页数与 roster、风格与字体、材料、约束、改稿意见、输出名）、`build_prompt.py`（校验并渲染确定性 prompt）、`collect_manifest.py`（程序化收集 manifest.json：项目、最新 pptx、检查器 / postflight 报告、pptx 页数 / 原生 chart / table / 字体、LibreOffice 预检）、`examples/`、`README.md`。
+- 新增 `workflows/profiles/host-quick.md`：Generate PPTX 的宿主 profile——Quick 的决定权收回宿主，跳过 intake / routing，精简核心包读文档，不问不起服务，改稿在同一项目上做，收尾跑 collect_manifest。`SKILL.md` 运行时表、`routing.md` §8、`intake.md` §3、`workflows/index.md` 各加一行。
+- 基准教训写进契约：校准字体必须是渲染端真实安装的字体（Linux 宿主用 Noto Sans CJK SC）；阿里云通道模型对长技术上下文可能触发网关内容审查。
+
 **2026-11-02 — PPT Ultra 1.1.1（Runnerback，未发布）**
 
 - 新增跨引擎风格 brief 表 `references/style-briefs/themes.json`（由仓库级 `tools/build-style-briefs.mjs` 从 Editorial 主题表、Themed `theme-profiles.mjs` + `options.md`、Spec Native `pptx_style.py` 生成，不手抄）：每个主题给 `html`（本引擎选法）/ `native_style_brief`（Native 路线风格 brief）/ `spec_style`（Spec profile 的 `style`，暗底主题为 null）三种消费方式，另给 Spec 默认风格转 Editorial 瑞士风的 `gz-theme.mjs brand` 配方。`workflows/intake.md` §2.1 跨格式映射改为取表、不再看风格图猜色；`workflows/spec-native.md` §4 与 `references/spec-native-layouts.md` 的 `style` 行指向它。
