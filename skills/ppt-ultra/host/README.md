@@ -1,6 +1,6 @@
 # PPT Ultra · 宿主调用契约（host contract）
 
-> **版本**: 1.2.0 | **更新时间**: 2026-11-02 | 适用：bot / 流水线 / 脚本等**没有人在线**的宿主，让任何能跑 bash + 读写文件的 agent 运行时（Claude Code、dsh、Codex…）按 PPT Ultra 的 Native 路线出 .pptx。
+> **版本**: 1.2.1（未发布） | **更新时间**: 2026-11-03 | 适用：bot / 流水线 / 脚本等**没有人在线**的宿主，让任何能跑 bash + 读写文件的 agent 运行时（Claude Code、dsh、Codex…）按 PPT Ultra 的 Native 路线出 .pptx。
 
 ```
 宿主                                  agent 运行时                                  宿主
@@ -9,7 +9,7 @@ brief.json ──build_prompt.py──▶ prompt ──▶ 读 SKILL.md → host
 
 | 文件 | 作用 |
 |---|---|
-| [`brief.schema.json`](brief.schema.json) | brief 的 JSON Schema：任务 id、WORK / SKILL_DIR / python、作品信息、页数与 roster、风格（visual_style / 配色 / **字体**）、材料、图片、约束、must_keep / must_avoid、改稿意见、输出文件名 |
+| [`brief.schema.json`](brief.schema.json) | brief 的 JSON Schema：任务 id、WORK / SKILL_DIR / python、作品信息、页数与 roster、风格（visual_style / 配色 / **字体**）、材料、图片、约束（含 `page_numbers`：false = 全程无页码）、must_keep / must_avoid、改稿意见、输出文件名 |
 | [`build_prompt.py`](build_prompt.py) | 校验 brief（路径存在、页数与 roster 一致、字体给全、颜色合法）并渲染成确定性的中文 prompt；`--check` 只校验 |
 | [`collect_manifest.py`](collect_manifest.py) | 运行结束后程序化收集 `manifest.json`：项目目录、最新 pptx、检查器 / postflight 报告、pptx 本体（页数、原生 chart / table 数、字体）、`--preflight` 用 LibreOffice 转 PDF 并核页数 |
 | [`examples/`](examples/) | 一份虚构材料 + brief 示例 |
@@ -37,7 +37,7 @@ python skills/ppt-ultra/host/build_prompt.py WORK/brief.json -o WORK/prompt.md
 python skills/ppt-ultra/host/collect_manifest.py WORK --preflight --brief WORK/brief.json --pptx-name deck.pptx -o WORK/manifest.json
 ```
 
-`manifest.json` 关键字段：`ok`、`pptx`、`deck.slides / charts / tables / fonts / theme_fonts`、`quality`（检查器 blocking / introduced 数）、`postflight`（导出器 status / quality_gate）、`preflight`（LibreOffice 转 PDF 的 status / pages / pdf）、`forbidden_hits`（brief.forbidden_strings 在页面文字里的命中，有命中 ok=false）、`workflow`（首末命令时间）、`error`。brief 的 `must_avoid` 是给 agent 看的说明，`forbidden_strings` 才是程序硬校验的字面字串，两者配合用。
+`manifest.json` 关键字段：`ok`、`pptx`、`deck.slides / charts / tables / fonts / theme_fonts`、`quality`（检查器 blocking / introduced 数）、`postflight`（导出器 status / quality_gate）、`preflight`（LibreOffice 转 PDF 的 status / pages / pdf）、`forbidden_hits`（brief.forbidden_strings 在页面文字里的命中，有命中 ok=false）、`page_number_hits`（`constraints.page_numbers=false` 时页码文字 / 标记的命中，有命中 ok=false）、`workflow`（首末命令时间）、`error`。brief 的 `must_avoid` 是给 agent 看的说明，`forbidden_strings` 才是程序硬校验的字面字串，两者配合用。
 
 ## 改稿
 
@@ -58,4 +58,5 @@ python skills/ppt-ultra/host/collect_manifest.py WORK --preflight --brief WORK/b
 
 ## 版本
 
+- 1.2.1（2026-11-03，未发布）：brief `constraints.page_numbers`（默认 true）——false 时 pptx / html 两种 prompt 都渲染「页码：不要」硬规则，`collect_manifest.py` 复核页码文字（`N / M` / 第 N 页 / Page N、page-number / slide-number 标记；html 看每个 slide 里的 `NN / TOTAL`），命中 `page_number_hits` 且 ok=false。brief_version 不变（可选字段，老 brief 行为不变）。
 - 1.2.0（2026-11-02）：首版契约。brief v1、manifest v1、host-quick profile。

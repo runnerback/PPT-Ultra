@@ -47,7 +47,8 @@
     "native_charts_tables": true,
     "ai_images": false,
     "web_research": false,
-    "zero_image": true
+    "zero_image": true,
+    "page_numbers": true
   },
   "must_keep": ["口径日期 2026-10-15"],
   "must_avoid": ["任何材料里没有的数字", "厂商与型号名"],

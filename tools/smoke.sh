@@ -28,6 +28,16 @@ for f in "$SKILL"/engines/spec-native/examples/*.json; do
 done
 # 错误路径必须报错
 if "$PY" "$SKILL/engines/spec-native/spec_to_pptx.py" <(printf '{"slides":[{"layout":"nope","title":"x"}]}') --check >/dev/null 2>&1; then echo "FAIL: 未知版式没有报错"; fail=1; else echo "error path ok"; fi
+# page_numbers：05-images 规格 page_numbers=false → 产物没有 pageno 形状；01-basic 默认有
+if "$PY" - "$OUT" <<'PY'
+import re, sys, zipfile
+out = sys.argv[1]
+def has(p):
+    z = zipfile.ZipFile(p)
+    return any(b'name="pageno"' in z.read(n) for n in z.namelist() if re.fullmatch(r'ppt/slides/slide\d+\.xml', n))
+sys.exit(0 if has(f"{out}/01-basic.pptx") and not has(f"{out}/05-images.pptx") else 1)
+PY
+then echo "page_numbers ok"; else echo "FAIL: page_numbers（01-basic 应有 pageno，05-images 不应有）"; fail=1; fi
 
 echo "== 2b. style briefs =="
 if command -v node >/dev/null 2>&1; then
@@ -60,6 +70,17 @@ if "$PY" "$SKILL/host/build_prompt.py" "$HOSTW/brief.json" -o "$HOSTW/prompt.md"
 mkdir -p "$HOSTW/proj_x/svg_output" "$HOSTW/proj_x/exports"; : > "$HOSTW/proj_x/svg_output/01_cover.svg"; cp "$OUT/01-basic.pptx" "$HOSTW/proj_x/exports/proj_x.pptx"
 if r="$("$PY" "$SKILL/host/collect_manifest.py" "$HOSTW" --pptx-name deck.pptx)" && [[ -f "$HOSTW/deck.pptx" ]]; then echo "collect_manifest ok: $r"; else echo "FAIL: collect_manifest: $r"; fail=1; fi
 if "$PY" "$SKILL/host/collect_manifest.py" "$HOSTW/in" >/dev/null 2>&1; then echo "FAIL: 空目录应当 ok=false"; fail=1; else echo "collect_manifest empty-dir error path ok"; fi
+# page_numbers=false 的 brief：svg 里有拆成两个 tspan 的「3 / 12」→ ok=false 带 page_number_hits；默认 brief 不复核
+printf '<svg xmlns="http://www.w3.org/2000/svg"><text x="1200" y="700"><tspan>3</tspan><tspan> / 12</tspan></text></svg>' > "$HOSTW/proj_x/svg_output/03_x.svg"
+"$PY" - "$HOSTW" <<'PY'
+import json, sys
+work = sys.argv[1]
+b = json.load(open(f"{work}/brief.json", encoding="utf-8")); b.setdefault("constraints", {})["page_numbers"] = False
+json.dump(b, open(f"{work}/brief-nopn.json", "w", encoding="utf-8"), ensure_ascii=False)
+PY
+if "$PY" "$SKILL/host/collect_manifest.py" "$HOSTW" --brief "$HOSTW/brief-nopn.json" -o "$HOSTW/manifest-nopn.json" >/dev/null 2>&1; then echo "FAIL: page_numbers=false 时页码文字应当 ok=false"; fail=1
+elif grep -q '"3 / 12"' "$HOSTW/manifest-nopn.json"; then echo "collect_manifest page_numbers check ok"; else echo "FAIL: manifest 没记 page_number_hits"; fail=1; fi
+if "$PY" "$SKILL/host/collect_manifest.py" "$HOSTW" --brief "$HOSTW/brief.json" -o "$HOSTW/manifest-pn.json" >/dev/null 2>&1; then echo "collect_manifest default brief ok"; else echo "FAIL: 默认 brief 不应复核页码"; fail=1; fi
 # html 交付：brief.html.example 渲染 + 合成一个 index.html 跑 html 模式（有 node 时校验器会跑，这里只看清单与占位检查）
 "$PY" - "$SKILL" "$HOSTW" <<'PY'
 import json, sys
@@ -74,6 +95,16 @@ printf '<html data-family="swiss" data-theme="ikb"><head><title>t</title></head>
 if "$PY" "$SKILL/host/collect_manifest.py" "$HTMLW" --deliverable html >/dev/null 2>&1; then echo "FAIL: 残留占位应当 ok=false"; fail=1; else echo "collect_manifest html placeholder check ok"; fi
 printf '<html data-family="swiss" data-theme="ikb"><head><title>t</title></head><body><section class="slide hero dark"></section><section class="slide light">ok</section></body></html>' > "$HTMLW/deck/index.html"
 if r="$("$PY" "$SKILL/host/collect_manifest.py" "$HTMLW" --deliverable html --copy-as deck.html 2>/dev/null)" && [[ -f "$HTMLW/deck.html" ]]; then echo "collect_manifest html ok: $r"; else echo "FAIL: collect_manifest html: $r"; fail=1; fi
+# html + page_numbers=false：chrome 里的「01 / 02」→ ok=false
+"$PY" - "$HOSTW" <<'PY'
+import json, sys
+work = sys.argv[1]
+b = json.load(open(f"{work}/brief-html.json", encoding="utf-8")); b.setdefault("constraints", {})["page_numbers"] = False
+json.dump(b, open(f"{work}/brief-html-nopn.json", "w", encoding="utf-8"), ensure_ascii=False)
+PY
+printf '<html data-family="swiss" data-theme="ikb"><head><title>t</title></head><body><section class="slide hero dark"><div class="chrome"><div>A</div><div>01 / 02</div></div></section><section class="slide light">ok</section></body></html>' > "$HTMLW/deck/index.html"
+if "$PY" "$SKILL/host/collect_manifest.py" "$HTMLW" --brief "$HOSTW/brief-html-nopn.json" --deliverable html -o "$HTMLW/manifest-nopn.json" >/dev/null 2>&1; then echo "FAIL: html page_numbers=false 时 chrome 页码应当 ok=false"; fail=1
+elif grep -q '"01 / 02"' "$HTMLW/manifest-nopn.json"; then echo "collect_manifest html page_numbers check ok"; else echo "FAIL: html manifest 没记 page_number_hits"; fail=1; fi
 
 echo "== 3. html-editorial runtime sync =="
 if command -v node >/dev/null 2>&1; then

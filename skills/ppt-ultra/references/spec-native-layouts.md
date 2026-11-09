@@ -14,6 +14,7 @@ description: Spec Native engine field reference — top-level spec keys, the 31 
 | `language` | 否 | `zh`（默认）/ `en`；只影响引擎自带文案（谢谢 / 引用出处 / 优势 / 不足 / 默认卡片标题），不影响你写的内容 |
 | `style` | 否 | `{"palette": {...}, "fonts": {"cjk", "latin"}, "series_colors": [...]}`，见引擎 README §5；要套 HTML 引擎的某个主题，整份取 [`style-briefs/themes.json`](style-briefs/themes.json) 该主题的 `spec_style`（浅底主题才有） |
 | `thanks_line` | 否 | 封底致辞一句；不给就只有「谢谢」+ 标题 / 作者 / 日期 |
+| `page_numbers` | 否 | `true`（默认）/ `false`；false 时任何页（含章节页、封底、引用出处页）都不画右下角「N / M」 |
 | `references` | 否 | `[{"num", "title", "path"?, "changed"?, "author"?, "url"?}]`；给了就在最后追加「引用出处」页，正文里 `[n]` 自动渲染为上标角标 |
 | `slides` | 是 | 页数组；第 1 页 `cover`，最后 1 页 `closing`；不要写 `thanks` / `references` 页，引擎自动追加并忽略 |
 

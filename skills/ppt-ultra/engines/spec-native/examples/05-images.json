@@ -3,6 +3,7 @@
   "subtitle": "image / image_split / image_grid / image_callout / image_bg / vendors / logo_table；图片为示例占位图",
   "author": "Spec Native engine",
   "date": "2026-11-02",
+  "page_numbers": false,
   "slides": [
     { "layout": "cover", "title": "图片与厂商版式示例", "subtitle": "相对路径相对 spec 文件所在目录" },
     { "layout": "image", "title": "整图页：原图等比缩放居中", "image": "images/sample-a.png", "caption": "示例占位图 A（1280×720）", "bullets": ["图占左侧 62%，要点在右", "没有 bullets 时图占满内容区"], "takeaway": "图片页用于截图、架构图原图" },

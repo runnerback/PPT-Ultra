@@ -81,7 +81,8 @@
     "native_charts_tables": true,
     "ai_images": false,
     "web_research": false,
-    "zero_image": true
+    "zero_image": true,
+    "page_numbers": true
   },
   "must_keep": [
     "口径日期 2026-10-15"

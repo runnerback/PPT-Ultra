@@ -403,7 +403,7 @@ def image_bg(ctx, sl, s, i):
     d.text(sl, 0.9, SH * 0.56, SW - 1.8, 1.3, _s(need(s, 'title')), size=30, bold=True, color=C['white'], anchor='middle', name='bg.title', margins=(0, 0), line_spacing=1.15)
     if _s(s.get('subtitle')):
         d.text(sl, 0.9, SH * 0.56 + 1.35, SW - 1.8, 1.0, _s(s['subtitle']), size=15, color='DCE6F5', name='bg.sub', margins=(0, 0), line_spacing=1.25)
-    d.text(sl, SW - ctx['MARGIN'] - 1.0, SH - 0.27, 1.0, 0.22, f'{i} / {ctx["total"]}', size=9, color='DCE6F5', align='right', name='pageno', margins=(0, 0))
+    d.page_number(sl, ctx['total'], color='DCE6F5')   # 顶层 page_numbers=false 时不画
     return 0
 
 

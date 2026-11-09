@@ -9,6 +9,7 @@ spec 顶层：
   { "title", "subtitle", "author", "date", "language": "zh|en"（默认 zh）,
     "style"?: {"palette": {...}, "fonts": {"cjk","latin"}, "series_colors": [...]}（整体覆盖风格，见 pptx_style.apply_style）,
     "thanks_line"?: 封底致辞一句（默认不出）,
+    "page_numbers"?: true|false（默认 true；false 时任何页都不画右下角「N / M」）,
     "references"?: [{"num": 1, "title", "path"?, "changed"?, "author"?, "url"?}]（正文角标 [n] 的出处，给了就在末尾加一页引用出处页）,
     "slides": [ { "layout": ..., "title", "subtitle"?, "takeaway"?, "notes"?, 各版式自己的字段 } ] }
 版式清单与字段见 references/spec-native-layouts.md；封底「谢谢」页固定由本脚本追加（spec 里的 thanks 页会被忽略）。
@@ -304,8 +305,7 @@ def _thanks_slide(d, spec, i, total, t):
     if meta:
         d.rule(sl, 0.75, 5.35, 3.2, weight=1.5, name='thanks.rule')
         d.text(sl, 0.75, 5.45, CONTENT_W - 0.3, 0.4, meta, size=12, color=C['mid'], name='thanks.meta', margins=(0, 0))
-    d.text(sl, SLIDE_W - MARGIN - 1.0, SLIDE_H - 0.27, 1.0, 0.22, f'{i} / {total}', size=9, color=C['mid'],
-           align='right', name='pageno', margins=(0, 0))
+    d.page_number(sl, total)
 
 
 def _references_slide(d, spec, refs, i, total, t):
@@ -367,6 +367,9 @@ def build(spec, out_path, base_dir=None):
     t = I18N[lang]
     if spec.get('style'):
         pptx_style.apply_style(spec['style'])
+    page_numbers = spec.get('page_numbers', True)
+    if not isinstance(page_numbers, bool):
+        raise ValueError(f'page_numbers 须为 true / false，收到 {page_numbers!r}')
     _resolve_paths(spec, base_dir)
     slides = [s for s in (spec.get('slides') or []) if s.get('layout') not in ('thanks', 'references')]
     if not slides:
@@ -377,6 +380,7 @@ def build(spec, out_path, base_dir=None):
         slides = slides + [{'layout': 'references'}]   # 引用出处页：最后一页，不计入有效页数
     total = len(slides)
     d = Deck()
+    d.page_numbers = page_numbers
     chart_count = 0
     for i, s in enumerate(slides, 1):
         s['_no'] = i
@@ -410,8 +414,7 @@ def build(spec, out_path, base_dir=None):
             if s.get('subtitle'):
                 d.text(sl, 0.9, 3.75, CONTENT_W, 0.9, s['subtitle'], size=14, color='DCE6F5', name='section.sub',
                        margins=(0, 0), line_spacing=1.2)
-            d.text(sl, SLIDE_W - MARGIN - 1.0, SLIDE_H - 0.27, 1.0, 0.22, f'{i} / {total}', size=9, color='DCE6F5',
-                   align='right', name='pageno', margins=(0, 0))
+            d.page_number(sl, total, color='DCE6F5')
             continue
         if layout == 'closing':
             d.rect(sl, 0, 0, SLIDE_W, SLIDE_H, fill=C['bg'], line=None, name='closing.bg')

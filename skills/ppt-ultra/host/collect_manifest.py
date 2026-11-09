@@ -11,7 +11,7 @@ host/collect_manifest.py · 从一次 host-quick / host-editorial 运行的 work
   - --preflight：有 soffice 就转 PDF 到 work_dir/preflight/，页数与 pptx 一致才算通过（没有 soffice 记 skipped，不装通过）
   - --preflight-font：预检用校准字体渲染（副本里替换导出器写死的 Microsoft YaHei），交付件不动
   - --pptx-name：顺手把最新 pptx 复制为 work_dir/<name>（agent 忘了复制时宿主兜住的是「复制」这一步，不是产物本身）
-  - --brief：读 brief.forbidden_strings，扫 svg_output 文字，命中记 forbidden_hits 且 ok=false
+  - --brief：读 brief.forbidden_strings，扫 svg_output 文字，命中记 forbidden_hits 且 ok=false；brief.constraints.page_numbers=false 时再扫页码（「N / M」/ 第 N 页 / Page N 文字节点、page-number / slide-number 标记；html 看每个 slide 里的「NN / TOTAL」），命中记 page_number_hits 且 ok=false（2026-11-03）
 退出码：找到 pptx 且（未做预检或预检通过）为 0，否则 1；manifest 不论成败都写出来。
 """
 import argparse
@@ -175,6 +175,51 @@ def forbidden_hits(project, brief_path):
     return hits
 
 
+PAGE_NUMBER_TEXT = re.compile(r'^(?:\d{1,3}\s*/\s*\d{1,3}|第\s*\d{1,3}\s*页|page\s*\d{1,3})$', re.I)
+
+
+def page_numbers_wanted(brief):
+    """brief.constraints.page_numbers 明确为 false 才复核页码（缺省 true = 按 skill 规范放）"""
+    return (brief.get('constraints') or {}).get('page_numbers', True) is not False
+
+
+def _texts_of_svg(raw):
+    """<text>…</text> 元素的可见文字（去掉 tspan 等子标签、合并空白），页码常被拆成多个 tspan 所以按整个 text 看"""
+    out = []
+    for m in re.finditer(r'<text\b[^>]*>(.*?)</text>', raw, flags=re.S | re.I):
+        t = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', m.group(1))).strip()
+        if t:
+            out.append(t)
+    return out
+
+
+def page_number_hits(project):
+    """page_numbers=false：svg_output 里任何只写着页码的文字节点（N / M、第 N 页、Page N）或 page-number / slide-number 标记都算命中"""
+    hits = []
+    for f in sorted(glob.glob(os.path.join(project, 'svg_output', '*.svg'))):
+        try:
+            raw = open(f, encoding='utf-8', errors='replace').read()
+        except OSError:
+            continue
+        found = [t for t in _texts_of_svg(raw) if PAGE_NUMBER_TEXT.match(t)]
+        if re.search(r'data-pptx-(?:role|placeholder)="(?:page-number|slide-number)"', raw):
+            found.append('data-pptx-role/placeholder=page-number')
+        if found:
+            hits.append({'file': f, 'texts': found[:5]})
+    return hits
+
+
+def page_number_hits_html(path):
+    """page_numbers=false（html）：每个 <section class="slide"> 里文本正好是「NN / TOTAL」这类页码的元素"""
+    txt = open(path, encoding='utf-8', errors='replace').read()
+    hits = []
+    for i, m in enumerate(re.finditer(r'<section\b[^>]*class="[^"]*\bslide\b[^"]*"[^>]*>(.*?)</section>', txt, flags=re.S | re.I), 1):
+        found = [t.strip() for t in re.findall(r'>([^<>]+)<', m.group(1)) if PAGE_NUMBER_TEXT.match(t.strip())]
+        if found:
+            hits.append({'slide': i, 'texts': found[:5]})
+    return hits
+
+
 def workflow_times(project):
     log = os.path.join(project, 'validation', 'workflow.log')
     if not os.path.isfile(log):
@@ -262,17 +307,20 @@ def main():
             m['validators'] = run_validators(html, brief.get('skill_dir'), h.get('family') or m['deck'].get('family'), h.get('target_minutes'))
             words = [w for w in (brief.get('forbidden_strings') or []) if isinstance(w, str) and w.strip()]
             m['forbidden_hits'] = forbidden_hits_text(html, words) if words else []
+            m['page_number_hits'] = [] if page_numbers_wanted(brief) else page_number_hits_html(html)
             copy_as = a.copy_as or a.pptx_name
             if copy_as:
                 dst = os.path.join(work, copy_as)
                 if os.path.abspath(dst) != os.path.abspath(html):
                     shutil.copyfile(html, dst)
                 m['html_copy'] = dst
-            m['ok'] = m['deck']['slides'] > 0 and m['deck']['placeholders'] == 0 and not m['forbidden_hits']
+            m['ok'] = m['deck']['slides'] > 0 and m['deck']['placeholders'] == 0 and not m['forbidden_hits'] and not m['page_number_hits']
             if m['deck']['placeholders']:
                 m['error'] = f"index.html 还有 {m['deck']['placeholders']} 处「[必填]」占位"
             elif m['forbidden_hits']:
                 m['error'] = '页面里出现禁用字串：' + '；'.join(f"「{h_['string']}」×{h_['count']}" for h_ in m['forbidden_hits'][:8])
+            elif m['page_number_hits']:
+                m['error'] = '页面里出现页码（brief 要求不放）：' + '；'.join(f"第 {h_['slide']} 页「{'、'.join(h_['texts'])}」" for h_ in m['page_number_hits'][:8])
         with open(out_path, 'w', encoding='utf-8') as f:
             json.dump(m, f, ensure_ascii=False, indent=2)
         print(json.dumps({'ok': m['ok'], 'manifest': out_path, 'html': m.get('html'), 'slides': (m.get('deck') or {}).get('slides'), 'error': m.get('error')}, ensure_ascii=False))
@@ -307,12 +355,16 @@ def main():
                 m['preflight'] = preflight(work, pptx, m['deck']['slides'], render_font=a.preflight_font)
             if a.brief:
                 m['forbidden_hits'] = forbidden_hits(project, a.brief)
+                if not page_numbers_wanted(brief):
+                    m['page_number_hits'] = page_number_hits(project)
             pf = m.get('preflight') or {}
-            m['ok'] = pf.get('status') in (None, 'ok', 'skipped', 'unknown') and m['deck']['slides'] > 0 and not m.get('forbidden_hits')
+            m['ok'] = pf.get('status') in (None, 'ok', 'skipped', 'unknown') and m['deck']['slides'] > 0 and not m.get('forbidden_hits') and not m.get('page_number_hits')
             if pf.get('status') == 'fail':
                 m['error'] = f'预检失败：{pf.get("reason")}'
             if m.get('forbidden_hits'):
                 m['error'] = '页面里出现禁用字串：' + '；'.join(f"{os.path.basename(h['file'])} 含「{h['string']}」" for h in m['forbidden_hits'][:8])
+            if m.get('page_number_hits'):
+                m['error'] = '页面里出现页码（brief 要求不放）：' + '；'.join(f"{os.path.basename(h['file'])}「{'、'.join(h['texts'])}」" for h in m['page_number_hits'][:8])
     with open(out_path, 'w', encoding='utf-8') as f:
         json.dump(m, f, ensure_ascii=False, indent=2)
     print(json.dumps({'ok': m['ok'], 'manifest': out_path, 'pptx': m.get('pptx'), 'slides': (m.get('deck') or {}).get('slides'),

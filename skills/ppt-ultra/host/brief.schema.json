@@ -275,6 +275,11 @@
           "type": "boolean",
           "default": true,
           "description": "true = 不放任何图片（images 为空时的默认）"
+        },
+        "page_numbers": {
+          "type": "boolean",
+          "default": true,
+          "description": "false = 任何页都不放页码：Native 不写「N / M」页脚计数与 data-pptx-role=page-number / slide-number 元素，html 的 .chrome 右侧不放 NN / TOTAL；collect_manifest.py 程序复核（page_number_hits），命中 ok=false"
         }
       }
     },

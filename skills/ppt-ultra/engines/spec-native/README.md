@@ -46,7 +46,7 @@ stdout 一行 JSON：成功 `{"ok": true, "slides": 12, "charts": 3, "out": "...
 | `02-charts.json` | 9 种图表、双系列、堆积、并排双图、kpi |
 | `03-diagrams.json` | flow / swimlane / sequence / hierarchy / timeline / layers / cycle / funnel / compare / pros_cons / matrix / quote / icons |
 | `04-evidence-en.json` | `language: en`、`style` 整体换色换字体、`[n]` 角标与自动引用出处页 |
-| `05-images.json` | image / image_split / image_grid / image_callout / image_bg / vendors / logo_table（相对路径图片） |
+| `05-images.json` | image / image_split / image_grid / image_callout / image_bg / vendors / logo_table（相对路径图片）；`page_numbers: false` 无页码 |
 
 ## 4. 规格速览
 
@@ -56,6 +56,7 @@ stdout 一行 JSON：成功 `{"ok": true, "slides": 12, "charts": 3, "out": "...
   "language": "zh",
   "style": { "palette": { "primary": "003F8F" }, "fonts": { "cjk": "微软雅黑", "latin": "Arial" }, "series_colors": ["003F8F", "C00000"] },
   "thanks_line": "可选：封底致辞一句",
+  "page_numbers": true,
   "references": [ { "num": 1, "title": "资料标题", "path": "位置", "changed": "2026-10-01", "author": "作者", "url": "https://…" } ],
   "slides": [
     { "layout": "cover", "title": "…", "subtitle": "…" },

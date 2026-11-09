@@ -181,6 +181,7 @@ class Deck:
         self.prs.slide_width = Inches(SLIDE_W)
         self.prs.slide_height = Inches(SLIDE_H)
         self.page_no = 0
+        self.page_numbers = True   # spec 顶层 page_numbers=false 时 page_number() 不画（ppt_build.build 设）
 
     # ---------- 页面 ----------
     def slide(self):
@@ -289,9 +290,12 @@ class Deck:
         return self.rect(slide, MARGIN, y, SLIDE_W - 2 * MARGIN, h, fill=C['primary'], line=None, name=name,
                          text=text, size=size, bold=True, color=C['white'], align='center', margins=(0.15, 0.02))
 
-    def page_number(self, slide, total, name='pageno'):
-        self.text(slide, SLIDE_W - MARGIN - 1.0, SLIDE_H - 0.27, 1.0, 0.22, f'{self.page_no} / {total}',
-                  size=9, color=C['mid'], align='right', name=name, margins=(0, 0))
+    def page_number(self, slide, total, name='pageno', color=None):
+        """右下角「N / M」；self.page_numbers 为 False 时不画。color 给深底页（章节页）用浅色"""
+        if not self.page_numbers:
+            return None
+        return self.text(slide, SLIDE_W - MARGIN - 1.0, SLIDE_H - 0.27, 1.0, 0.22, f'{self.page_no} / {total}',
+                         size=9, color=color or C['mid'], align='right', name=name, margins=(0, 0))
 
     def card(self, slide, x, y, w, h, title=None, lines=None, size=10, title_size=10.5, name='card',
              fill=None, title_fill=None, line_spacing=1.12, badge=None, body_color=None, space_after=2):

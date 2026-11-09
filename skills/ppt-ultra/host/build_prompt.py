@@ -7,6 +7,7 @@ host/build_prompt.py · 把宿主 brief（host/brief.schema.json）渲染成交�
       python host/build_prompt.py <brief.json> --check     只校验 brief，不输出 prompt
 校验：必填字段、枚举、材料 / 图片文件在 work_dir 下存在、总页数与 roster 一致、字体给全。错了直接报错退出码 2，不猜。
 改稿：brief.revision.feedback 存在 → 渲染改稿 prompt（在 work_dir 已有项目上改，不重建）。
+页码：constraints.page_numbers=false → pptx / html 两种 prompt 都渲染「页码：不要」硬规则，collect_manifest.py 复核（2026-11-03）。
 agent 收到 prompt 后：读 SKILL.md → 读 workflows/profiles/host-quick.md → 按它执行；最后跑 host/collect_manifest.py。
 """
 import argparse
@@ -16,7 +17,7 @@ import sys
 
 STYLE_DEFAULTS = {'visual_style': 'swiss-minimal', 'mode': 'pyramid', 'body_px': 18}
 CONSTRAINT_DEFAULTS = {'speaker_notes': False, 'custom_animations': False, 'narration': False, 'native_charts_tables': True,
-                       'ai_images': False, 'web_research': False, 'zero_image': True}
+                       'ai_images': False, 'web_research': False, 'zero_image': True, 'page_numbers': True}
 OUTPUT_DEFAULTS = {'pptx_name': 'deck.pptx', 'html_name': 'deck.html', 'manifest_name': 'manifest.json', 'log_name': 'HOST-LOG.md'}
 HTML_DEFAULTS = {'family': 'swiss', 'speaker_notes': True}
 HTML_THEMES = {'magazine': ('ink-classic', 'indigo-porcelain', 'forest-ink', 'kraft-paper', 'dune'), 'swiss': ('ikb', 'lemon', 'lemon-green', 'safety-orange')}
@@ -133,6 +134,8 @@ def render(b):
     keep_md = ('- 必须保留（原样）：\n' + _lines(b['must_keep'], '  - ')) if b.get('must_keep') else ''
     avoid_md = ('- 不许出现：\n' + _lines(b['must_avoid'], '  - ')) if b.get('must_avoid') else ''
     forbid_md = ('- **禁用字串（程序硬校验，导出前用 grep 逐个确认 svg_output 里一处都没有，命中就改写）**：' + '、'.join('「' + x + '」' for x in b['forbidden_strings'])) if b.get('forbidden_strings') else ''
+    pn_md = ('- 页码：按 skill 规范放（内容页页脚 N / M，封面不放）。' if cons['page_numbers'] else
+             '- **页码：不要**——任何页都不放页码、「N / M」页脚计数、`data-pptx-role="page-number"` 或 `slide-number` 元素，skill 文档里关于页脚页码的写法一律不用；导出前 `grep` 确认 svg_output 里没有这类文字，`collect_manifest.py` 会复核（page_number_hits），命中 ok=false。')
     prev_md = ('上一版 manifest：`' + W + '/' + rev['previous_manifest'] + '`。') if rev and rev.get('previous_manifest') else ''
     head = f"""你收到一份宿主交来的 PPT 任务（PPT Ultra 宿主契约 v1）。先读 `{S}/SKILL.md`，再读 `{S}/workflows/profiles/host-quick.md` 并严格按它执行；路由、profile、风格、页数、字体都已由宿主定好，不要再做 intake 提问，也不要自行改动这些决定。
 
@@ -171,6 +174,7 @@ def render(b):
     cons_md = f"""## 约束
 - Speaker Notes {"开" if cons["speaker_notes"] else "关"}、Custom Animations {"开" if cons["custom_animations"] else "关"}、旁白 {"开" if cons["narration"] else "关"}；AI 生图 {"允许" if cons["ai_images"] else "不允许"}；联网调研 {"允许" if cons["web_research"] else "不允许"}。
 - 图表 / 表格：{"有可比数值就用原生 chart、表格用原生 table（导出加 --native-charts-and-tables）" if cons["native_charts_tables"] else "全部用形状与文本，不用原生 chart / table"}。
+{pn_md}
 {keep_md}
 {avoid_md}
 {forbid_md}
@@ -212,6 +216,8 @@ def render_html(b):
     keep_md = ('- 必须保留（原样）：\n' + _lines(b['must_keep'], '  - ')) if b.get('must_keep') else ''
     avoid_md = ('- 不许出现：\n' + _lines(b['must_avoid'], '  - ')) if b.get('must_avoid') else ''
     forbid_md = ('- **禁用字串（程序硬校验，交付前 grep 确认 index.html 一处都没有）**：' + '、'.join('「' + x + '」' for x in b['forbidden_strings'])) if b.get('forbidden_strings') else ''
+    pn_md = ('- 页码：每页 `.chrome` 右侧 `NN / TOTAL`（模板约定）。' if cons['page_numbers'] else
+             '- **页码：不要**——每页 `.chrome` 右侧不放 `NN / TOTAL`，右上角也不放页码（演讲者视图自带的进度不算；模板 / checklist 里要求 chrome 放页码的条目一律不用）；`collect_manifest.py` 会复核（page_number_hits），命中 ok=false。')
     rev = b.get('revision')
     pages_md = (f"""## 页面（总页数 {pages["total"]}，严格等于，顺序与标题意图照此）
 | 页 | 标题意图 | 这页要完成的事 | 材料定位 |
@@ -252,6 +258,7 @@ WORK 下已有上一版 `deck/index.html`（host-editorial.md「改稿」一节�
 
 ## 约束
 - 联网调研 {"允许" if cons["web_research"] else "不允许"}；AI 生图 {"允许" if cons["ai_images"] else "不允许"}。
+{pn_md}
 {keep_md}
 {avoid_md}
 {forbid_md}

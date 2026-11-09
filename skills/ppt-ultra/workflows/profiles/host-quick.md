@@ -6,7 +6,7 @@ description: Host Quick profile — Generate PPTX run driven by a machine-writte
 
 > Generate PPTX 的 profile，不是独立路由。**进入条件**：用户消息来自 `host/build_prompt.py`（开头写着「宿主契约 v1」），或 WORK 下有 `host-brief.json`。它是 [`quick-generate.md`](./quick-generate.md) 的宿主版：Quick 把「不问人、自己定」交给 agent，Host Quick 把这些决定收回宿主——路由、页数、风格、字体、约束都在 brief 里写死，agent 只负责按材料写页面、过门禁、导出，并把产物清单交回程序。
 >
-> 版本：PPT Ultra 1.2.0（2026-11-02，Runnerback）。契约文件：[`host/brief.schema.json`](../../host/brief.schema.json)、[`host/build_prompt.py`](../../host/build_prompt.py)、[`host/collect_manifest.py`](../../host/collect_manifest.py)、说明 [`host/README.md`](../../host/README.md)。
+> 版本：PPT Ultra 1.2.0（2026-11-02，Runnerback）；1.2.1（2026-11-03）加 `constraints.page_numbers`。契约文件：[`host/brief.schema.json`](../../host/brief.schema.json)、[`host/build_prompt.py`](../../host/build_prompt.py)、[`host/collect_manifest.py`](../../host/collect_manifest.py)、说明 [`host/README.md`](../../host/README.md)。
 
 ## 1. 与 Quick 的差别
 
@@ -45,9 +45,9 @@ ${SKILL_DIR}/references/modes/<brief.style.mode>.md    # brief 给了 mode 才�
 1. **建项目**：`python project_manager.py init <slug> --quick-generate`（slug 用 brief.job_id）。注意它建出来的目录名**带日期后缀**（`<slug>_YYYYMMDD`），后续一律用 init 输出的真实路径。再 `import-sources <project_path> <brief 里每个材料的绝对路径>`。
 2. **规划（只在上下文）**：按 quick-generate.md §2「Pre-P01 resolution」做，但 roster / 页数 / 风格 / 配色 / 字体 / 阅读模式取 brief；brief 没给 roster 时自己在 `pages.total` 内分页。运动门禁：brief 的 `custom_animations=false` 就是「无信号」，不读 `animations.md`。
 3. **校准**：用 brief 渲染好的那条 `text_measure.py calibrate` 命令（字体就是 brief.style.fonts，不要换），把每个角色的 chars-per-100px 记在上下文里，所有文本框按它算宽。**再留 10% 余量**：一行能放的字数 = 校准值 × 宽度 × 0.9，卡片 / 表格单元格里的中文句子宁可多拆一行；2026-11-02 实测校准值贴着用、检查器 0 error 的页面，在真实字体下仍有 3~5 处贴边或重叠。
-4. **写 SVG**：文件名两位连续编号（`01_cover.svg` … `NN_end.svg`），每页根 `<svg viewBox="0 0 1280 720" lang="<brief.language>" font-family="<brief.style.fonts.cjk>" data-pptx-page-role="…">`；数字只能来自材料；`must_keep` 原样写，`must_avoid` 绝不出现；信息密集页宁可拆行、缩短措辞，不得缩小 brief 规定的字号角色（annotation 允许 ±2px）。
+4. **写 SVG**：文件名两位连续编号（`01_cover.svg` … `NN_end.svg`），每页根 `<svg viewBox="0 0 1280 720" lang="<brief.language>" font-family="<brief.style.fonts.cjk>" data-pptx-page-role="…">`；数字只能来自材料；`must_keep` 原样写，`must_avoid` 绝不出现；信息密集页宁可拆行、缩短措辞，不得缩小 brief 规定的字号角色（annotation 允许 ±2px）。brief `constraints.page_numbers=false` 时**任何页都不放页码**（「N / M」页脚计数、`data-pptx-role="page-number"` / `slide-number`），skill 文档里关于页脚页码的写法一律不用。
 5. **门禁**：roster ≥ 7 页时 P05 后跑 `svg_quality_checker.py <project> --quick-generate --canonical-authoring --stage early --json`，修完再继续；全部写完跑 `--stage final --json`，0 error 才导出；每轮修复后重跑同一命令。连续 3 轮仍有 error：把剩余 error 原文记进日志，仍然导出（exporter 若拒绝就记原因）。
-6. **禁用字串**：brief 给了 `forbidden_strings` 时，导出前 `grep -l` 逐个确认 `svg_output/*.svg` 一处都没有（写在 `<text>` 里的内容也算），命中就改写；`collect_manifest.py --brief` 会再扫一遍，命中直接 ok=false。
+6. **禁用字串与页码**：brief 给了 `forbidden_strings` 时，导出前 `grep -l` 逐个确认 `svg_output/*.svg` 一处都没有（写在 `<text>` 里的内容也算），命中就改写；`page_numbers=false` 时同样在导出前 `grep -lE '[0-9]+[[:space:]]*/[[:space:]]*[0-9]+' svg_output/*.svg` 看一遍（分成多个 tspan 的也算），有就删掉。`collect_manifest.py --brief` 会再扫一遍，命中直接 ok=false（`forbidden_hits` / `page_number_hits`）。
 7. **导出**：`svg_to_pptx.py <project> --quick-generate --no-notes`（brief 开了 speaker_notes 才 `--with-notes`；`native_charts_tables=true` 且页面里有原生 chart / table 决定时加 `--native-charts-and-tables`）。
 8. **收尾**：复制最终 pptx 为 `<WORK>/<output.pptx_name>`；写 `<WORK>/<output.log_name>`（时间线、读过的文档、每次检查器 errors / warnings 与修复、自行决定的事、每页一行自评）；跑 `python ${SKILL_DIR}/host/collect_manifest.py "<WORK>" --preflight --brief "<WORK>/brief.json" -o "<WORK>/<output.manifest_name>"`；最后一条回复只写一行 JSON `{"ok": …, "manifest": "…", "note": "…"}`。导不出也要走完 8。
 
@@ -62,4 +62,5 @@ ${SKILL_DIR}/references/modes/<brief.style.mode>.md    # brief 给了 mode 才�
 - 运行时：给 agent 持久 bash + 文件读写；不给网络也能跑（零图片、无调研）；单任务上限建议 30~40 分钟；取消 = 作废，重跑用新 job_id。模型网关若有内容审查（阿里云 bailian 通道会随机误伤长技术上下文），宿主在同一会话上续跑重试，不重建。
 - 字体：brief.style.fonts 必须是**宿主渲染 / 预检机器上真实安装**的字体，否则检查器通过的页面在替代字体下会溢出（实测：按微软雅黑校准、用 Noto 渲染，13 页里 5~8 处溢出）。Linux 宿主用 `Noto Sans CJK SC`（思源黑体）最稳。导出器会把 CJK 字体族统一写成 Microsoft YaHei（可移植性策略），SVG 字体只影响校准与预检，预检用 `collect_manifest.py --preflight-font` 换回校准字体渲染副本。
 - 产物：只信 `manifest.json`（程序收集），不要解析 agent 的自然语言回复；`ok=false` 时看 `error` 与 `<log_name>`。
+- 页码：要无页码 deck 给 `constraints.page_numbers=false`（prompt 渲染成硬规则 + manifest 复核）；缺省 true 按 skill 规范放。
 - 参考实现：`host/README.md`。

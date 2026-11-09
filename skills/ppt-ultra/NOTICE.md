@@ -21,6 +21,11 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 
 按 AGPL-3.0 第 5(a) 条，以下列出本包相对各上游版本的修改。
 
+**2026-11-03 — PPT Ultra 1.2.1（Runnerback，未发布）**
+
+- 宿主契约加 `constraints.page_numbers`（默认 true）：false 时 `build_prompt.py` 对 pptx / html 两种交付都渲染「页码：不要」硬规则，`collect_manifest.py` 复核页码文字与标记（`page_number_hits`，命中 ok=false）；`host-quick.md` / `host-editorial.md` 各加一句。
+- Spec Native 引擎顶层字段 `page_numbers`（默认 true）：false 时任何页（含章节页、封底、引用页）都不画右下角「N / M」；`Deck.page_number` 收口三处直写；示例 `05-images.json` 用 false，`tools/smoke.sh` 核对产物。
+
 **2026-11-02 — PPT Ultra 1.2.0（Runnerback）**
 
 - 新增**宿主调用契约** `host/`：`brief.schema.json`（宿主写的任务说明：WORK / SKILL_DIR / python、作品信息、页数与 roster、风格与字体、材料、约束、改稿意见、输出名）、`build_prompt.py`（校验并渲染确定性 prompt）、`collect_manifest.py`（程序化收集 manifest.json：项目、最新 pptx、检查器 / postflight 报告、pptx 页数 / 原生 chart / table / 字体、LibreOffice 预检）、`examples/`、`README.md`。
