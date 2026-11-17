@@ -21,10 +21,14 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 
 按 AGPL-3.0 第 5(a) 条，以下列出本包相对各上游版本的修改。
 
-**2026-11-03 — PPT Ultra 1.2.1（Runnerback，未发布）**
+**2026-11-17 — PPT Ultra 1.2.1（Runnerback）**
 
 - 宿主契约加 `constraints.page_numbers`（默认 true）：false 时 `build_prompt.py` 对 pptx / html 两种交付都渲染「页码：不要」硬规则，`collect_manifest.py` 复核页码文字与标记（`page_number_hits`，命中 ok=false）；`host-quick.md` / `host-editorial.md` 各加一句。
 - Spec Native 引擎顶层字段 `page_numbers`（默认 true）：false 时任何页（含章节页、封底、引用页）都不画右下角「N / M」；`Deck.page_number` 收口三处直写；示例 `05-images.json` 用 false，`tools/smoke.sh` 核对产物。
+- 新增紧凑上传包：`tools/package-upload.py` 保留可直接读取的工作流、参考文档及许可证，将完整技能无损归档，上传文件数从 13,375 个降至 268 个；不删减引擎、模板、图标、字体或音效。
+- 新增 `tools/upload_bootstrap.py`：首次运行校验归档及每个文件的 SHA-256，在可写缓存恢复完整技能后加载原始入口；支持缓存复用、自定义缓存目录和完整性复核，初始化无需联网或额外依赖。
+- 新增 `tools/test_upload_package.py`：验证完整文件集合与逐字节一致性、缓存复用、损坏包和非法路径拒绝，并支持对恢复后的技能运行原有冒烟套件。
+- 自动 Release 同时附带完整目录包、紧凑上传包和校验和；修正发布结果日志使用 `gh release view` 不支持的 `isLatest` 字段导致的失败。
 
 **2026-11-02 — PPT Ultra 1.2.0（Runnerback）**
 

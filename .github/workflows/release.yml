@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "要发布的 tag（已推送到仓库，如 1.2.0）"
+        description: "要发布的 tag（已推送到仓库，如 1.2.1）"
         required: true
         type: string
 
@@ -73,5 +73,5 @@ jobs:
             gh release create "$VERSION" "dist/ppt-ultra-$VERSION.zip" "dist/ppt-ultra-$VERSION-upload.zip" dist/SHA256SUMS \
               --title "$TITLE" --notes-file dist/body.md --latest --verify-tag
           fi
-          gh release view "$VERSION" --json tagName,name,isLatest,isDraft,isPrerelease,assets \
-            --jq '"\(.tagName) | \(.name) | latest=\(.isLatest) draft=\(.isDraft) pre=\(.isPrerelease) | assets: \([.assets[].name] | join(", "))"'
+          gh release view "$VERSION" --json tagName,name,isDraft,isPrerelease,assets \
+            --jq '"\(.tagName) | \(.name) | draft=\(.isDraft) pre=\(.isPrerelease) | assets: \([.assets[].name] | join(", "))"'
