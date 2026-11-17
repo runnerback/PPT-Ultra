@@ -68,9 +68,9 @@ jobs:
           if gh release view "$VERSION" >/dev/null 2>&1; then
             echo "Release $VERSION 已存在：更新正文与附件"
             gh release edit "$VERSION" --title "$TITLE" --notes-file dist/body.md --latest
-            gh release upload "$VERSION" "dist/ppt-ultra-$VERSION.zip" dist/SHA256SUMS --clobber
+            gh release upload "$VERSION" "dist/ppt-ultra-$VERSION.zip" "dist/ppt-ultra-$VERSION-upload.zip" dist/SHA256SUMS --clobber
           else
-            gh release create "$VERSION" "dist/ppt-ultra-$VERSION.zip" dist/SHA256SUMS \
+            gh release create "$VERSION" "dist/ppt-ultra-$VERSION.zip" "dist/ppt-ultra-$VERSION-upload.zip" dist/SHA256SUMS \
               --title "$TITLE" --notes-file dist/body.md --latest --verify-tag
           fi
           gh release view "$VERSION" --json tagName,name,isLatest,isDraft,isPrerelease,assets \

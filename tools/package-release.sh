@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # 打 GitHub Release 的附件（仓库根目录运行）：
 #   bash tools/package-release.sh 1.2.0
-# 做三件事：① 核对版本串（git tag、SKILL.md、.claude-plugin/marketplace.json、README 徽章）一致；
+# 做四件事：① 核对版本串（git tag、SKILL.md、.claude-plugin/marketplace.json、README 徽章）一致；
 #          ② 把 skills/ppt-ultra 打成 dist/ppt-ultra-<版本>.zip（排除 node_modules / __pycache__ / output / .DS_Store / *.pyc）；
-#          ③ 生成 dist/SHA256SUMS。dist/ 不进 git。
+#          ③ 生成并验证最多 500 个文件的上传包（完整资源无损归档）；
+#          ④ 生成 dist/SHA256SUMS。dist/ 不进 git。
 set -euo pipefail
 VER="${1:-}"
 [ -n "$VER" ] || { echo "用法: bash tools/package-release.sh <版本，如 1.2.0>"; exit 2; }
@@ -29,6 +30,11 @@ rm -f "$ZIP"
     -x "ppt-ultra/**/output/*" -x "ppt-ultra/**/.DS_Store" -x "ppt-ultra/.DS_Store" )
 echo "$ZIP  $(du -h "$ZIP" | cut -f1)  $(unzip -l "$ZIP" | tail -1 | awk '{print $2}') 个文件"
 
-echo "== 3. 校验和 =="
-( cd dist && shasum -a 256 "ppt-ultra-$VER.zip" > SHA256SUMS && cat SHA256SUMS )
-echo "== 完成：上传 dist/ppt-ultra-$VER.zip 与 dist/SHA256SUMS 到 Release =="
+echo "== 3. 生成并验证紧凑上传包 =="
+UPLOAD_ZIP="dist/ppt-ultra-$VER-upload.zip"
+python3 tools/package-upload.py --output "$UPLOAD_ZIP"
+python3 tools/test_upload_package.py --zip "$UPLOAD_ZIP"
+
+echo "== 4. 校验和 =="
+( cd dist && shasum -a 256 "ppt-ultra-$VER.zip" "ppt-ultra-$VER-upload.zip" > SHA256SUMS && cat SHA256SUMS )
+echo "== 完成：上传两个 ZIP 与 dist/SHA256SUMS 到 Release =="

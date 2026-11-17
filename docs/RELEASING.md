@@ -37,7 +37,28 @@ Actions 页会出现 `release` 运行（约 3~5 分钟）：装依赖 → `tools
 bash tools/package-release.sh 1.2.0
 ```
 
-脚本会核对 tag 与三处版本串、生成 `dist/ppt-ultra-1.2.0.zip`（只含 `skills/ppt-ultra`，排除 node_modules / 缓存 / 输出）和 `dist/SHA256SUMS`。`dist/` 已在 `.gitignore`。
+脚本会核对 tag 与三处版本串、生成 `dist/ppt-ultra-1.2.0.zip`（只含 `skills/ppt-ultra`，排除 node_modules / 缓存 / 输出）、`dist/ppt-ultra-1.2.0-upload.zip`（下节的紧凑上传包），并将两个附件的校验和写入 `dist/SHA256SUMS`。`dist/` 已在 `.gitignore`。自动 Release 同时上传两个 ZIP。
+
+## 1b. 有文件数量限制的平台上传包
+
+用于「最多 500 个文件、总大小不超过 100MB」的上传入口，不需要新建 tag：
+
+```bash
+python3 tools/package-upload.py
+python3 tools/test_upload_package.py --zip dist/ppt-ultra-upload.zip
+# 已安装 smoke 依赖时，验证恢复后的引擎、全部 Spec 示例和宿主契约：
+python3 tools/test_upload_package.py --zip dist/ppt-ultra-upload.zip --smoke
+```
+
+上传 **`dist/ppt-ultra-upload.zip`**；旁边的 `.zip.sha256` 只用于校验，不放进技能包。构建器从 Git 索引选取技能的正式文件、读取工作区当前内容，新增的技能文件须先纳入 Git 跟踪；未跟踪的缓存、依赖和私有配置不会混入发布包。
+
+优化基线（1.2.0）：正式文件 13,375 个，图标目录占 12,029 个；清理缓存或仅做内容去重无法降到 500。紧凑包保留 Markdown 文档、许可证及根目录配置，共 268 个上传文件；完整原始技能放入 `runtime.tar.gz`，清单保存每个文件的 SHA-256、大小和权限。ZIP 不写目录条目，构建同时检查上传文件数、ZIP 大小以及 ZIP 展开一层后的总大小（按更严格的 100,000,000 字节）。
+
+首次执行 `bootstrap.py` 时，只用 Python 标准库校验归档与逐文件内容，在系统临时目录的内容哈希缓存中恢复完整技能，并返回 `skill_dir`。入口随后读取该目录里的原始 `SKILL.md`；所有引用路径、完整性检查、引擎代码与资源内容保持原样。后续调用复用缓存；`--verify` 可复核缓存全部文件，`--cache-dir <可写目录>` 可改缓存位置。初始化不联网、不安装依赖、不写上传目录；依赖安装仍按原工作流执行。
+
+这轮优化改变的是**发布结构**，没有合并或删减源码、文档、模板、字体、图标或音效，也不降低生成质量所依赖的资源覆盖。回归验证检查完整文件集合与每个文件的字节一致性、缓存复用、损坏包拒绝及原有完整性检查；`--smoke` 额外对解包产物运行现有冒烟套件。
+
+平台须允许 Python 执行、可写缓存和 `.tar.gz` 资源。解包后的运行时仍有 13,375 个文件、约 101 MB；如果平台限制运行时文件数、递归展开归档计数或禁止归档附件，需要平台侧配置支持，不能仅靠此上传格式解决。尚需在具体平台实际上传验证。
 
 ## 2. 在 GitHub 网页上建 Release（手动）
 
@@ -45,18 +66,18 @@ bash tools/package-release.sh 1.2.0
 2. **Choose a tag**：下拉里选已推送的 `1.2.0`（不要在这里新建 tag，tag 已经指在正确的提交上）。Target 保持 `main`。
 3. **Release title**：填 `PPT Ultra 1.2.0 — Host contract`（与 `docs/releases/1.2.0.md` 第一行标题一致，去掉前导 `#`）。
 4. **Describe this release**：把 `docs/releases/1.2.0.md` 全文粘进去，删掉第一行的大标题（标题栏已经有了）。右上可点 **Preview** 看渲染。不要点 **Generate release notes**，它只会把提交信息「feat: html and pptx」堆进来。
-5. **Attach binaries**：把 `dist/ppt-ultra-1.2.0.zip` 和 `dist/SHA256SUMS` 拖进附件区，等上传进度条走完（zip 几十 MB，要等一下）。
+5. **Attach binaries**：把 `dist/ppt-ultra-1.2.0.zip`、`dist/ppt-ultra-1.2.0-upload.zip` 和 `dist/SHA256SUMS` 拖进附件区，等上传进度条走完（zip 几十 MB，要等一下）。
 6. 勾选 **Set as the latest release**；**Set as a pre-release** 不勾。
 7. 点 **Publish release**。
 
-发布后检查：Releases 页顶部出现 1.2.0 带 Latest 标签；README 的 version 徽章链接能落到它；附件区有 zip + SHA256SUMS + 两个 Source code 包。
+发布后检查：Releases 页顶部出现 1.2.0 带 Latest 标签；README 的 version 徽章链接能落到它；附件区有两个 ZIP + SHA256SUMS + 两个 Source code 包。
 
 ## 3. 用命令行建（手动，等价）
 
 需要 `gh auth login` 过一次：
 
 ```bash
-gh release create 1.2.0 dist/ppt-ultra-1.2.0.zip dist/SHA256SUMS \
+gh release create 1.2.0 dist/ppt-ultra-1.2.0.zip dist/ppt-ultra-1.2.0-upload.zip dist/SHA256SUMS \
   --title "PPT Ultra 1.2.0 — Host contract" \
   --notes-file docs/releases/1.2.0.md \
   --latest

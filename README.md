@@ -83,6 +83,8 @@ Find your tool and jump to its steps:
 
 The skill is the **`skills/ppt-ultra` folder** inside (you'll see `SKILL.md` directly in it). Installing means copying this folder into your tool's skills directory.
 
+**For upload platforms limited to 500 files**: use `ppt-ultra-<version>-upload.zip` from Releases. If it is not yet attached, run `python3 tools/package-upload.py` at the repository root to create `dist/ppt-ultra-upload.zip`. The upload contains about 51 MB and 268 files, with `SKILL.md` directly at the ZIP root. Workflows and reference documents remain readable; all engines and assets are preserved losslessly and verified before extraction into a writable runtime cache. **The host must support Python execution, cache writes and `.tar.gz` resources.** Hosts that recursively count archive contents still need a quota change. Source and expanded runtime file counts stay unchanged. See the [packaging guide](docs/RELEASING.md#1b-有文件数量限制的平台上传包).
+
 **2. Install runtimes** (by deck type; if unsure, install all)
 
 | You want | Install |
