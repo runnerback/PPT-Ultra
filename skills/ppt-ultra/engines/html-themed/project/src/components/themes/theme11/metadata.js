@@ -2248,7 +2248,7 @@ export const pages = [
       ],
       "quoteText": "“一支团队，搞定过去三家代理才做完的事。”",
       "quoteAttr": "— Sarah Chen · 增长负责人",
-      "ctaSub": "hello@ignis.cn · 通往收入的 shortest 路径",
+      "ctaSub": "hello@ignis.example · 通往收入的 shortest 路径",
       "ctaText": "预约增长诊断"
     }
   },
@@ -5107,7 +5107,7 @@ export const pages = [
       "channels": [
         {
           "l": "Email",
-          "v": "hello@ignis.cn"
+          "v": "hello@ignis.example"
         },
         {
           "l": "Phone",
@@ -15629,12 +15629,12 @@ export const pages = [
       "contact": [
         {
           "k": "官网",
-          "v": "ignis.studio",
+          "v": "studio.ignis.example",
           "ar": "↗"
         },
         {
           "k": "邮箱",
-          "v": "hi@ignis.studio",
+          "v": "hi@studio.ignis.example",
           "ar": "→"
         },
         {

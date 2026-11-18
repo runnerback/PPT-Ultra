@@ -28,6 +28,8 @@ grep -q "version-$VER-" README.md || { echo "FAIL: README.md 版本徽章不是 
 [ "$fail" = 0 ] || exit 1
 echo "tag / SKILL.md / marketplace.json / README 徽章 / 发布说明 都是 $VER"
 python3 tools/test_security.py
+python3 tools/privacy-check.py
+python3 tools/test_privacy.py
 
 echo "== 2. 打包 skills/ppt-ultra =="
 mkdir -p dist

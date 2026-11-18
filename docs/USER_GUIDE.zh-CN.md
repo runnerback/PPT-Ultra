@@ -128,7 +128,7 @@
 没装 Python 依赖。对 AI 说"帮我安装 ppt-ultra 的 Python 依赖"，或在技能包目录执行 `pip install --require-hashes --only-binary=:all: -r requirements.txt`。
 
 **Q：主题汇报 PPT 第一次生成特别慢？**
-第一次要自动下载 Node.js 依赖，网络慢时需要几分钟，之后就快了。国内网络可以先设置镜像：`npm config set registry https://registry.npmmirror.com`。
+第一次要自动下载 Node.js 依赖，网络慢时需要几分钟，之后就快了。使用官方源，或将 `PPT_ULTRA_NPM_REGISTRY` 设为管理员批准的 HTTPS 企业源；不要自行切换到未经批准的公共镜像。
 
 **Q：点"导出 PDF"提示需要预览服务？**
 你打开的是本地文件（地址以 `file://` 开头）。对 AI 说"帮我重新打开预览页"，在它给出的 `http://` 地址里导出。

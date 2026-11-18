@@ -14,7 +14,7 @@ description: >
   spec-native, 规格 JSON, or a deterministic / data-dense .pptx report.
 license: "AGPL-3.0 (bundles MIT components; see NOTICE.md)"
 metadata:
-  version: "1.2.2"
+  version: "1.2.3"
   fused_from: "ppt-master 6.8.0 (MIT); guizang-ppt-skill (AGPL-3.0); dashi-ppt 0.4.14 (AGPL-3.0); spec-native 1.0.0 (MIT, Runnerback)"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "AGPL-3.0 (bundles MIT components; see NOTICE.md)"

@@ -1,0 +1,9 @@
+# Keep all standard credential detectors. Only two verified animation enum values
+# are excluded; no file, directory or generic "key" field is blanket-ignored.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "PowerPoint animation identifiers are not API credentials"
+regexTarget = "secret"
+regexes = ['''^emphasis_3d_swing$''', '''^emphasis_3d_jump_and_turn$''']

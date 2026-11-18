@@ -101,4 +101,4 @@ stdout 一行 JSON：成功 `{"ok": true, "slides": 12, "charts": 3, "out": "...
 
 ## 8. 来源
 
-本引擎从 Runnerback 在企业内部 Agent 制作 PPT 管线里跑了两个月的生成器抽出，去掉了企业依赖（IM 平台 / 内部知识库 / 模型网关）与企业数据，作为 PPT-Ultra 的第四引擎开源，MIT 许可。
+本引擎由 Runnerback 维护，作为 PPT-Ultra 的规格驱动原生 PPTX 生成器提供，采用 MIT 许可。输入、输出与依赖契约在本目录公开文档中定义。

@@ -7,7 +7,7 @@
 **Turn a one-line request into a ready-to-use presentation: a web deck for live talks, a themed report deck, or a natively editable .pptx.**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.2-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.2.3-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -20,7 +20,7 @@
 
 PPT Ultra is an Agent Skill that plugs into AI tools able to work on your computer, such as Claude Code, Codex and WorkBuddy. It merges three mature open-source PPT generators into **one entry point and one workflow**. You don't need to know which engine runs underneath: just say what you need and how it will be used, and the skill picks the route and style, generates the deck, and checks the result.
 
-> Integration & architecture: Runnerback <286980573@163.com> · Version 1.0.0
+> Integration & architecture: Runnerback · Version 1.2.3
 
 ---
 
@@ -281,6 +281,6 @@ PPT Ultra is built on these open-source projects, with thanks:
 | PPTX Native | [ppt-master](https://github.com/hugohe3/ppt-master) (Hugo He) | MIT |
 | HTML Editorial | [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill) (歸藏 / op7418) | AGPL-3.0 |
 | HTML Themed | [dashi-ppt-skill](https://github.com/chuspeeism/dashi-ppt-skill) (chuspeeism), with its proprietary export component removed | AGPL-3.0 |
-| Spec Native | New in this repository (Runnerback), extracted from the author's in-house AI-agent deck pipeline | MIT |
+| Spec Native | New in this repository (Runnerback), a specification-driven native PPTX generator | MIT |
 
 The project as a whole is released under [AGPL-3.0](LICENSE); see [`NOTICE.md`](skills/ppt-ultra/NOTICE.md) for each component's license.

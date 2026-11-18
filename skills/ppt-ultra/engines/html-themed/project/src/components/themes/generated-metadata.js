@@ -152016,8 +152016,8 @@ export const GENERATED_THEME_PAGES = [
       "title": "让财富，开始自主增长",
       "kicker": "THANK YOU",
       "contacts": [
-        "hello@autonomous.fund",
-        "autonomous.fund",
+        "hello@autonomous.example",
+        "autonomous.example",
         "400-820-0000"
       ],
       "idPrefix": "closing"
@@ -154261,7 +154261,7 @@ export const GENERATED_THEME_PAGES = [
       ],
       "quoteText": "“一支团队，搞定过去三家代理才做完的事。”",
       "quoteAttr": "— Sarah Chen · 增长负责人",
-      "ctaSub": "hello@ignis.cn · 通往收入的 shortest 路径",
+      "ctaSub": "hello@ignis.example · 通往收入的 shortest 路径",
       "ctaText": "预约增长诊断"
     }
   },
@@ -157120,7 +157120,7 @@ export const GENERATED_THEME_PAGES = [
       "channels": [
         {
           "l": "Email",
-          "v": "hello@ignis.cn"
+          "v": "hello@ignis.example"
         },
         {
           "l": "Phone",
@@ -167642,12 +167642,12 @@ export const GENERATED_THEME_PAGES = [
       "contact": [
         {
           "k": "官网",
-          "v": "ignis.studio",
+          "v": "studio.ignis.example",
           "ar": "↗"
         },
         {
           "k": "邮箱",
-          "v": "hi@ignis.studio",
+          "v": "hi@studio.ignis.example",
           "ar": "→"
         },
         {

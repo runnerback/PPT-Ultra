@@ -2,12 +2,11 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ppt-ultra",
   "owner": {
-    "name": "Runnerback",
-    "email": "286980573@163.com"
+    "name": "Runnerback"
   },
   "metadata": {
     "description": "PPT Ultra — 一站式 PPT 生成 Skill：网页演讲 PPT、主题化汇报 PPT、原生可编辑 PPTX、规格 JSON 确定性 PPTX",
-    "version": "1.2.2"
+    "version": "1.2.3"
   },
   "plugins": [
     {
@@ -20,7 +19,15 @@
       ],
       "license": "AGPL-3.0",
       "category": "productivity",
-      "keywords": ["ppt", "pptx", "presentation", "slides", "html-deck", "powerpoint", "skill"]
+      "keywords": [
+        "ppt",
+        "pptx",
+        "presentation",
+        "slides",
+        "html-deck",
+        "powerpoint",
+        "skill"
+      ]
     }
   ]
 }

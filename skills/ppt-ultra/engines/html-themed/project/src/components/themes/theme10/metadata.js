@@ -12498,8 +12498,8 @@ export const pages = [
       "title": "让财富，开始自主增长",
       "kicker": "THANK YOU",
       "contacts": [
-        "hello@autonomous.fund",
-        "autonomous.fund",
+        "hello@autonomous.example",
+        "autonomous.example",
         "400-820-0000"
       ],
       "idPrefix": "closing"
