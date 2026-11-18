@@ -47,7 +47,7 @@ If you installed with Download ZIP:
   1. Download the latest ZIP from GitHub or AtomGit.
   2. Unzip it into a new folder.
   3. Copy your old .env and projects/ folder into the new folder.
-  4. Run: pip install -r requirements.txt
+  4. Run: pip install --require-hashes --only-binary=:all: -r requirements.txt
 
 If you want one-command updates next time, install with Git clone:
   git clone https://github.com/hugohe3/ppt-master.git
@@ -194,7 +194,7 @@ def sync_python_dependencies() -> None:
         return
 
     print_status("Requirements include tree changed. Syncing Python dependencies...")
-    result = run_command([sys.executable, "-m", "pip", "install", "-r", str(REQUIREMENTS_FILE)])
+    result = run_command([sys.executable, "-m", "pip", "install", "--require-hashes", "--only-binary=:all:", "-r", str(REQUIREMENTS_FILE)])
     if result.stdout.strip():
         print_status(result.stdout.strip())
     if result.stderr.strip():

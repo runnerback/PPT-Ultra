@@ -6,7 +6,7 @@
 #   2c) 宿主契约：build_prompt 渲染示例 brief（pptx / html）、collect_manifest 在合成项目上出清单、空目录报错、html 占位检查
 #   3) HTML Editorial：演讲者运行时同步检查（有 node 才跑）
 #   4) 可选：装了 LibreOffice 时把第一份示例转 PDF 看能否打开
-# 用法：bash tools/smoke.sh        依赖：python3（已 pip install -r skills/ppt-ultra/requirements.txt）、可选 node / dot / soffice
+# 用法：bash tools/smoke.sh        依赖：python3（已 pip install --require-hashes --only-binary=:all: -r skills/ppt-ultra/requirements.txt）、可选 node / dot / soffice
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SKILL="$ROOT/skills/ppt-ultra"

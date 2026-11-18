@@ -62,7 +62,6 @@ if (-not (Test-Path -LiteralPath $projectRoot -PathType Container)) {
 
 $node = (Get-Command node.exe -ErrorAction Stop).Source
 $npm = (Get-Command npm.cmd -ErrorAction Stop).Source
-$npx = (Get-Command npx.cmd -ErrorAction Stop).Source
 
 Push-Location $projectRoot
 try {
@@ -86,21 +85,14 @@ try {
     }
 
     if ($installRequired) {
-        # 首装前探测 npm 源:官方可达走官方,不可达锁 npmmirror;探测失败不阻塞
-        #(缺省 .npmrc 已指 npmmirror)。native 命令非零退出码在此不抛错,等价 .sh 的 || true。
-        & $node 'scripts\ensure-registry.mjs'
-        Invoke-Native $npm 'install'
+        $registry = & $node 'scripts\ensure-registry.mjs'
+        if ($LASTEXITCODE -ne 0) { throw 'Invalid npm registry configuration' }
+        Invoke-Native $npm 'ci' '--ignore-scripts' '--no-audit' '--no-fund' '--registry' ($registry.Trim())
     }
 
-    # 镜像模式下 playwright 浏览器二进制同样走 npmmirror,否则国内下载必败。
-    if ((Test-Path -LiteralPath '.npmrc') -and (Select-String -LiteralPath '.npmrc' -SimpleMatch 'registry=https://registry.npmmirror.com' -Quiet)) {
-        if (-not $env:PLAYWRIGHT_DOWNLOAD_HOST) {
-            $env:PLAYWRIGHT_DOWNLOAD_HOST = 'https://cdn.npmmirror.com/binaries/playwright'
-        }
-    }
-
-    # chromium headless shell:幂等(已装秒过),下载失败不阻塞生成(导出回退系统 Chrome)。
-    & $npx '--no-install' 'playwright-core' 'install' 'chromium-headless-shell' *> $null
+    # Use host-provisioned Chrome/Chromium (CHROME_PATH) or an approved browser cache.
+    # Browser installation and binary verification are the host administrator's job.
+    # Generation does not download or install browser binaries.
 
     $outputDirectory = Split-Path -Parent $outputPath
     New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null

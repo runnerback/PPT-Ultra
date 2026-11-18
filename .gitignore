@@ -12,6 +12,15 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+.env.*
+!.env.example
+!.env.template
+cookies*.txt
+*.p12
+*.pfx
+*.key
+*.local.json
+.privacy-local-patterns
 *.log
 output/
 

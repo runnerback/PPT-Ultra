@@ -6,7 +6,7 @@ description: Fusion-layer services that every PPT Ultra route may call — sourc
 
 这些能力原本只属于某一个引擎，融合后**所有路由都能调用**。PPTX 系路由按自己 runtime 规定的时机使用它们（以 runtime 为准）；HTML 路由按本文的时机使用。
 
-所有 Python 命令都依赖根目录的 PPTX 引擎工具链：首次使用前执行 `pip install -r "${SKILL_DIR}/requirements.txt"`。这些脚本启动时会自动做完整性检查；检查失败时（退出码 78）不要排查或绕过，改走下表的"降级"列。
+所有 Python 命令都依赖根目录的 PPTX 引擎工具链：首次使用前执行 `pip install --require-hashes --only-binary=:all: -r "${SKILL_DIR}/requirements.txt"`。这些脚本启动时会自动做完整性检查；检查失败时（退出码 78）不要排查或绕过，改走下表的"降级"列。
 
 | 服务 | 命令 / 文档 | HTML 路由的使用时机 | 降级 |
 |---|---|---|---|

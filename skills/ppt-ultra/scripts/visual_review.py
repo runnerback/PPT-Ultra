@@ -179,7 +179,8 @@ def render_pages(server_url: str, pages: list[str], preview_dir: Path) -> list[d
 """
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser_path = os.environ.get('CHROME_PATH')
+        browser = p.chromium.launch(**({'executable_path': browser_path} if browser_path else {}))
         try:
             context = browser.new_context()
             for page_name in pages:
@@ -333,10 +334,8 @@ def main() -> int:
         from playwright.sync_api import sync_playwright  # noqa: F401
     except ImportError:
         _safe_print(
-            'playwright not installed. Install with:\n'
-            '    pip install playwright\n'
-            '    python3 -m playwright install chromium\n'
-            '(see skills/ppt-master/requirements.txt)'
+            'Playwright is not provisioned. Ask the host administrator for an approved '
+            'Playwright/Chromium installation; do not install unpinned packages during generation.'
         )
         return 3
 
@@ -366,7 +365,7 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001 — browser launch failure
             _safe_print(f'browser session failed: {type(e).__name__}: {e}')
             _safe_print(
-                'try:  python3 -m playwright install chromium'
+                'Use an approved preinstalled browser; set CHROME_PATH or ask the host administrator.'
             )
             return 3
 

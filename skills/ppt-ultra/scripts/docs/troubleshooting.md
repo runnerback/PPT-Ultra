@@ -75,7 +75,7 @@ Use `--narration-audio-dir audio` only when you intentionally want lower-level, 
 Most tools use the standard library. Install extra dependencies only when needed:
 
 ```bash
-pip install -r requirements.txt
+pip install --require-hashes --only-binary=:all: -r requirements.txt
 ```
 
 Important optional packages:

@@ -20,7 +20,7 @@
 | 依赖 | 用途 | 安装 |
 |---|---|---|
 | Python 3.10 – 3.14 | 运行 | — |
-| `python-pptx>=1.0` `Pillow` `lxml` | 生成 pptx、读图片尺寸、补 OOXML 细节 | 根目录 `pip install -r requirements.txt` 已含 |
+| `python-pptx>=1.0` `Pillow` `lxml` | 生成 pptx、读图片尺寸、补 OOXML 细节 | 根目录 `pip install --require-hashes --only-binary=:all: -r requirements.txt` 已含 |
 | Graphviz `dot`（系统包，可选） | `flow` / `swimlane` / `hierarchy` 三种版式的自动布局 | macOS `brew install graphviz`；Ubuntu `apt install graphviz`；Windows 官方安装包并加入 PATH。不装也能用其它 28 种版式 |
 
 不依赖 ppt-master 引擎的任何脚本，不读 `${SKILL_DIR}/scripts/`，不触发其完整性检查。
@@ -101,4 +101,4 @@ stdout 一行 JSON：成功 `{"ok": true, "slides": 12, "charts": 3, "out": "...
 
 ## 8. 来源
 
-本引擎从 Runnerback 在企业内部 Agent 制作 PPT 管线里跑了两个月的生成器抽出，去掉了企业依赖（IM 平台 / 内部知识库 / 模型网关）与企业数据，作为 PPT-Ultra 的第四引擎开源，MIT 许可。
+本引擎由 Runnerback 维护，作为 PPT-Ultra 的规格驱动原生 PPTX 生成器提供，采用 MIT 许可。输入、输出与依赖契约在本目录公开文档中定义。

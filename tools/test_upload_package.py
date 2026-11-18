@@ -93,6 +93,48 @@ class BootstrapTests(unittest.TestCase):
             restore(self.package, self.cache)
         self.assertEqual(list(self.cache.iterdir()), [])
 
+    def multibundle(self):
+        entries, volumes = {}, []
+        for i, name in enumerate(("SKILL.md", "assets/example.svg"), 1):
+            self.bundle({name: name.encode()})
+            old = json.loads((self.package / "runtime-manifest.json").read_text())
+            archive = f"runtime-{i:03d}.tar.gz"
+            (self.package / "runtime.tar.gz").rename(self.package / archive)
+            entries[name] = {**old["files"][name], "archive": archive}
+            volumes.append({"name": archive, "sha256": old["archive_sha256"], "file_count": 1})
+        manifest = {"format": 2, "file_count": 2, "files": entries, "archives": volumes}
+        (self.package / "runtime-manifest.json").write_text(json.dumps(manifest))
+        return manifest
+
+    def test_multiple_volumes_restore_and_verify(self):
+        self.multibundle()
+        result = restore(self.package, self.cache)
+        self.assertEqual((Path(result["skill_dir"]) / "assets/example.svg").read_bytes(), b"assets/example.svg")
+        self.assertTrue(restore(self.package, self.cache, verify=True)["cached"])
+
+    def test_missing_volume_rejected_even_for_cached_runtime(self):
+        self.multibundle()
+        restore(self.package, self.cache)
+        (self.package / "runtime-002.tar.gz").unlink()
+        with self.assertRaises(FileNotFoundError):
+            restore(self.package, self.cache)
+
+    def test_wrong_volume_rejected_without_partial_cache(self):
+        manifest = self.multibundle()
+        manifest["files"]["SKILL.md"]["archive"] = "runtime-002.tar.gz"
+        (self.package / "runtime-manifest.json").write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, "wrong volume"):
+            restore(self.package, self.cache)
+        self.assertEqual(list(self.cache.iterdir()), [])
+
+    def test_corrupt_second_volume_rejected_before_extraction(self):
+        self.multibundle()
+        with (self.package / "runtime-002.tar.gz").open("ab") as out:
+            out.write(b"tampered")
+        with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+            restore(self.package, self.cache)
+        self.assertFalse(self.cache.exists())
+
 
 def verify_package(path: Path, smoke: bool = False) -> None:
     root = Path(__file__).resolve().parent.parent
@@ -101,6 +143,8 @@ def verify_package(path: Path, smoke: bool = False) -> None:
     expected = {p.relative_to(source).as_posix(): p
                 for name in tracked.split(b"\0") if name
                 for p in [root / name.decode("utf-8")]}
+    for name in ("LICENSE-AGPL-3.0", "requirements.lock"):
+        expected[name] = source / name
     with tempfile.TemporaryDirectory(prefix="ppt-ultra-upload-test-") as work:
         package = Path(work) / "uploaded skill"
         with zipfile.ZipFile(path) as z:
@@ -108,6 +152,12 @@ def verify_package(path: Path, smoke: bool = False) -> None:
             assert sum(p.file_size for p in z.infolist()) <= 100_000_000
             assert path.stat().st_size <= 100_000_000
             assert "SKILL.md" in z.namelist()  # Direct upload root, not a nested folder.
+            original = (source / "SKILL.md").read_text()
+            boundary = original[original.index("## 安全边界（P1–P4）"):original.index("## Mandatory Load Order")]
+            assert boundary in z.read("SKILL.md").decode()
+            manifest = json.loads(z.read("runtime-manifest.json"))
+            assert manifest["format"] == 2
+            assert all(p.file_size <= manifest["max_part_bytes"] for p in z.infolist())
             assert not any(p.is_dir() for p in z.infolist())
             z.extractall(package)
         command = [sys.executable, str(package / "bootstrap.py"), "--cache-dir", str(Path(work) / "cache")]
@@ -137,13 +187,48 @@ def verify_package(path: Path, smoke: bool = False) -> None:
         print(f"PASS: {len(expected)} files restored byte-for-byte; cache reuse and integrity gate passed")
 
 
+def verify_audit(path: Path) -> None:
+    source = Path(__file__).resolve().parent.parent / "skills/ppt-ultra"
+    manifest = json.loads(path.read_text())
+    seen = set()
+    for volume in manifest["volumes"]:
+        archive = path.parent / volume["name"]
+        assert hashlib.sha256(archive.read_bytes()).hexdigest() == volume["sha256"]
+        assert archive.stat().st_size <= manifest["max_part_bytes"]
+        with zipfile.ZipFile(archive) as z:
+            assert len(z.infolist()) <= 350
+            assert sum(info.file_size for info in z.infolist()) <= manifest["max_part_bytes"]
+            assert set(z.namelist()) == set(volume["files"])
+            for name in z.namelist():
+                assert name not in seen
+                assert not name.endswith((".zip", ".gz")), "Source review volumes must not nest archives"
+                data = z.read(name)
+                assert data == (source / name).read_bytes()
+                assert hashlib.sha256(data).hexdigest() == manifest["files"][name]["sha256"]
+                seen.add(name)
+    assert seen == set(manifest["files"])
+    # Independent expected coverage: every tracked executable-source file, plus locks.
+    root = source.parent.parent
+    tracked = subprocess.check_output(["git", "ls-files", "-z", "--", "skills/ppt-ultra"], cwd=root)
+    for raw in tracked.split(b"\0"):
+        if raw:
+            file = root / raw.decode()
+            if file.suffix in {".py", ".js", ".mjs", ".jsx", ".ts", ".sh", ".ps1"}:
+                assert file.relative_to(source).as_posix() in seen
+    assert {"requirements.lock", "engines/html-themed/project/package-lock.json", "SKILL.md", "LICENSE-AGPL-3.0"} <= seen
+    print(f"PASS: {len(seen)} plaintext review files in {len(manifest['volumes'])} bounded source ZIPs")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--zip", type=Path, help="Also verify a built ZIP against the current source tree")
     parser.add_argument("--smoke", action="store_true", help="Run tools/smoke.sh against the restored skill (requires its dependencies)")
+    parser.add_argument("--audit-manifest", type=Path, help="Verify plaintext source volumes, coverage, hashes and size limits")
     args = parser.parse_args()
     result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(BootstrapTests))
     if not result.wasSuccessful():
         raise SystemExit(1)
     if args.zip:
         verify_package(args.zip.resolve(), smoke=args.smoke)
+    if args.audit_manifest:
+        verify_audit(args.audit_manifest.resolve())
