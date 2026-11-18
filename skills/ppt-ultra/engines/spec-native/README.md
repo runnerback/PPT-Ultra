@@ -20,7 +20,7 @@
 | 依赖 | 用途 | 安装 |
 |---|---|---|
 | Python 3.10 – 3.14 | 运行 | — |
-| `python-pptx>=1.0` `Pillow` `lxml` | 生成 pptx、读图片尺寸、补 OOXML 细节 | 根目录 `pip install -r requirements.txt` 已含 |
+| `python-pptx>=1.0` `Pillow` `lxml` | 生成 pptx、读图片尺寸、补 OOXML 细节 | 根目录 `pip install --require-hashes --only-binary=:all: -r requirements.txt` 已含 |
 | Graphviz `dot`（系统包，可选） | `flow` / `swimlane` / `hierarchy` 三种版式的自动布局 | macOS `brew install graphviz`；Ubuntu `apt install graphviz`；Windows 官方安装包并加入 PATH。不装也能用其它 28 种版式 |
 
 不依赖 ppt-master 引擎的任何脚本，不读 `${SKILL_DIR}/scripts/`，不触发其完整性检查。

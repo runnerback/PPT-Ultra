@@ -14,10 +14,12 @@ from workflow_transcript import install_auto_transcript
 
 
 _SKILL_DIR = Path(__file__).resolve().parent.parent
-_SECONDARY_METADATA_FIELDS = ("copyright", "license", "official_repository")
-_SECONDARY_METADATA_DIGEST = "efb48651eb07614e564d54ab28623b8561ad57c8300c123a6893cd1fada56337"
+_SECONDARY_METADATA_FIELDS = ("copyright", "license", "upstream_license", "official_repository")
+_SECONDARY_METADATA_DIGEST = "d4aae4544867f31ed479a5ba21f46f222b0d53bb2b077db0f02512e575140f1d"
 _SECONDARY_LICENSE_DIGEST = "80cefc234c1ec12a8cece4344f16300c634fa03df7891686fcf979e3828f0921"
 
+
+_SECONDARY_DISTRIBUTION_LICENSE_DIGEST = "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
 
 def _secondary_normalized_text(path: Path) -> str:
     """Return canonical UTF-8 text for the independent identity check."""
@@ -53,6 +55,7 @@ def _secondary_identity_is_valid() -> bool:
     return (
         metadata_digest == _SECONDARY_METADATA_DIGEST
         and license_digest == _SECONDARY_LICENSE_DIGEST
+        and hashlib.sha256(_secondary_normalized_text(_SKILL_DIR / "LICENSE-AGPL-3.0").encode("utf-8")).hexdigest() == _SECONDARY_DISTRIBUTION_LICENSE_DIGEST
     )
 
 

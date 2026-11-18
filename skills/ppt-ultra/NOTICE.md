@@ -15,11 +15,21 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 - 组合作品包含 AGPL-3.0 组件。对外分发本包或基于它提供网络服务时，须按 AGPL-3.0 公开对应源代码。
 - guizang 和 dashi 的 AGPL-3.0 全文分别在 `engines/html-editorial/LICENSE` 和 `engines/html-themed/LICENSE`。
 - dashi 的 HTML→PPTX 导出引擎是专有授权，许可证只允许它作为 Dashi PPT skill 的一部分使用，禁止用于其他软件，因此本包已将它移除，包括：`project/packages/html-deck-to-pptx/`、`project/assets/vendor/editable-pptx-browser.js`、`project/scripts/export-pptx.mjs`，以及 `export:pptx` / `export:pdf` 两个 npm 脚本。预览服务的 PPTX 和服务端 PDF 接口改为返回 501，模板里的 PPTX 导出入口已隐藏，PDF 自动改用浏览器内导出（html-to-image + pdf-lib，均为 MIT）。合并上游更新时**不要把这些文件带回来**。
-- 根目录的 `LICENSE`、`SPONSORS.md`、`SPONSORS_CN.md`，以及 `SKILL.md` frontmatter 里的 copyright / license / official_repository / sponsors 四个字段，由 PPTX 引擎的完整性检查校验，修改任何一项都会导致 Native 路由停止运行。
+- `LICENSE` 保留 PPTX Native 上游 MIT 原文，`LICENSE-AGPL-3.0` 为整包分发许可。完整性检查同时校验这两份许可证和 SKILL.md 的分发许可、上游许可、署名、仓库、赞助文件路径及执行入口；赞助文件保留为无推广的来源说明。更新声明时须同步检查器与篡改拒绝测试，不得关闭检查。
 
 ## 修改记录
 
 按 AGPL-3.0 第 5(a) 条，以下列出本包相对各上游版本的修改。
+
+**2026-11-18 — PPT Ultra 1.2.2（Runnerback）**
+
+- 为全部 19 项 Python 直接依赖和传递依赖提供精确版本、SHA-256 锁；安装强制 `--require-hashes --only-binary=:all:`。npm 10 项直接依赖与锁文件版本对齐，Shell / PowerShell 启动器改用 `npm ci --ignore-scripts`。
+- 移除第三方 npm 镜像默认值、自动镜像切换和浏览器下载；使用官方或管理员配置的企业 npm 源，浏览器由宿主预置。
+- 外层与原始 SKILL.md 增加一致的 P1–P4 安全边界；Python 自动审计不再复制参数和输出正文，HTML Themed 错误遥测不再持久化原始错误文本。
+- 移除赞助文件中的返利与模型中转推广，简化 `.env.example` 为变量及企业网关占位示例；保留作者署名和原始组件许可证。
+- 将整包许可声明同步为 AGPL-3.0（含 MIT 组件），增加整包许可全文；更新主、次完整性检查器，继续验证上游 MIT 原文、整体许可和执行入口。
+- 不裁剪引擎及素材：运行时改为有大小上限的独立归档；同时提供明文源码审阅分卷、来源提交和逐文件 SHA-256 清单。增加多卷恢复、缺卷/错卷/篡改拒绝及安全回归测试。
+- Release 完整包和紧凑包均基于受控文件清单，排除本地私有与安装产物；手动重跑也从对应 tag 构建；CI 改为锁定依赖安装、校验恢复后的技能并发布审阅附件。
 
 **2026-11-17 — PPT Ultra 1.2.1（Runnerback）**
 
@@ -79,3 +89,5 @@ PPT Ultra 由三个开源 Skill 融合而成。各部分保留原作者署名和
 3. **dashi**：用上游的 `skills/dashi-ppt/{project,references,assets,scripts}` 覆盖 `engines/html-themed/`（删掉 `scripts/check_latest_version.mjs`；按上文重新移除专有导出组件，并重新应用 `project/scripts/preview/export-routes.mjs`、`project/assets/template-swiss.html`、`project/src/runtime-assets.mjs` 里的禁用改动）；再把上游 `SKILL.md` 的改动同步到 `workflows/html-themed.md`。
 4. 合并后跑一遍验证：仓库根目录 `bash tools/smoke.sh`（含 `attribution_guard.py`、Spec Native 全部示例构建、`check-presenter-runtime-sync.mjs`、可选 LibreOffice 转 PDF），再做一次 themed 渲染冒烟测试。Spec Native 引擎没有上游，只随本仓库维护。
 5. 把合并到的版本 / 提交写回 `tools/upstream-pins.json`，并在上面的「修改记录」加一条。
+
+安全维护补充（1.2.2）：合并上游时保留本版 P1–P4、依赖哈希锁、官方/企业源选择、宿主浏览器策略、无推广赞助说明和整包许可声明，不能用上游文件覆盖回旧默认值。合并后运行 `python3 tools/test_security.py` 及上传包恢复测试。

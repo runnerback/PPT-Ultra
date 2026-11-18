@@ -7,7 +7,7 @@
 **一句话需求，生成可以直接用的演示文稿：网页演讲 PPT、主题化汇报 PPT，或原生可编辑的 .pptx。**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.1-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.2.2-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -20,7 +20,7 @@
 
 PPT Ultra 是一个 Agent Skill（技能包），可以装进 Claude Code、Codex、WorkBuddy 等能操作电脑的 AI 工具。它把三套成熟的开源 PPT 生成能力，加上一套自研的规格驱动确定性 PPTX 引擎，整合成**一个入口、一套流程**。用户不用关心底层用哪个引擎，只要说清楚"要什么、怎么用"，Skill 会自动选路线、选风格，生成后再做验收。
 
-> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.2.1
+> 整合与架构设计：Runnerback <286980573@163.com> · 版本 1.2.2
 
 ---
 
@@ -83,7 +83,7 @@ PPT Ultra 需要装进**能读写文件、运行命令**的 AI 工具里，由 A
 
 技能包是里面的 **`skills/ppt-ultra` 文件夹**（打开能直接看到 `SKILL.md`）。下文的安装就是把这个文件夹复制到各工具的技能目录。
 
-**上传平台限制最多 500 个文件时**：使用 Release 中的 `ppt-ultra-<版本>-upload.zip`（如当前 Release 尚未提供，可在仓库根目录运行 `python3 tools/package-upload.py`，得到 `dist/ppt-ultra-upload.zip`）。该包约 51 MB、268 个文件，ZIP 根目录直接包含 `SKILL.md`；工作流与参考文档保持可读，完整程序和素材无损归档，首次运行自动校验并解压到可写缓存。所有引擎、模板、图标、字体和音效均保留。**平台须支持 Python 执行、缓存写入和 `.tar.gz` 资源**；如果它递归统计归档内部文件，仍需平台侧调整配额。源码和运行时展开后的文件数不变。构建及验证方式见[发布手册](docs/RELEASING.md#1b-有文件数量限制的平台上传包)。
+**上传平台限制最多 500 个文件时**：使用 Release 中的 `ppt-ultra-<版本>-upload.zip`（如当前 Release 尚未提供，可在仓库根目录运行 `python3 tools/package-upload.py`，得到 `dist/ppt-ultra-upload.zip`）。该包少于 100 MB、500 个文件，ZIP 根目录直接包含 `SKILL.md`；工作流与参考文档保持可读，完整程序和素材无损归档，首次运行自动校验并解压到可写缓存。所有引擎、模板、图标、字体和音效均保留。**平台须支持 Python 执行、缓存写入和 `.tar.gz` 资源**；如果它递归统计归档内部文件，仍需平台侧调整配额。1.2.2 使用多卷归档，并额外发布明文源码审阅卷与哈希清单；运行时完整资源保留。企业审核整改、环境配置和分支合并教程见 [ENTERPRISE_REVIEW.md](docs/ENTERPRISE_REVIEW.md)。构建及验证方式见[发布手册](docs/RELEASING.md#1b-有文件数量限制的平台上传包)。
 
 **2. 安装运行环境**（按要做的 PPT 类型安装，不确定就全装）
 
@@ -95,7 +95,7 @@ PPT Ultra 需要装进**能读写文件、运行命令**的 AI 工具里，由 A
 
 **3. 安装 Python 依赖**（做 .pptx 才需要）
 
-技能装好后对 AI 说"**帮我检查并安装 ppt-ultra 需要的依赖**"即可。手动安装：在技能包目录执行 `pip install -r requirements.txt`。
+技能装好后对 AI 说"**帮我检查并安装 ppt-ultra 需要的依赖**"即可。手动安装：在技能包目录执行 `pip install --require-hashes --only-binary=:all: -r requirements.txt`。
 
 **4. AI 生图（可选）**：把技能包目录里的 `.env.example` 复制为 `.env`，填入生图服务的密钥。不配置也能用。
 

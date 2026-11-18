@@ -125,7 +125,7 @@
 对应的运行环境没装好，或安装时没加入 PATH。按 README 的[准备工作](../README.zh-CN.md#第-0-步准备工作所有工具通用)重新安装，装完后**重新打开终端或 AI 工具**。
 
 **Q：提示缺少 Python 模块（ModuleNotFoundError）？**
-没装 Python 依赖。对 AI 说"帮我安装 ppt-ultra 的 Python 依赖"，或在技能包目录执行 `pip install -r requirements.txt`。
+没装 Python 依赖。对 AI 说"帮我安装 ppt-ultra 的 Python 依赖"，或在技能包目录执行 `pip install --require-hashes --only-binary=:all: -r requirements.txt`。
 
 **Q：主题汇报 PPT 第一次生成特别慢？**
 第一次要自动下载 Node.js 依赖，网络慢时需要几分钟，之后就快了。国内网络可以先设置镜像：`npm config set registry https://registry.npmmirror.com`。

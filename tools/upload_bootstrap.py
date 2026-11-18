@@ -40,13 +40,28 @@ def verify_runtime(root: Path, manifest: dict) -> None:
 def restore(package: Path, cache: Path, verify: bool = False) -> dict:
     manifest_data = (package / "runtime-manifest.json").read_bytes()
     manifest = json.loads(manifest_data)
-    if manifest["format"] != 1 or manifest["file_count"] != len(manifest["files"]):
+    if manifest["format"] not in (1, 2) or manifest["file_count"] != len(manifest["files"]):
         raise ValueError("Unsupported or inconsistent runtime manifest")
     for name in manifest["files"]:
         safe_path(name)
-    archive = package / "runtime.tar.gz"
-    if digest_file(archive) != manifest["archive_sha256"]:
-        raise ValueError("Runtime archive checksum mismatch; re-upload the original package")
+    if manifest["format"] == 1:
+        archives = [{"name": "runtime.tar.gz", "sha256": manifest["archive_sha256"], "file_count": manifest["file_count"]}]
+    else:
+        archives = manifest["archives"]
+        names = [a["name"] for a in archives]
+        if not archives or len(set(names)) != len(names):
+            raise ValueError("Missing or duplicate runtime volumes")
+        if sum(a["file_count"] for a in archives) != manifest["file_count"]:
+            raise ValueError("Runtime volume file counts do not match manifest")
+        if any(info["archive"] not in names for info in manifest["files"].values()):
+            raise ValueError("Unknown runtime volume in file manifest")
+    for item in archives:
+        relative = safe_path(item["name"])
+        if len(relative.parts) != 1 or not item["name"].endswith(".tar.gz"):
+            raise ValueError("Invalid runtime volume filename")
+        archive = package / relative
+        if archive.is_symlink() or digest_file(archive) != item["sha256"]:
+            raise ValueError("Runtime archive checksum mismatch; re-upload the original package")
     identity = hashlib.sha256(manifest_data).hexdigest()
     target = cache.resolve() / identity
     runtime = target / "ppt-ultra"
@@ -65,22 +80,29 @@ def restore(package: Path, cache: Path, verify: bool = False) -> dict:
         restored = stage / "ppt-ultra"
         restored.mkdir(parents=True)
         seen = set()
-        with tarfile.open(archive, "r:gz") as tar:
-            for member in tar:
-                relative = safe_path(member.name)
-                if not member.isfile() or member.name in seen or member.name not in manifest["files"]:
-                    raise ValueError(f"Unexpected runtime member: {member.name}")
-                info = manifest["files"][member.name]
-                if member.size != info["size"]:
-                    raise ValueError(f"Runtime size mismatch: {member.name}")
-                destination = restored / relative
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                with tar.extractfile(member) as source, destination.open("xb") as out:
-                    shutil.copyfileobj(source, out)
-                if digest_file(destination) != info["sha256"]:
-                    raise ValueError(f"Runtime checksum mismatch: {member.name}")
-                destination.chmod(info["mode"] & 0o777)
-                seen.add(member.name)
+        for item in archives:
+            volume_count = 0
+            with tarfile.open(package / item["name"], "r:gz") as tar:
+                for member in tar:
+                    relative = safe_path(member.name)
+                    if not member.isfile() or member.name in seen or member.name not in manifest["files"]:
+                        raise ValueError(f"Unexpected runtime member: {member.name}")
+                    info = manifest["files"][member.name]
+                    if manifest["format"] == 2 and info["archive"] != item["name"]:
+                        raise ValueError(f"Runtime member in wrong volume: {member.name}")
+                    if member.size != info["size"]:
+                        raise ValueError(f"Runtime size mismatch: {member.name}")
+                    destination = restored / relative
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    with tar.extractfile(member) as source, destination.open("xb") as out:
+                        shutil.copyfileobj(source, out)
+                    if digest_file(destination) != info["sha256"]:
+                        raise ValueError(f"Runtime checksum mismatch: {member.name}")
+                    destination.chmod(info["mode"] & 0o777)
+                    seen.add(member.name)
+                    volume_count += 1
+            if volume_count != item["file_count"]:
+                raise ValueError(f"Runtime volume file count mismatch: {item['name']}")
         if seen != set(manifest["files"]):
             raise ValueError("Runtime archive is missing files")
         (stage / ".complete").write_text(identity, encoding="utf-8")
@@ -102,7 +124,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         result = restore(Path(__file__).resolve().parent, args.cache_dir, args.verify)
-    except (OSError, ValueError, KeyError, TypeError, tarfile.TarError) as exc:
+    except (OSError, ValueError, KeyError, TypeError, EOFError, tarfile.TarError) as exc:
         print(f"PPT Ultra initialization failed: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(result, ensure_ascii=False))

@@ -7,7 +7,7 @@
 **Turn a one-line request into a ready-to-use presentation: a web deck for live talks, a themed report deck, or a natively editable .pptx.**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.1-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
+[![Version](https://img.shields.io/badge/version-1.2.2-brightgreen.svg)](https://github.com/runnerback/PPT-Ultra/releases)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg)](skills/ppt-ultra/SKILL.md)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757.svg)](#claude-code)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -83,7 +83,7 @@ Find your tool and jump to its steps:
 
 The skill is the **`skills/ppt-ultra` folder** inside (you'll see `SKILL.md` directly in it). Installing means copying this folder into your tool's skills directory.
 
-**For upload platforms limited to 500 files**: use `ppt-ultra-<version>-upload.zip` from Releases. If it is not yet attached, run `python3 tools/package-upload.py` at the repository root to create `dist/ppt-ultra-upload.zip`. The upload contains about 51 MB and 268 files, with `SKILL.md` directly at the ZIP root. Workflows and reference documents remain readable; all engines and assets are preserved losslessly and verified before extraction into a writable runtime cache. **The host must support Python execution, cache writes and `.tar.gz` resources.** Hosts that recursively count archive contents still need a quota change. Source and expanded runtime file counts stay unchanged. See the [packaging guide](docs/RELEASING.md#1b-有文件数量限制的平台上传包).
+**For upload platforms limited to 500 files**: use `ppt-ultra-<version>-upload.zip` from Releases. If it is not yet attached, run `python3 tools/package-upload.py` at the repository root to create `dist/ppt-ultra-upload.zip`. The upload contains under 100 MB and 500 files, with `SKILL.md` directly at the ZIP root. Workflows and reference documents remain readable; all engines and assets are preserved losslessly and verified before extraction into a writable runtime cache. **The host must support Python execution, cache writes and `.tar.gz` resources.** Hosts that recursively count archive contents still need a quota change. Version 1.2.2 uses bounded runtime volumes and also publishes plaintext source review volumes with hashes. See [enterprise review and merge instructions](docs/ENTERPRISE_REVIEW.md). See the [packaging guide](docs/RELEASING.md#1b-有文件数量限制的平台上传包).
 
 **2. Install runtimes** (by deck type; if unsure, install all)
 
@@ -95,7 +95,7 @@ The skill is the **`skills/ppt-ultra` folder** inside (you'll see `SKILL.md` dir
 
 **3. Python dependencies** (only for .pptx)
 
-Once the skill is installed, tell the AI: "**Check and install the dependencies for the ppt-ultra skill.**" Or manually, inside the skill folder: `pip install -r requirements.txt`.
+Once the skill is installed, tell the AI: "**Check and install the dependencies for the ppt-ultra skill.**" Or manually, inside the skill folder: `pip install --require-hashes --only-binary=:all: -r requirements.txt`.
 
 **4. AI image generation (optional)**: copy `.env.example` in the skill folder to `.env` and fill in your image-service API key. Everything works without it.
 

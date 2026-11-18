@@ -17,7 +17,8 @@ Only when the user explicitly requests visual review — never auto-invoked from
 ## Prerequisites
 
 ```bash
-pip install playwright && python3 -m playwright install chromium          # PNG renderer
+# Host prerequisite: approved Python Playwright and Chromium installation.
+# Do not install unpinned packages or download browsers during generation.
 python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --no-browser   # live-preview server (skip if already running)
 ```
 

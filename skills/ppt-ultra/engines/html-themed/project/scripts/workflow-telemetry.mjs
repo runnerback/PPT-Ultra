@@ -137,7 +137,7 @@ function emptyReport(goalPath, runId, startedAtMs) {
 }
 
 function failureCategory(error) {
-  const text = failureReason(error).toLowerCase();
+  const text = String(error?.message || error || '').toLowerCase();
   if (/layout|candidate|capacity/.test(text)) return 'layout';
   if (/content|fact|projection/.test(text)) return 'content';
   if (/valid|schema|prop/.test(text)) return 'validation';
@@ -147,7 +147,8 @@ function failureCategory(error) {
 }
 
 function failureReason(error) {
-  return String(error?.message || error || 'unknown failure').replace(/\s+/g, ' ').trim().slice(0, 500);
+  // Error messages may embed document text, tokens or private URLs.
+  return `${failureCategory(error)} failure (detail omitted)`;
 }
 
 function writeTelemetry(file, report) {

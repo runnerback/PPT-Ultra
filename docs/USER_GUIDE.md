@@ -125,7 +125,7 @@ Check three things: ① you copied the `ppt-ultra` folder itself (you can see `S
 The runtime isn't installed or wasn't added to PATH. Reinstall following [Step 0](../README.md#step-0-prerequisites-all-tools) in the README, then **reopen your terminal or AI tool**.
 
 **Q: It reports a missing Python module (ModuleNotFoundError).**
-Python dependencies aren't installed. Tell the AI "Install the Python dependencies for ppt-ultra", or run `pip install -r requirements.txt` in the skill folder.
+Python dependencies aren't installed. Tell the AI "Install the Python dependencies for ppt-ultra", or run `pip install --require-hashes --only-binary=:all: -r requirements.txt` in the skill folder.
 
 **Q: The first themed report deck is very slow.**
 The first run downloads Node.js dependencies, which can take a few minutes on a slow network; later runs are fast. In mainland China you can set a mirror first: `npm config set registry https://registry.npmmirror.com`.

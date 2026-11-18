@@ -1,1 +1,6 @@
-registry=https://registry.npmmirror.com
+# Registry: official npm, or an approved enterprise registry selected by the launcher.
+# No automatic mirror fallback. Credentials belong in host-managed configuration.
+save-exact=true
+ignore-scripts=true
+audit=false
+fund=false
